@@ -14,7 +14,7 @@ public class TodoItemService
     }
 
 
-    public async Task<ToDoItemDto> OnDetectEdit(ToDoItemDto item)
+    public async Task<ToDoItemDto> ModifyItem(ToDoItemDto item)
     {
         DateTime lastModifiedDate = item.LastModifiedTimeDate;
         DateTime currentDate = DateTimeOffset.Now.Date;

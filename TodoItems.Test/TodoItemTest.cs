@@ -169,7 +169,7 @@ public class TodoItemTest
             EditTimes = 0,
             DueDate = DateTime.Now.AddDays(2).Date
         };
-        ToDoItemDto itemAfterEdit = await todoItemProgram.OnDetectEdit(itemNow);
+        ToDoItemDto itemAfterEdit = await todoItemProgram.ModifyItem(itemNow);
 
         var expectedItem = new ToDoItemDto
         {
@@ -223,7 +223,7 @@ public class TodoItemTest
             DueDate = DateTime.Now.AddDays(2).Date
 
         };
-        ToDoItemDto itemAfterEdit = await todoItemProgram.OnDetectEdit(itemToBeEdit);
+        ToDoItemDto itemAfterEdit = await todoItemProgram.ModifyItem(itemToBeEdit);
 
 
         var expectedItem = new ToDoItemDto
@@ -280,7 +280,7 @@ public class TodoItemTest
 
         };
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => todoItemProgram.OnDetectEdit(itemNow));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => todoItemProgram.ModifyItem(itemNow));
 
         Assert.Equal("Too many edits", exception.Message);
     }
