@@ -40,7 +40,7 @@ public class TodoItemTest
     {
         var todoItemProgram = new TodoItemProgram();
         DateTimeOffset oldDateTime = DateTimeOffset.Now.AddDays(-2);
-        var itemNow = new ToDoItemModel
+        var itemToBeEdit = new ToDoItemModel
         {
             Id = "1",
             Description = "Item 1",
@@ -50,7 +50,7 @@ public class TodoItemTest
             LastModifiedTimeDate = oldDateTime.Date,
             EditTimes = 2
         };
-        ToDoItemModel itemAfterEdit = await todoItemProgram.OnDetectEdit(itemNow);
+        ToDoItemModel itemAfterEdit = await todoItemProgram.OnDetectEdit(itemToBeEdit);
 
 
         var expectedItem = new ToDoItemModel
@@ -61,7 +61,7 @@ public class TodoItemTest
             Favorite = false,
             CreatedTimeDate = DateTimeOffset.Now.Date,
             LastModifiedTimeDate = DateTimeOffset.Now.Date,
-            EditTimes = 1
+            EditTimes = 3
         };
 
         Assert.Equal(expectedItem, itemAfterEdit);

@@ -39,8 +39,8 @@ public class TodoItemProgram
             Favorite = item.Favorite,
             Done = item.Done,
             //CreatedTime = DateTimeOffset.Now,
-            CreatedTimeDate = item.LastModifiedTimeDate,
-            LastModifiedTimeDate = item.LastModifiedTimeDate,
+            CreatedTimeDate = item.CreatedTimeDate,
+            LastModifiedTimeDate = DateTimeOffset.Now.Date,
             EditTimes = item.EditTimes + 1,
 
         };
