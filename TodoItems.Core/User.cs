@@ -24,6 +24,11 @@ namespace TodoItems.Core
         {
             if(item.DueDate != null)
             {
+                var today = DateTimeOffset.Now.Date;
+                if(today<item.DueDate)
+                {
+                    throw new InvalidOperationException("Item due date is earlier than today.");
+                }
                 var findResult = Repo.GetItemsByDueDate(item.DueDate.Value);
                 if (findResult.Count > CompletedLimit)
                 {

@@ -66,5 +66,17 @@ namespace TodoItems.Tests
             Assert.Equal(1, result);
             mockRepo.Verify(repo => repo.AddItem(item), Times.Once);
         }
+
+        [Fact]
+        public  void AddOneItem_ShouldThrowError_WhenDueDateIsEarlierThanNow()
+        {
+            // Arrange
+            var mockRepo = new Mock<ITodosRepository>();
+            var user = new User(mockRepo.Object);
+            var item = new TodoItem { Id = "2", Description = "Task 2", DueDate = DateTimeOffset.Now.AddDays(7) };
+            var exception = Assert.Throws<InvalidOperationException>(() => user.AddOneItem(item));
+            Assert.Equal("Item due date is earlier than today.", exception.Message);
+            
+        }
     }
 }
