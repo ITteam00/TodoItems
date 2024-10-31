@@ -18,40 +18,61 @@ public class TodoItemTest
     {
         var mockRepository = new Mock<ItodosRepository>();
         var todoItem = new TodoItem(mockRepository.Object);
-        todoItem.Id = "1";
-        todoItem.CreatedDate = new DateTime(2024, 10, 30);
+        var todoItemDto = new TodoItemDto
+        {
+            Id = "1",
+            Description = "new task",
+            IsDone = true,
+            IsFavorite = true,
+            DueDate = new DateTime(2024, 10, 31),
+            CreatedDate = new DateTime(2024, 10, 30)
+        };
         todoItem.TimeStamps = new List<DateTime> {
         new DateTime(2024, 10, 30),
         new DateTime(2024, 10, 30),
         new DateTime(2024, 10, 30)
         };
-        Assert.Equal(false, todoItem.ModifyItem(todoItem.CreatedDate));
+        Assert.Equal(false, todoItem.ModifyItem(todoItemDto.CreatedDate));
     }
     [Fact]
     public void Should_return_true_when_modify_item_TimeStamp_is_null()
     {
         var mockRepository = new Mock<ItodosRepository>();
         var todoItem = new TodoItem(mockRepository.Object);
-        todoItem.Id = "1";
-        todoItem.CreatedDate = DateTime.Now;
+        var todoItemDto = new TodoItemDto
+        {
+            Id = "1",
+            Description = "new task",
+            IsDone = true,
+            IsFavorite = true,
+            DueDate = new DateTime(2024, 10, 31),
+            CreatedDate = new DateTime(2024, 10, 30)
+        };
 
         todoItem.TimeStamps = new List<DateTime>();
-        Assert.Equal(true, todoItem.ModifyItem(todoItem.CreatedDate));
+        Assert.Equal(true, todoItem.ModifyItem(todoItemDto.CreatedDate));
     }
     [Fact]
     public void Should_return_false_when_modify_item_twice_time()
     {
         var mockRepository = new Mock<ItodosRepository>();
         var todoItem = new TodoItem(mockRepository.Object);
-        todoItem.Id = "1";
-        todoItem.CreatedDate = new DateTime(2024, 10, 30);
+        var todoItemDto = new TodoItemDto
+        {
+            Id = "1",
+            Description = "new task",
+            IsDone = true,
+            IsFavorite = true,
+            DueDate = new DateTime(2024, 10, 31),
+            CreatedDate = new DateTime(2024, 10, 30)
+        };
         todoItem.TimeStamps = new List<DateTime> {
         new DateTime(2024, 10, 30),
         new DateTime(2024, 10, 30),
         };
         var TimeStamps = new List<DateTime>();
 
-        Assert.Equal(true, todoItem.ModifyItem(todoItem.CreatedDate));
+        Assert.Equal(true, todoItem.ModifyItem(todoItemDto.CreatedDate));
         Assert.Equal(3, todoItem.TimeStamps.Count);
 
     }
@@ -61,11 +82,18 @@ public class TodoItemTest
     {
         var mockRepository = new Mock<ItodosRepository>();
         var todoItem = new TodoItem(mockRepository.Object);
-        todoItem.Id = "1";
-        todoItem.CreatedDate = DateTime.Now;
+        var todoItemDto = new TodoItemDto
+        {
+            Id = "1",
+            Description = "new task",
+            IsDone = true,
+            IsFavorite = true,
+            DueDate = new DateTime(2024, 10, 31),
+            CreatedDate = new DateTime(2024, 10, 30)
+        };
         todoItem.TimeStamps = new List<DateTime>();
-        todoItem.UpdateItem(todoItem);
-        Assert.Equal("update", todoItem.Description);
+        todoItem.UpdateItem(todoItemDto);
+        Assert.Equal("update", todoItemDto.Description);
     }
 
     [Fact]
@@ -93,8 +121,15 @@ public class TodoItemTest
     {
         var mockRepository = new Mock<ItodosRepository>();
         var todoItem = new TodoItem(mockRepository.Object);
-        todoItem.CreatedDate = new DateTime(2024, 10, 30);
-        todoItem.DueDate = new DateTime(2024, 10, 31);
+        var todoItemDto = new TodoItemDto
+        {
+            Id = "1",
+            Description = "new task",
+            IsDone = true,
+            IsFavorite = true,
+            DueDate = new DateTime(2024, 10, 31),
+            CreatedDate = new DateTime(2024, 10, 30)
+        };
         var TodoItems = new List<TodoItem> { };
         for (int i = 0; i < 6; i++)
         {
@@ -102,7 +137,7 @@ public class TodoItemTest
         }
         mockRepository.Setup(repo => repo.FindAllTodoItemsInDueDate()).Returns(TodoItems);
 
-        Assert.Equal(true, todoItem.CreateItem(todoItem));
+        Assert.Equal(true, todoItem.CreateItem(todoItemDto));
     }
 
     [Fact]
@@ -110,8 +145,15 @@ public class TodoItemTest
     {
         var mockRepository = new Mock<ItodosRepository>();
         var todoItem = new TodoItem(mockRepository.Object);
-        todoItem.CreatedDate = new DateTime(2024, 10, 30);
-        todoItem.DueDate = new DateTime(2024, 10, 31);
+        var todoItemDto = new TodoItemDto
+        {
+            Id = "1",
+            Description = "new task",
+            IsDone = true,
+            IsFavorite = true,
+            DueDate = new DateTime(2024, 10, 31),
+            CreatedDate = new DateTime(2024, 10, 30)
+        };
         var TodoItems = new List<TodoItem> {};
         for (int i = 0; i < 10; i++)
         {
@@ -119,7 +161,7 @@ public class TodoItemTest
         }
         mockRepository.Setup(repo => repo.FindAllTodoItemsInDueDate()).Returns(TodoItems);
 
-        Assert.Equal(false, todoItem.CreateItem(todoItem));
+        Assert.Equal(false, todoItem.CreateItem(todoItemDto));
     }
 
     [Fact]
@@ -132,10 +174,17 @@ public class TodoItemTest
         {
             TodoItems.Add(new TodoItem(mockRepository.Object));
         }
-        todoItem.CreatedDate = new DateTime(2024, 10, 30);
-        todoItem.DueDate = new DateTime(2024, 10, 15);
+        var todoItemDto = new TodoItemDto
+        {
+            Id = "1",
+            Description = "new task",
+            IsDone = true,
+            IsFavorite = true,
+            DueDate = new DateTime(2024, 10, 15),
+            CreatedDate = new DateTime(2024, 10, 30)
+        };
         mockRepository.Setup(repo => repo.FindAllTodoItemsInDueDate()).Returns(TodoItems);
 
-        Assert.Equal(false, todoItem.CreateItem(todoItem));
+        Assert.Equal(false, todoItem.CreateItem(todoItemDto));
     }
 }
