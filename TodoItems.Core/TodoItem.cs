@@ -10,6 +10,7 @@ public class TodoItem
     public bool IsDone { get; set; }
     public bool IsFavorite { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime DueDate { get; set; }
 
     public List<DateTime>? TimeStamps;
 

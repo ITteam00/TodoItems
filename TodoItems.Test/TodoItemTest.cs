@@ -117,4 +117,21 @@ public class TodoItemTest
 
         Assert.Equal(false, todoItem.CreateItem(todoItem));
     }
+
+    [Fact]
+    public void Should_return_false_when_create_item_duedate_less_Createdate()
+    {
+        var mockRepository = new Mock<ItodosRepository>();
+        var todoItem = new TodoItem(mockRepository.Object);
+        var TodoItems = new List<TodoItem> { };
+        for (int i = 0; i < 5; i++)
+        {
+            TodoItems.Add(new TodoItem(mockRepository.Object));
+        }
+        todoItem.CreatedDate = new DateTime(2024, 10, 30);
+        todoItem.DueDate = new DateTime(2024, 10, 15);
+        mockRepository.Setup(repo => repo.FindAllTodoItemsInDueDate()).Returns(TodoItems);
+
+        Assert.Equal(true, todoItem.CreateItem(todoItem));
+    }
 }
