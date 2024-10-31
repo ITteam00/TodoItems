@@ -158,4 +158,33 @@ public class TodoItemTest
             item.CreatedTime == newToDoItem.CreatedTime
         )), Times.Once);
     }
+
+
+    [Fact]
+    public void IsTodady_ShouldReturnTrue_WhenDateIsToday()
+    {
+        // Arrange
+        var service = new ToDoItemsService(_mockRepository.Object);
+        var today = DateTimeOffset.Now;
+
+        // Act
+        var result = service.IsTodady(today);
+
+        // Assert
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void IsTodady_ShouldReturnFalse_WhenDateIsNotToday()
+    {
+        // Arrange
+        var service = new ToDoItemsService(_mockRepository.Object);
+        var notToday = DateTimeOffset.Now.AddDays(-1);
+
+        // Act
+        var result = service.IsTodady(notToday);
+
+        // Assert
+        Assert.False(result);
+    }
 }

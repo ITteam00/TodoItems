@@ -9,6 +9,7 @@ namespace TodoItems.Core.Services
     public class ToDoItemsService : IToDoItemsService
     {
         private ITodosRepository _todosRepository;
+        private int MaximumModificationNumber = 8;
 
         public ToDoItemsService(ITodosRepository todosRepository)
         {
@@ -32,6 +33,22 @@ namespace TodoItems.Core.Services
             await UpdateAsync(id, updatedToDoItem);
         }
 
+        public bool CanModify(ToDoItemDto updatedToDoItem)
+        {
+            var ModifiedTimes = updatedToDoItem.ModificationDateTimes;
+            ModifiedTimes = ModifiedTimes.Where(t => IsTodady(t)).ToList();
+            if (ModifiedTimes.Count >= MaximumModificationNumber)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        public bool IsTodady(DateTimeOffset dateTime)
+        {
+            var toady = DateTimeOffset.Now.Date;
+            return dateTime.Date == toady;
+        }
 
         public async Task UpdateAsync(string id, ToDoItemDto updatedToDoItem)
         {
