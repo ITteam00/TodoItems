@@ -21,11 +21,11 @@ public class TodoItemTest
         };
 
         // Act
-        bool result = todoItem.ModifyItem("Updated Task");
+        todoItem.ModifyItem("Updated Task");
 
         // Assert
-        Assert.True(result);
         Assert.Equal("Updated Task", todoItem.Description);
+        Assert.Single(todoItem.ModificationRecord.ModifiedTimes);
     }
 
     [Fact]
@@ -48,11 +48,11 @@ public class TodoItemTest
             ModificationRecord = modification
         };
 
-        // Act
-        bool result = todoItem.ModifyItem("Updated Task");
-
         // Assert
-        Assert.False(result);
+        // Act & Assert
+        var exception = Assert.Throws<InvalidOperationException>(() => todoItem.ModifyItem("Updated Task"));
+        Assert.Equal("Modification limit reached for today.", exception.Message);
+
         Assert.Equal("Initial Task", todoItem.Description);
     }
 
@@ -77,10 +77,9 @@ public class TodoItemTest
         };
 
         // Act
-        bool result = todoItem.ModifyItem("Updated Task");
+        todoItem.ModifyItem("Updated Task");
 
         // Assert
-        Assert.True(result);
         Assert.Equal("Updated Task", todoItem.Description);
     }
 }

@@ -7,14 +7,17 @@ public class TodoItem
     public DateTimeOffset CreatedTime { get; set; } = DateTimeOffset.UtcNow;
     public Modification ModificationRecord { get; set; }
 
-    public bool ModifyItem(string newDescription)
+    public void ModifyItem(string newDescription)
     {
         if(ModificationRecord.CanModify())
         {
+            ModificationRecord.AddModifiedTime();
             Description = newDescription;
-            return true;
         }
-        return false;
+        else
+        {
+            throw new InvalidOperationException("Modification limit reached for today.");
+        }
     }
 }
 
@@ -39,6 +42,11 @@ public class Modification
     {
         var toady = DateTimeOffset.Now.Date;
         return dateTime.Date == toady;
+    }
+
+    internal void AddModifiedTime()
+    {
+        ModifiedTimes.Add(DateTimeOffset.Now);
     }
 }
 
