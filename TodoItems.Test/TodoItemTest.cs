@@ -93,6 +93,8 @@ public class TodoItemTest
     {
         var mockRepository = new Mock<ItodosRepository>();
         var todoItem = new TodoItem(mockRepository.Object);
+        todoItem.CreatedDate = new DateTime(2024, 10, 30);
+        todoItem.DueDate = new DateTime(2024, 10, 31);
         var TodoItems = new List<TodoItem> { };
         for (int i = 0; i < 6; i++)
         {
@@ -108,6 +110,8 @@ public class TodoItemTest
     {
         var mockRepository = new Mock<ItodosRepository>();
         var todoItem = new TodoItem(mockRepository.Object);
+        todoItem.CreatedDate = new DateTime(2024, 10, 30);
+        todoItem.DueDate = new DateTime(2024, 10, 31);
         var TodoItems = new List<TodoItem> {};
         for (int i = 0; i < 10; i++)
         {
@@ -132,6 +136,6 @@ public class TodoItemTest
         todoItem.DueDate = new DateTime(2024, 10, 15);
         mockRepository.Setup(repo => repo.FindAllTodoItemsInDueDate()).Returns(TodoItems);
 
-        Assert.Equal(true, todoItem.CreateItem(todoItem));
+        Assert.Equal(false, todoItem.CreateItem(todoItem));
     }
 }

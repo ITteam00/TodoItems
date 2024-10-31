@@ -30,11 +30,12 @@ public class TodoItem
     }
     public bool CreateItem(TodoItem NewTodoItem)
     {
+        if (NewTodoItem.CreatedDate > NewTodoItem.DueDate) return false;
         var TodoItems = _todosRepository.FindAllTodoItemsInDueDate();
-        if(TodoItems.Count > 8) return false;
+        if (TodoItems.Count > 8) return false;
         return true;
     }
-    public bool ModifyItem(DateTime CreatedDate) 
+    public bool ModifyItem(DateTime CreatedDate)
     {
         if (TimeStamps.Count > 0)
         {
@@ -52,9 +53,9 @@ public class TodoItem
 
         return true;
     }
-    public bool AreDatesOneDayApart(DateTime LastDate, DateTime CurDate) 
+    public bool AreDatesOneDayApart(DateTime LastDate, DateTime CurDate)
     {
-        TimeSpan difference = (LastDate - CurDate).Duration(); 
-        return difference.TotalDays >= 1; 
+        TimeSpan difference = (LastDate - CurDate).Duration();
+        return difference.TotalDays >= 1;
     }
 }
