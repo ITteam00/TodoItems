@@ -5,9 +5,13 @@ namespace TodoItems.Test;
 public class TodoItemTest
 {
     [Fact]
-    public void should_return_2_when_add_1_1()
+    public void CompareTimes()
     {
-        var todoItem = new TodoItem();
-        Assert.Equal("1", todoItem.GetId());
+        DateTimeOffset today8AM = DateTimeOffset.Now.Date.AddHours(8);
+        DateTimeOffset yesterday8PM = DateTimeOffset.Now.Date.AddDays(-1).AddHours(20);
+        var item = new TodoItem();
+        Assert.True(item.IsTodady(today8AM));
+        Assert.True(!item.IsTodady(yesterday8PM));
     }
 }
+
