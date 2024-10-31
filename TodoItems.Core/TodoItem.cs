@@ -1,4 +1,6 @@
-﻿namespace TodoItems.Core;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace TodoItems.Core;
 
 public class TodoItem
 {
@@ -24,6 +26,7 @@ public class TodoItem
     }
     public bool AreDatesOneDayApart(DateTime LastDate, DateTime CurDate) 
     {
-        return true;
+        TimeSpan difference = (LastDate - CurDate).Duration(); 
+        return difference.TotalDays >= 1; 
     }
 }

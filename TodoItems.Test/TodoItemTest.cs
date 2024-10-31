@@ -52,4 +52,13 @@ public class TodoItemTest
         DateTime date2 = new DateTime(2024, 10, 31);
         Assert.Equal(true, todoItem.AreDatesOneDayApart(date1, date2));
     }
+
+    [Fact]
+    public void Should_return_false_when_dayoffset_smaller_than_1()
+    {
+        var todoItem = new TodoItem();
+        DateTime date1 = new DateTime(2024, 10, 30);
+        DateTime date2 = new DateTime(2024, 10, 30);
+        Assert.Equal(false, todoItem.AreDatesOneDayApart(date1, date2));
+    }
 }
