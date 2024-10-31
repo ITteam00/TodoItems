@@ -32,6 +32,10 @@ public class TodoItem
             return true;
         }
 
+        if(TimeStamps.Count == 3) return false;
+
+        TimeStamps.Add(LastDate);
+
         return true;
     }
     public bool AreDatesOneDayApart(DateTime LastDate, DateTime CurDate) 

@@ -12,7 +12,7 @@ public class TodoItemTest
         Assert.Equal("1", todoItem.GetId());
     }
     [Fact]
-    public void Should_return_True_when_modify_item_third_time()
+    public void Should_return_false_when_modify_item_third_time()
     {
         var todoItem = new TodoItem();
         todoItem.Id = "1";
@@ -47,6 +47,8 @@ public class TodoItemTest
         var TimeStamps = new List<DateTime>();
 
         Assert.Equal(true, todoItem.ModifyItem(todoItem.CreatedDate, todoItem.Id));
+        Assert.Equal(3, todoItem.TimeStamps.Count);
+
     }
 
     [Fact]
