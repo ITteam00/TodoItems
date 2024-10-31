@@ -4,24 +4,20 @@ namespace TodoItems.Test;
 
 public class TodoItemTest
 {
-    [Fact]
-    public void CompareTimes()
-    {
-        DateTimeOffset today8AM = DateTimeOffset.Now.Date.AddHours(8);
-        DateTimeOffset yesterday8PM = DateTimeOffset.Now.Date.AddDays(-1).AddHours(20);
-        var item = new TodoItem();
-        Assert.True(item.IsTodady(today8AM));
-        Assert.True(!item.IsTodady(yesterday8PM));
-    }
+
     [Fact]
     public void ModifyItem_ShouldModifyDescription_WhenModificationLimitNotReached()
     {
         // Arrange
+        var modification = new Modification
+        {
+            ModifiedTimes = new List<DateTimeOffset>()
+        };
         var todoItem = new TodoItem
         {
             Id = "1",
             Description = "Initial Task",
-            ModifiedTimes = new List<DateTimeOffset>()
+            ModificationRecord = modification
         };
 
         // Act
@@ -36,16 +32,20 @@ public class TodoItemTest
     public void ModifyItem_ShouldNotModifyDescription_WhenModificationLimitReached()
     {
         // Arrange
-        var todoItem = new TodoItem
+        var modification = new Modification
         {
-            Id = "1",
-            Description = "Initial Task",
             ModifiedTimes = new List<DateTimeOffset>
                 {
                     DateTimeOffset.Now,
                     DateTimeOffset.Now,
                     DateTimeOffset.Now
                 }
+        };
+        var todoItem = new TodoItem
+        {
+            Id = "1",
+            Description = "Initial Task",
+            ModificationRecord = modification
         };
 
         // Act
@@ -60,10 +60,79 @@ public class TodoItemTest
     public void ModifyItem_ShouldModifyDescription_WhenOldModificationsAreRemoved()
     {
         // Arrange
+        var modification = new Modification
+        {
+            ModifiedTimes = new List<DateTimeOffset>
+                {
+                    DateTimeOffset.Now.AddDays(-1), // Old modification
+                    DateTimeOffset.Now, // Today's modification
+                    DateTimeOffset.Now // Today's modification
+                }
+        };
         var todoItem = new TodoItem
         {
             Id = "1",
             Description = "Initial Task",
+            ModificationRecord = modification
+        };
+
+        // Act
+        bool result = todoItem.ModifyItem("Updated Task");
+
+        // Assert
+        Assert.True(result);
+        Assert.Equal("Updated Task", todoItem.Description);
+    }
+}
+
+public class ModificationTests
+{
+    [Fact]
+    public void CanModify_ShouldReturnTrue_WhenModificationsAreLessThanLimit()
+    {
+        // Arrange
+        var modification = new Modification
+        {
+            ModifiedTimes = new List<DateTimeOffset>
+                {
+                    DateTimeOffset.Now
+                }
+        };
+
+        // Act
+        bool result = modification.CanModify();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void CanModify_ShouldReturnFalse_WhenModificationsReachLimit()
+    {
+        // Arrange
+        var modification = new Modification
+        {
+            ModifiedTimes = new List<DateTimeOffset>
+                {
+                    DateTimeOffset.Now,
+                    DateTimeOffset.Now,
+                    DateTimeOffset.Now
+                }
+        };
+
+        // Act
+        bool result = modification.CanModify();
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void CanModify_ShouldRemoveOldModifications()
+    {
+        // Arrange
+        var modification = new Modification
+        {
             ModifiedTimes = new List<DateTimeOffset>
                 {
                     DateTimeOffset.Now.AddDays(-1), // Old modification
@@ -73,11 +142,39 @@ public class TodoItemTest
         };
 
         // Act
-        bool result = todoItem.ModifyItem("Updated Task");
+        bool result = modification.CanModify();
 
         // Assert
         Assert.True(result);
-        Assert.Equal("Updated Task", todoItem.Description);
+        Assert.Equal(2, modification.ModifiedTimes.Count); // Only today's modifications should remain
+    }
+
+    [Fact]
+    public void IsTodady_ShouldReturnTrue_ForTodayDate()
+    {
+        // Arrange
+        var modification = new Modification();
+        var today = DateTimeOffset.Now;
+
+        // Act
+        bool result = modification.IsTodady(today);
+
+        // Assert
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void IsTodady_ShouldReturnFalse_ForNonTodayDate()
+    {
+        // Arrange
+        var modification = new Modification();
+        var notToday = DateTimeOffset.Now.AddDays(-1);
+
+        // Act
+        bool result = modification.IsTodady(notToday);
+
+        // Assert
+        Assert.False(result);
     }
 }
 
