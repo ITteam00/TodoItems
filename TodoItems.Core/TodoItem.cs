@@ -21,6 +21,10 @@ public class TodoItem
         if (ModifyItem(NewTodoItem.CreatedDate))
             Description = "update";
     }
+    public bool CreateItem(TodoItem NewTodoItem)
+    {
+        return true;
+    }
     public bool ModifyItem(DateTime CreatedDate) 
     {
         if (TimeStamps.Count > 0)
