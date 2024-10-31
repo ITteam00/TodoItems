@@ -10,4 +10,16 @@ public class TodoItemTest
         var todoItem = new TodoItem();
         Assert.Equal("1", todoItem.GetId());
     }
+    [Fact]
+    public void Should_return_True_when_modify_item_third_time()
+    {
+        var todoItem = new TodoItem();
+        Assert.Equal(true, todoItem.ModifyItem());
+    }
+    [Fact]
+    public void Should_return_false_when_modify_item_Forth_time()
+    {
+        var todoItem = new TodoItem();
+        Assert.Equal(true, todoItem.ModifyItem());
+    }
 }
