@@ -9,6 +9,8 @@
         public required DateTime CreatedTimeDate { get; init; }
         public required DateTime LastModifiedTimeDate { get; init; }
         public required int EditTimes { get; init; }
+        public DateTime? DueDate { get; set; } 
+
 
 
 

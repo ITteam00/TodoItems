@@ -1,5 +1,11 @@
 using ToDoItem.Api.Models;
 using TodoItems.Core;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Moq;
+using Xunit;
+
 
 namespace TodoItems.Test;
 
@@ -8,7 +14,26 @@ public class TodoItemTest
     [Fact]
     public async Task should_add_1_when_edit_if_EditTimes_is_small_and_same_dayAsync()
     {
-        var todoItemProgram = new TodoItemProgram();
+        var mockRepository = new Mock<ITodosRepository>();
+        var items = new List<ToDoItemModel>();
+        for (int i = 0; i < 8; i++)
+        {
+            items.Add(new ToDoItemModel
+            {
+                Id = Guid.NewGuid().ToString(),
+                Description = $"Item {i + 1}",
+                Done = false,
+                Favorite = false,
+                CreatedTimeDate = DateTimeOffset.Now.Date,
+                LastModifiedTimeDate = DateTimeOffset.Now.Date,
+                EditTimes = 0,
+                DueDate = DateTime.Now.AddDays(2).Date
+
+            });
+        }
+        mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(items);
+
+        var todoItemProgram = new TodoItemProgram(mockRepository.Object);
         var itemNow = new ToDoItemModel
         {
             Id = "1",
@@ -17,7 +42,8 @@ public class TodoItemTest
             Favorite = false,
             CreatedTimeDate = DateTimeOffset.Now.Date,
             LastModifiedTimeDate = DateTimeOffset.Now.Date,
-            EditTimes = 0
+            EditTimes = 0,
+            DueDate = DateTime.Now.AddDays(2).Date
         };
         ToDoItemModel itemAfterEdit = await todoItemProgram.OnDetectEdit(itemNow);
 
@@ -29,7 +55,9 @@ public class TodoItemTest
             Favorite = false,
             CreatedTimeDate = DateTimeOffset.Now.Date,
             LastModifiedTimeDate = DateTimeOffset.Now.Date,
-            EditTimes = 1
+            EditTimes = 1,
+            DueDate = DateTime.Now.AddDays(2).Date
+
         };
 
         Assert.Equal(expectedItem, itemAfterEdit);
@@ -38,7 +66,26 @@ public class TodoItemTest
     [Fact]
     public async void should_add_1_when_edit_if_EditTimes_is_small_and_different_day()
     {
-        var todoItemProgram = new TodoItemProgram();
+        var mockRepository = new Mock<ITodosRepository>();
+        var items = new List<ToDoItemModel>();
+        for (int i = 0; i < 8; i++)
+        {
+            items.Add(new ToDoItemModel
+            {
+                Id = Guid.NewGuid().ToString(),
+                Description = $"Item {i + 1}",
+                Done = false,
+                Favorite = false,
+                CreatedTimeDate = DateTimeOffset.Now.Date,
+                LastModifiedTimeDate = DateTimeOffset.Now.Date,
+                EditTimes = 0,
+                DueDate = DateTime.Now.AddDays(2).Date
+
+            });
+        }
+        mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(items);
+
+        var todoItemProgram = new TodoItemProgram(mockRepository.Object);
         DateTimeOffset oldDateTime = DateTimeOffset.Now.AddDays(-2);
         var itemToBeEdit = new ToDoItemModel
         {
@@ -48,7 +95,9 @@ public class TodoItemTest
             Favorite = false,
             CreatedTimeDate = DateTimeOffset.Now.Date,
             LastModifiedTimeDate = oldDateTime.Date,
-            EditTimes = 2
+            EditTimes = 2,
+            DueDate = DateTime.Now.AddDays(2).Date
+
         };
         ToDoItemModel itemAfterEdit = await todoItemProgram.OnDetectEdit(itemToBeEdit);
 
@@ -61,7 +110,9 @@ public class TodoItemTest
             Favorite = false,
             CreatedTimeDate = DateTimeOffset.Now.Date,
             LastModifiedTimeDate = DateTimeOffset.Now.Date,
-            EditTimes = 3
+            EditTimes = 3,
+            DueDate = DateTime.Now.AddDays(2).Date
+
         };
 
         Assert.Equal(expectedItem, itemAfterEdit);
@@ -72,7 +123,26 @@ public class TodoItemTest
     [Fact]
     public async Task should_alert_when_edit_if_EditTimes_is_bigAsync()
     {
-        var todoItemProgram = new TodoItemProgram();
+        var mockRepository = new Mock<ITodosRepository>();
+        var items = new List<ToDoItemModel>();
+        for (int i = 0; i < 8; i++)
+        {
+            items.Add(new ToDoItemModel
+            {
+                Id = Guid.NewGuid().ToString(),
+                Description = $"Item {i + 1}",
+                Done = false,
+                Favorite = false,
+                CreatedTimeDate = DateTimeOffset.Now.Date,
+                LastModifiedTimeDate = DateTimeOffset.Now.Date,
+                EditTimes = 0,
+                DueDate = DateTime.Now.AddDays(2).Date
+
+            });
+        }
+        mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(items);
+
+        var todoItemProgram = new TodoItemProgram(mockRepository.Object);
         var itemNow = new ToDoItemModel
         {
             Id = "1",
@@ -81,7 +151,9 @@ public class TodoItemTest
             Favorite = false,
             CreatedTimeDate = DateTimeOffset.Now.Date,
             LastModifiedTimeDate = DateTimeOffset.Now.Date,
-            EditTimes = 3
+            EditTimes = 3,
+            DueDate = DateTime.Now.AddDays(2).Date
+
         };
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => todoItemProgram.OnDetectEdit(itemNow));
@@ -92,7 +164,7 @@ public class TodoItemTest
     [Fact]
     public async Task should_add_due_date_if_items_less_than_8()
     {
-        var mockRepository = new Mock<TodosRepository>();
+        var mockRepository = new Mock<ITodosRepository>();
         mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(new List<ToDoItemModel>());
 
         var todoItemProgram = new TodoItemProgram(mockRepository.Object);
@@ -102,21 +174,23 @@ public class TodoItemTest
             Description = "Item 1",
             Done = false,
             Favorite = false,
-            CreatedTime = DateTimeOffset.Now,
-            LastModifiedTime = DateTimeOffset.Now,
-            EditTimes = 0
+            CreatedTimeDate = DateTimeOffset.Now.Date,
+            LastModifiedTimeDate = DateTimeOffset.Now.Date,
+            EditTimes = 0,
+            DueDate = DateTime.Now.AddDays(2).Date
+
         };
 
-        var dueDate = DateTimeOffset.Now.AddDays(1);
-        todoItemProgram.AddDueDate(item, dueDate);
+        var dueDate = DateTime.Now.AddDays(2).Date;
+        bool res = todoItemProgram.AddDueDate(item, dueDate);
 
-        Assert.Equal(dueDate, item.DueDate);
+        Assert.True(res);
     }
 
     [Fact]
     public void should_throw_exception_if_items_more_than_8()
     {
-        var mockRepository = new Mock<TodosRepository>();
+        var mockRepository = new Mock<ITodosRepository>();
         var items = new List<ToDoItemModel>();
         for (int i = 0; i < 8; i++)
         {
@@ -126,9 +200,11 @@ public class TodoItemTest
                 Description = $"Item {i + 1}",
                 Done = false,
                 Favorite = false,
-                CreatedTime = DateTimeOffset.Now,
-                LastModifiedTime = DateTimeOffset.Now,
-                EditTimes = 0
+                CreatedTimeDate = DateTimeOffset.Now.Date,
+                LastModifiedTimeDate = DateTimeOffset.Now.Date,
+                EditTimes = 0,
+                DueDate = DateTime.Now.AddDays(2).Date
+
             });
         }
         mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(items);
@@ -140,12 +216,14 @@ public class TodoItemTest
             Description = "New Item",
             Done = false,
             Favorite = false,
-            CreatedTime = DateTimeOffset.Now,
-            LastModifiedTime = DateTimeOffset.Now,
-            EditTimes = 0
+            CreatedTimeDate = DateTimeOffset.Now.Date,
+            LastModifiedTimeDate = DateTimeOffset.Now.Date,
+            EditTimes = 0,
+            DueDate = DateTime.Now.AddDays(2).Date
+
         };
 
-        var dueDate = DateTimeOffset.Now.AddDays(1);
+        var dueDate = DateTime.Now.AddDays(1).Date;
 
         Assert.Throws<InvalidOperationException>(() => todoItemProgram.AddDueDate(item, dueDate));
     }

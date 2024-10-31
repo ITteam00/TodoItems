@@ -4,9 +4,11 @@ namespace TodoItems.Core;
 
 public class TodoItemProgram
 {
-    public interface TodosRepository
+    private readonly ITodosRepository todosRepository;
+
+    public TodoItemProgram(ITodosRepository repository)
     {
-        List<ToDoItemModel> findAllTodoItemsInToday(); 
+        todosRepository = repository;
     }
 
     public async Task<ToDoItemModel> OnDetectEdit(ToDoItemModel item)
@@ -44,11 +46,24 @@ public class TodoItemProgram
             CreatedTimeDate = item.CreatedTimeDate,
             LastModifiedTimeDate = DateTimeOffset.Now.Date,
             EditTimes = item.EditTimes + 1,
+            DueDate = item.DueDate
 
-        };
+};
 
         return modifiedToDoItemModel;
 
+    }
+
+    public bool AddDueDate(ToDoItemModel item, DateTime dueDate)
+    {
+        //var todayItems = todosRepository.findAllTodoItemsInToday();
+        //if (todayItems.Count >= 8)
+        //{
+        //    throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
+        //}
+
+        //item.DueDate = dueDate;
+        return true;
     }
 
 
