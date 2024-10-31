@@ -16,7 +16,10 @@ public class TodoItemProgram
     {
 
 
-
+        if (toDoItemModel.DueDate < toDoItemModel.CreatedTimeDate)
+        {
+            throw new InvalidOperationException("due date cannot be before creation date");
+        }
 
         return toDoItemModel;
     }
