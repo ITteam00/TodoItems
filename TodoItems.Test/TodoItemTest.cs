@@ -1,10 +1,6 @@
 using ToDoItem.Api.Models;
 using TodoItems.Core;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Moq;
-using Xunit;
 
 
 namespace TodoItems.Test;
@@ -181,8 +177,7 @@ public class TodoItemTest
 
         };
 
-        var dueDate = DateTime.Now.AddDays(2).Date;
-        bool res = todoItemProgram.AddDueDate(item, dueDate);
+        bool res = todoItemProgram.AddDueDate(item);
 
         Assert.True(res);
     }
@@ -223,9 +218,7 @@ public class TodoItemTest
 
         };
 
-        var dueDate = DateTime.Now.AddDays(1).Date;
-
-        Assert.Throws<InvalidOperationException>(() => todoItemProgram.AddDueDate(item, dueDate));
+        Assert.Throws<InvalidOperationException>(() => todoItemProgram.AddDueDate(item));
     }
 
 

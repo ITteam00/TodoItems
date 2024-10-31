@@ -54,15 +54,14 @@ public class TodoItemProgram
 
     }
 
-    public bool AddDueDate(ToDoItemModel item, DateTime dueDate)
+    public bool AddDueDate(ToDoItemModel item)
     {
-        //var todayItems = todosRepository.findAllTodoItemsInToday();
-        //if (todayItems.Count >= 8)
-        //{
-        //    throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
-        //}
+        var todayItems = todosRepository.findAllTodoItemsInToday();
+        if (todayItems.Count >= 8)
+        {
+            throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
+        }
 
-        //item.DueDate = dueDate;
         return true;
     }
 
