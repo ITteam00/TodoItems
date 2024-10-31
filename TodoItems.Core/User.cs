@@ -9,6 +9,7 @@ namespace TodoItems.Core
 {
     public class User
     {
+        public int CompletedLimit { get; set; } = 8;
         public ITodosRepository Repo;
         public string Id { get; set; }
 
@@ -17,12 +18,14 @@ namespace TodoItems.Core
             Repo = repo;
         }
 
+        
+
         public int AddOneItem(TodoItem item)
         {
             if(item.DueDate != null)
             {
                 var findResult = Repo.GetItemsByDueDate(item.DueDate.Value);
-                if(findResult.Count >8 )
+                if (findResult.Count > CompletedLimit)
                 {
                     throw new InvalidOperationException($"Item due date limit reached for today.");
                 }
