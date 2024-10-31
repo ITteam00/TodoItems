@@ -1,6 +1,6 @@
 ﻿namespace ToDoItem.Api.Models
 {
-    public record ToDoItemModel
+    public record ToDoItemDto
     {
         public required string Id { get; init; }
         public required string Description { get; set; }
@@ -14,7 +14,7 @@
 
 
 
-        public static implicit operator Task<object>(ToDoItemModel v)
+        public static implicit operator Task<object>(ToDoItemDto v)
         {
             throw new NotImplementedException();
         }
