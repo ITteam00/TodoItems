@@ -20,8 +20,18 @@ public class TodoItem
     {
         TimeStamps.Add(CreatedDate);
     }
-    public bool ModifyItem(List<DateTime> TimeStamps, DateTime CreatedDate,string id) 
+    public bool ModifyItem(DateTime CreatedDate,string id) 
     {
+        if (TimeStamps == null) return false;
+        DateTime LastDate = TimeStamps[TimeStamps.Count - 1];
+
+        if (AreDatesOneDayApart(LastDate, CreatedDate))
+        {
+            TimeStamps.Clear();
+            TimeStamps.Add(LastDate);
+            return true;
+        }
+
         return true;
     }
     public bool AreDatesOneDayApart(DateTime LastDate, DateTime CurDate) 

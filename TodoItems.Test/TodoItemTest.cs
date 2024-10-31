@@ -16,21 +16,37 @@ public class TodoItemTest
     {
         var todoItem = new TodoItem();
         todoItem.Id = "1";
-        todoItem.CreatedDate = DateTime.Now;
-
-        var TimeStamps = new List<DateTime>();
-        Assert.Equal(true, todoItem.ModifyItem(TimeStamps, todoItem.CreatedDate, todoItem.Id));
+        todoItem.CreatedDate = new DateTime(2024, 10, 30);
+        todoItem.TimeStamps = new List<DateTime> {
+        new DateTime(2024, 10, 30),
+        new DateTime(2024, 10, 30),
+        new DateTime(2024, 10, 30)
+        };
+        Assert.Equal(false, todoItem.ModifyItem(todoItem.CreatedDate, todoItem.Id));
     }
     [Fact]
-    public void Should_return_false_when_modify_item_Forth_time()
+    public void Should_return_False_when_modify_item_TimeStamp_is_null()
     {
         var todoItem = new TodoItem();
         todoItem.Id = "1";
         todoItem.CreatedDate = DateTime.Now;
 
         var TimeStamps = new List<DateTime>();
+        Assert.Equal(false, todoItem.ModifyItem(todoItem.CreatedDate, todoItem.Id));
+    }
+    [Fact]
+    public void Should_return_false_when_modify_item_twice_time()
+    {
+        var todoItem = new TodoItem();
+        todoItem.Id = "1";
+        todoItem.CreatedDate = new DateTime(2024, 10, 30);
+        todoItem.TimeStamps = new List<DateTime> {
+        new DateTime(2024, 10, 30),
+        new DateTime(2024, 10, 30),
+        };
+        var TimeStamps = new List<DateTime>();
 
-        Assert.Equal(true, todoItem.ModifyItem(TimeStamps, todoItem.CreatedDate, todoItem.Id));
+        Assert.Equal(true, todoItem.ModifyItem(todoItem.CreatedDate, todoItem.Id));
     }
 
     [Fact]
