@@ -14,7 +14,8 @@ public class TodoItemTest
         {
             Id = "1",
             Description = "Initial Task",
-            ModificationRecord = modification
+            ModificationRecord = modification,
+            DueDate = DateTimeOffset.Now.AddDays(7),
         };
 
         // Act

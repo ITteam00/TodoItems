@@ -6,6 +6,7 @@ public class TodoItem
     public string Description { get; set; }
     public DateTimeOffset CreatedTime { get; set; } = DateTimeOffset.UtcNow;
     public Modification ModificationRecord { get; set; }
+    public DateTimeOffset? DueDate { get; set; }
 
     public void ModifyItem(string newDescription)
     {
