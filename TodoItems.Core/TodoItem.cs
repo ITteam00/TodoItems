@@ -29,7 +29,8 @@ public class TodoItem
     }
     public bool CreateItem(TodoItem NewTodoItem)
     {
-        _todosRepository.FindAllTodoItemsInDueDate();
+        var TodoItems = _todosRepository.FindAllTodoItemsInDueDate();
+        if(TodoItems.Count > 8) return false;
         return true;
     }
     public bool ModifyItem(DateTime CreatedDate) 

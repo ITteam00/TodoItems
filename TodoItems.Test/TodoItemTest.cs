@@ -89,10 +89,17 @@ public class TodoItemTest
     }
 
     [Fact]
-    public void Should_return_true_when_create_item()
+    public void Should_return_true_when_create_item_duedate_count_less_than_8()
     {
         var mockRepository = new Mock<ItodosRepository>();
         var todoItem = new TodoItem(mockRepository.Object);
+        var TodoItems = new List<TodoItem> { };
+        for (int i = 0; i < 6; i++)
+        {
+            TodoItems.Add(new TodoItem(mockRepository.Object));
+        }
+        mockRepository.Setup(repo => repo.FindAllTodoItemsInDueDate()).Returns(TodoItems);
+
         Assert.Equal(true, todoItem.CreateItem(todoItem));
     }
 
@@ -108,6 +115,6 @@ public class TodoItemTest
         }
         mockRepository.Setup(repo => repo.FindAllTodoItemsInDueDate()).Returns(TodoItems);
 
-        Assert.Equal(true, todoItem.CreateItem(todoItem));
+        Assert.Equal(false, todoItem.CreateItem(todoItem));
     }
 }
