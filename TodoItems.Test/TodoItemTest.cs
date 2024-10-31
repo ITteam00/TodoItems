@@ -115,7 +115,8 @@ public class TodoItemTest
         var items = new List<ToDoItemDto>
         {
             new ToDoItemDto { Id = "1", Description = "Task 1", DueDate = dueDate },
-            new ToDoItemDto { Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero) },
+            new ToDoItemDto
+                { Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero) },
             new ToDoItemDto { Id = "3", Description = "Task 3", DueDate = dueDate }
         };
         TodosRepository.itemsCollection = items;

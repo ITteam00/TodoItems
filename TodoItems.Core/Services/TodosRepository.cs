@@ -13,14 +13,10 @@ namespace TodoItems.Core.Services
 
         public List<ToDoItemDto> GetItemsByDueDate(DateTimeOffset dueDate)
         {
-            var result = itemsCollection.Where(item =>
-            {
-                return item.DueDate == dueDate;
-            }).ToList();
-            return  result;
+            var result = itemsCollection.Where(item => { return item.DueDate == dueDate; }).ToList();
+            return result;
         }
 
-        
 
         public Task ReplaceAsync(string s, ToDoItemMongoDTO item)
         {

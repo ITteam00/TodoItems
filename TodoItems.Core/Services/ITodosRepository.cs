@@ -11,7 +11,7 @@ namespace TodoItems.Core.Services
     public interface ITodosRepository
     {
         List<ToDoItemDto> GetItemsByDueDate(DateTimeOffset dueDate);
-        
+
 
         Task ReplaceAsync(string s, ToDoItemMongoDTO item);
         Task CreateAsync(ToDoItemMongoDTO item);
