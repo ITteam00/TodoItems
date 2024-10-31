@@ -1,12 +1,63 @@
 using ToDoItem.Api.Models;
 using TodoItems.Core;
 using Moq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace TodoItems.Test;
 
 public class TodoItemTest
 {
+    [Fact]
+    public async Task CreateAsync_ShouldThrowInvalidOperationException_WhenDueDateIsBeforeCreatedTimeDate()
+    {
+        // Arrange
+        var mockRepository = new Mock<ITodosRepository>();
+        var service = new TodoItemProgram(mockRepository.Object);
+        var toDoItemModel = new ToDoItemModel
+        {
+            Id = "1",
+            Description = "Item 1",
+            Done = false,
+            Favorite = false,
+            CreatedTimeDate = DateTimeOffset.Now.AddDays(-2).Date,
+            LastModifiedTimeDate = DateTimeOffset.Now.Date,
+            EditTimes = 2,
+            DueDate = DateTime.Now.AddDays(-5).Date
+        };
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => service.CreateAsync(toDoItemModel));
+        Assert.Equal("due date cannot be before creation date", exception.Message);
+    }
+
+    [Fact]
+    public async Task CreateAsync_ShouldReturnToDoItemModel_WhenDueDateIsAfterCreatedTimeDate()
+    {
+        // Arrange
+        var mockRepository = new Mock<ITodosRepository>();
+        var service = new TodoItemProgram(mockRepository.Object);
+        var toDoItemModel = new ToDoItemModel
+        {
+            Id = "1",
+            Description = "Item 1",
+            Done = false,
+            Favorite = false,
+            CreatedTimeDate = DateTimeOffset.Now.AddDays(-2).Date,
+            LastModifiedTimeDate = DateTimeOffset.Now.Date,
+            EditTimes = 2,
+            DueDate = DateTime.Now.AddDays(2).Date
+        };
+
+        // Act
+        var result = await service.CreateAsync(toDoItemModel);
+
+        // Assert
+        Assert.Equal(toDoItemModel, result);
+    }
+
+
+
     [Fact]
     public async Task should_add_1_when_edit_if_EditTimes_is_small_and_same_dayAsync()
     {

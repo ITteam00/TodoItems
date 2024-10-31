@@ -6,10 +6,21 @@ public class TodoItemProgram
 {
     private readonly ITodosRepository todosRepository;
 
+
     public TodoItemProgram(ITodosRepository repository)
     {
         todosRepository = repository;
     }
+
+    public async Task<ToDoItemModel> CreateAsync(ToDoItemModel toDoItemModel)
+    {
+
+
+
+
+        return toDoItemModel;
+    }
+
 
     public async Task<ToDoItemModel> OnDetectEdit(ToDoItemModel item)
     {
@@ -48,7 +59,7 @@ public class TodoItemProgram
             EditTimes = item.EditTimes + 1,
             DueDate = item.DueDate
 
-};
+        };
 
         return modifiedToDoItemModel;
 
