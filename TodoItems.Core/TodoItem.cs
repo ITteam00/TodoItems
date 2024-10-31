@@ -20,7 +20,10 @@ public class TodoItem
     }
     public bool ModifyItem(List<DateTime> TimeStamps, DateTime CreatedDate,string id) 
     {
-        
-            return true;
+        return true;
+    }
+    public bool AreDatesOneDayApart(DateTime LastDate, DateTime CurDate) 
+    {
+        return true;
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using TodoItems.Core;
 
 namespace TodoItems.Test;
@@ -41,5 +42,14 @@ public class TodoItemTest
         todoItem.TimeStamps = new List<DateTime>();
         todoItem.UpdateItem(todoItem.Id, todoItem.CreatedDate);
         Assert.Equal(1, todoItem.TimeStamps.Count);
+    }
+
+    [Fact]
+    public void Should_return_true_when_dayoffset_bigger_than_1()
+    {
+        var todoItem = new TodoItem();
+        DateTime date1 = new DateTime(2024, 10, 30);
+        DateTime date2 = new DateTime(2024, 10, 31);
+        Assert.Equal(true, todoItem.AreDatesOneDayApart(date1, date2));
     }
 }
