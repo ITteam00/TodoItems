@@ -28,4 +28,15 @@ public class TodoItemTest
 
         Assert.Equal(true, todoItem.ModifyItem(TimeStamps, todoItem.Id));
     }
+
+    [Fact]
+    public void Should_timestamp_length_equal_1_when_update_item()
+    {
+        var todoItem = new TodoItem();
+        todoItem.Id = "1";
+        todoItem.CreatedDate = DateTime.Now;
+        todoItem.TimeStamps = new List<DateTime>();
+        todoItem.UpdateItem(todoItem.Id, todoItem.CreatedDate);
+        Assert.Equal(1, todoItem.TimeStamps.Count);
+    }
 }
