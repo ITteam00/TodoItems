@@ -4,6 +4,7 @@ namespace TodoItems.Core;
 
 public class TodoItemService
 {
+    private const int MAX_EDIT_Times = 2;
     private readonly ITodosRepository todosRepository;
 
 
@@ -18,12 +19,12 @@ public class TodoItemService
         DateTime lastModifiedDate = item.LastModifiedTimeDate;
         DateTime currentDate = DateTimeOffset.Now.Date;
         TimeSpan difference = currentDate - lastModifiedDate;
-        if (difference.Days >= 1)
+        if (difference.Days >= 1 )
         {
             ToDoItemDto newItem =  await Task.FromResult(AddEditTimes(item));
             return newItem;
         }
-        if (item.EditTimes <= 2)
+        if (item.EditTimes <= MAX_EDIT_Times)
         {
             ToDoItemDto newItem = await Task.FromResult(AddEditTimes(item));
             return newItem;
