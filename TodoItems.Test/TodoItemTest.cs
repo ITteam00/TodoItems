@@ -15,18 +15,21 @@ public class TodoItemTest
     {
         var todoItem = new TodoItem();
         todoItem.Id = "1";
+        todoItem.CreatedDate = DateTime.Now;
+
         var TimeStamps = new List<DateTime>();
-        Assert.Equal(true, todoItem.ModifyItem(TimeStamps, todoItem.Id));
+        Assert.Equal(true, todoItem.ModifyItem(TimeStamps, todoItem.CreatedDate, todoItem.Id));
     }
     [Fact]
     public void Should_return_false_when_modify_item_Forth_time()
     {
         var todoItem = new TodoItem();
         todoItem.Id = "1";
+        todoItem.CreatedDate = DateTime.Now;
 
         var TimeStamps = new List<DateTime>();
 
-        Assert.Equal(true, todoItem.ModifyItem(TimeStamps, todoItem.Id));
+        Assert.Equal(true, todoItem.ModifyItem(TimeStamps, todoItem.CreatedDate, todoItem.Id));
     }
 
     [Fact]
