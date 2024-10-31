@@ -23,9 +23,6 @@ namespace TodoItems.Test
             };
             TodosRepository.itemsCollection = items;
 
-            //var field = typeof(TodosRepository).GetField("_itemsCollection", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-            //field.SetValue(null, items);
-
             // Act
             var result = repository.GetItemsByDueDate(dueDate);
 
