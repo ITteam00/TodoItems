@@ -2,16 +2,9 @@
 
 namespace TodoItems.Core;
 
-public class TodoItem
+public class TodoItem 
 {
     private readonly ItodosRepository _todosRepository;
-    public string Id { get; set; }
-    public string Description { get; set; }
-    public bool IsDone { get; set; }
-    public bool IsFavorite { get; set; }
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
-    public DateTime DueDate { get; set; }
-
     public List<DateTime>? TimeStamps;
 
     public TodoItem(ItodosRepository todosRepository)
@@ -23,12 +16,12 @@ public class TodoItem
     {
         return "1";
     }
-    public void UpdateItem(TodoItem NewTodoItem)
+    public void UpdateItem(TodoItemDto NewTodoItem)
     {
         if (ModifyItem(NewTodoItem.CreatedDate))
-            Description = "update";
+            NewTodoItem.Description = "update";
     }
-    public bool CreateItem(TodoItem NewTodoItem)
+    public bool CreateItem(TodoItemDto NewTodoItem)
     {
         if (NewTodoItem.CreatedDate > NewTodoItem.DueDate) return false;
         var TodoItems = _todosRepository.FindAllTodoItemsInDueDate();
