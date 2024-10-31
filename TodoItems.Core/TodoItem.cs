@@ -4,6 +4,7 @@ namespace TodoItems.Core;
 
 public class TodoItem
 {
+    private readonly ItodosRepository _todosRepository;
     public string Id { get; set; }
     public string Description { get; set; }
     public bool IsDone { get; set; }
@@ -11,6 +12,11 @@ public class TodoItem
     public DateTime CreatedDate { get; set; } = DateTime.Now;
 
     public List<DateTime>? TimeStamps;
+
+    public TodoItem(ItodosRepository todosRepository)
+    {
+        _todosRepository = todosRepository;
+    }
 
     public string GetId()
     {
@@ -23,6 +29,7 @@ public class TodoItem
     }
     public bool CreateItem(TodoItem NewTodoItem)
     {
+        _todosRepository.FindAllTodoItemsInDueDate();
         return true;
     }
     public bool ModifyItem(DateTime CreatedDate) 

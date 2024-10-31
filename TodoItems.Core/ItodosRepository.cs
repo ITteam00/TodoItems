@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TodoItems.Core
 {
-    internal interface ItodosRepository
+    public interface ItodosRepository
     {
         public List<TodoItem> FindAllTodoItemsInDueDate();
     }
