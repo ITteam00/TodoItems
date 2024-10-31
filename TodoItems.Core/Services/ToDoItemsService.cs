@@ -44,6 +44,7 @@ namespace TodoItems.Core.Services
 
             return true;
         }
+
         public bool IsTodady(DateTimeOffset dateTime)
         {
             var toady = DateTimeOffset.Now.Date;
@@ -75,7 +76,8 @@ namespace TodoItems.Core.Services
                 CreatedTime = newToDoItem.CreatedTime,
             };
 
-            await _todosRepository.CreateAsync(item); ;
+            await _todosRepository.CreateAsync(item);
+            ;
         }
     }
 

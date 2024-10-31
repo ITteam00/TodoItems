@@ -187,4 +187,58 @@ public class TodoItemTest
         // Assert
         Assert.False(result);
     }
+
+    [Fact]
+    public void CanModify_ShouldReturnFalse_WhenModificationLimitExceeded()
+    {
+        // Arrange
+        var service = new ToDoItemsService(_mockRepository.Object);
+        var today = DateTimeOffset.Now.Date;
+        var updatedToDoItem = new ToDoItemDto
+        {
+            Id = "test-id",
+            ModificationDateTimes = new List<DateTimeOffset>
+            {
+                today.AddHours(1),
+                today.AddHours(2),
+                today.AddHours(3),
+                today.AddHours(1),
+                today.AddHours(1),
+                today.AddHours(2),
+                today.AddHours(3),
+                today.AddHours(1),
+                today.AddHours(2),
+                today.AddHours(3),
+            }
+        };
+
+        // Act
+        var result = service.CanModify(updatedToDoItem);
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void CanModify_ShouldReturnTrue_WhenModificationLimitNotExceeded()
+    {
+        // Arrange
+        var service = new ToDoItemsService(_mockRepository.Object);
+        var today = DateTimeOffset.Now.Date;
+        var updatedToDoItem = new ToDoItemDto
+        {
+            Id = "test-id",
+            ModificationDateTimes = new List<DateTimeOffset>
+            {
+                today.AddHours(1),
+                today.AddHours(2)
+            }
+        };
+
+        // Act
+        var result = service.CanModify(updatedToDoItem);
+
+        // Assert
+        Assert.True(result);
+    }
 }
