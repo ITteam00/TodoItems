@@ -86,8 +86,68 @@ public class TodoItemTest
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => todoItemProgram.OnDetectEdit(itemNow));
 
-        // ??????
         Assert.Equal("Too many edits", exception.Message);
+    }
+
+    [Fact]
+    public async Task should_add_due_date_if_items_less_than_8()
+    {
+        var mockRepository = new Mock<TodosRepository>();
+        mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(new List<ToDoItemModel>());
+
+        var todoItemProgram = new TodoItemProgram(mockRepository.Object);
+        var item = new ToDoItemModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            Description = "Item 1",
+            Done = false,
+            Favorite = false,
+            CreatedTime = DateTimeOffset.Now,
+            LastModifiedTime = DateTimeOffset.Now,
+            EditTimes = 0
+        };
+
+        var dueDate = DateTimeOffset.Now.AddDays(1);
+        todoItemProgram.AddDueDate(item, dueDate);
+
+        Assert.Equal(dueDate, item.DueDate);
+    }
+
+    [Fact]
+    public void should_throw_exception_if_items_more_than_8()
+    {
+        var mockRepository = new Mock<TodosRepository>();
+        var items = new List<ToDoItemModel>();
+        for (int i = 0; i < 8; i++)
+        {
+            items.Add(new ToDoItemModel
+            {
+                Id = Guid.NewGuid().ToString(),
+                Description = $"Item {i + 1}",
+                Done = false,
+                Favorite = false,
+                CreatedTime = DateTimeOffset.Now,
+                LastModifiedTime = DateTimeOffset.Now,
+                EditTimes = 0
+            });
+        }
+        mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(items);
+
+        var todoItemProgram = new TodoItemProgram(mockRepository.Object);
+        var item = new ToDoItemModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            Description = "New Item",
+            Done = false,
+            Favorite = false,
+            CreatedTime = DateTimeOffset.Now,
+            LastModifiedTime = DateTimeOffset.Now,
+            EditTimes = 0
+        };
+
+        var dueDate = DateTimeOffset.Now.AddDays(1);
+
+        Assert.Throws<InvalidOperationException>(() => todoItemProgram.AddDueDate(item, dueDate));
     }
 
 

@@ -4,7 +4,10 @@ namespace TodoItems.Core;
 
 public class TodoItemProgram
 {
-
+    public interface TodosRepository
+    {
+        List<ToDoItemModel> findAllTodoItemsInToday(); 
+    }
 
     public async Task<ToDoItemModel> OnDetectEdit(ToDoItemModel item)
     {
