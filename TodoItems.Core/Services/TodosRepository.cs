@@ -20,12 +20,12 @@ namespace TodoItems.Core.Services
             return  result;
         }
 
-        public int AddItem(ToDoItemDto item)
+        public Task ReplaceAsync(string s, ToDoItemMongoDTO item)
         {
             throw new NotImplementedException();
         }
 
-        public Task ReplaceAsync(string s, ToDoItemMongoDTO item)
+        public Task CreateAsync(ToDoItemMongoDTO item)
         {
             throw new NotImplementedException();
         }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using TodoItems.Core.Model;
+using DnsClient.Internal;
 
 namespace TodoItems.Core.Services
 {
@@ -43,6 +44,21 @@ namespace TodoItems.Core.Services
                 CreatedTime = updatedToDoItem.CreatedTime,
             };
             await _todosRepository.ReplaceAsync(id, item);
+        }
+
+
+        public async Task CreateAsync(ToDoItemDto newToDoItem)
+        {
+            var item = new ToDoItemMongoDTO
+            {
+                Id = newToDoItem.Id,
+                Description = newToDoItem.Description,
+                isDone = newToDoItem.isDone,
+                isFavorite = newToDoItem.isFavorite,
+                CreatedTime = newToDoItem.CreatedTime,
+            };
+
+            await _todosRepository.CreateAsync(item); ;
         }
     }
 

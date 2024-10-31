@@ -128,4 +128,34 @@ public class TodoItemTest
         Assert.Contains(result, item => item.Id == "1");
         Assert.Contains(result, item => item.Id == "3");
     }
+
+
+    [Fact]
+    public async Task CreateAsync_ShouldCreateNewItem()
+    {
+        // Arrange
+        var newToDoItem = new ToDoItemDto
+        {
+            Id = "1",
+            Description = "Test Description",
+            isDone = false,
+            isFavorite = false,
+            CreatedTime = DateTimeOffset.UtcNow
+        };
+
+        var mockRepository = new Mock<ITodosRepository>();
+        var service = new ToDoItemsService(mockRepository.Object);
+
+        // Act
+        await service.CreateAsync(newToDoItem);
+
+        // Assert
+        mockRepository.Verify(repo => repo.CreateAsync(It.Is<ToDoItemMongoDTO>(item =>
+            item.Id == newToDoItem.Id &&
+            item.Description == newToDoItem.Description &&
+            item.isDone == newToDoItem.isDone &&
+            item.isFavorite == newToDoItem.isFavorite &&
+            item.CreatedTime == newToDoItem.CreatedTime
+        )), Times.Once);
+    }
 }

@@ -11,5 +11,7 @@ namespace TodoItems.Core.Services
     {
         Task UpdateAsync(string id, ToDoItemDto updatedToDoItem);
 
+        Task CreateAsync(ToDoItemDto newToDoItem);
+
     }
 }
