@@ -9,10 +9,7 @@ public class TodoItemTest
     public void ModifyItem_ShouldModifyDescription_WhenModificationLimitNotReached()
     {
         // Arrange
-        var modification = new Modification
-        {
-            ModifiedTimes = new List<DateTimeOffset>()
-        };
+        var modification = new Modification();
         var todoItem = new TodoItem
         {
             Id = "1",

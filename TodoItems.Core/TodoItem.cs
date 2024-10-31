@@ -25,6 +25,10 @@ public class Modification
 {
     public List<DateTimeOffset> ModifiedTimes { get; set; }
     public const int MaximumModificationNumber = 3;
+    public Modification()
+    {
+        ModifiedTimes = new List<DateTimeOffset>();
+    }
     public bool CanModify()
     {
         ModifiedTimes = ModifiedTimes.Where(t => IsTodady(t)).ToList();
