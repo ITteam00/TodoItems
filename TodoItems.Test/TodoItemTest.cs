@@ -25,13 +25,13 @@ public class TodoItemTest
         Assert.Equal(false, todoItem.ModifyItem(todoItem.CreatedDate));
     }
     [Fact]
-    public void Should_return_False_when_modify_item_TimeStamp_is_null()
+    public void Should_return_true_when_modify_item_TimeStamp_is_null()
     {
         var todoItem = new TodoItem();
         todoItem.Id = "1";
         todoItem.CreatedDate = DateTime.Now;
 
-        var TimeStamps = new List<DateTime>();
+        todoItem.TimeStamps = new List<DateTime>();
         Assert.Equal(true, todoItem.ModifyItem(todoItem.CreatedDate));
     }
     [Fact]
@@ -58,8 +58,8 @@ public class TodoItemTest
         todoItem.Id = "1";
         todoItem.CreatedDate = DateTime.Now;
         todoItem.TimeStamps = new List<DateTime>();
-        todoItem.UpdateItem(todoItem.Id, todoItem.CreatedDate);
-        Assert.Equal(1, todoItem.TimeStamps.Count);
+        todoItem.UpdateItem(todoItem);
+        Assert.Equal("update", todoItem.Description);
     }
 
     [Fact]

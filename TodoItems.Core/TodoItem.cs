@@ -10,31 +10,32 @@ public class TodoItem
     public bool IsFavorite { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-    public List<DateTime> TimeStamps;
+    public List<DateTime>? TimeStamps;
 
     public string GetId()
     {
         return "1";
     }
-    public void UpdateItem(string id, DateTime CreatedDate)
+    public void UpdateItem(TodoItem NewTodoItem)
     {
-        TimeStamps.Add(CreatedDate);
+        if (ModifyItem(NewTodoItem.CreatedDate))
+            Description = "update";
     }
     public bool ModifyItem(DateTime CreatedDate) 
     {
-        if (TimeStamps == null) return false;
-        DateTime LastDate = TimeStamps[TimeStamps.Count - 1];
-
-        if (AreDatesOneDayApart(LastDate, CreatedDate))
+        if (TimeStamps.Count > 0)
         {
-            TimeStamps.Clear();
-            TimeStamps.Add(LastDate);
-            return true;
+            DateTime LastDate = TimeStamps[TimeStamps.Count - 1];
+
+            if (AreDatesOneDayApart(LastDate, CreatedDate))
+            {
+                TimeStamps.Clear();
+                TimeStamps.Add(LastDate);
+                return true;
+            }
+            if (TimeStamps.Count == 3) return false;
         }
-
-        if(TimeStamps.Count == 3) return false;
-
-        TimeStamps.Add(LastDate);
+        TimeStamps.Add(CreatedDate);
 
         return true;
     }
