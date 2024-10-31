@@ -9,12 +9,18 @@ namespace TodoItems.Core.Services
 {
     public class TodosRepository : ITodosRepository
     {
-        public List<TodoItem> GetItemsByDueDate(DateTimeOffset dueDate)
+        public static List<ToDoItemDto> itemsCollection = new List<ToDoItemDto>();
+
+        public List<ToDoItemDto> GetItemsByDueDate(DateTimeOffset dueDate)
         {
-            throw new NotImplementedException();
+            var result = itemsCollection.Where(item =>
+            {
+                return item.DueDate == dueDate;
+            }).ToList();
+            return  result;
         }
 
-        public int AddItem(TodoItem item)
+        public int AddItem(ToDoItemDto item)
         {
             throw new NotImplementedException();
         }

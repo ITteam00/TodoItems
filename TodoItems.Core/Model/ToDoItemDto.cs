@@ -15,5 +15,6 @@ namespace TodoItems.Core.Model
         public bool isFavorite { get; set; } = false;
         public bool isDelete { get; set; } = false;
         public List<DateTimeOffset> ModificationDateTimes { get; set; }
+        public DateTimeOffset? DueDate { get; set; }
     }
 }

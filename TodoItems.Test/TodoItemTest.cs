@@ -6,6 +6,7 @@ using TodoItems.Core.Model;
 using TodoItems.Core.Services;
 using Moq;
 using Xunit;
+using Microsoft.VisualBasic;
 
 namespace TodoItems.Test;
 
@@ -102,5 +103,29 @@ public class TodoItemTest
         var todoItem = new ToDoItemsService(_mockRepository.Object);
         await todoItem.UpdateAsync(updatedToDoItem.Id, updatedToDoItem);
         Assert.Equal(updatedToDoItem.ModificationDateTimes.Count, 4);
+    }
+
+
+    [Fact]
+    public void GetItemsByDueDate_Should_Return_CorrectItems()
+    {
+        // Arrange
+        var repository = new TodosRepository();
+        var dueDate = new DateTimeOffset(2024, 10, 31, 0, 0, 0, TimeSpan.Zero);
+        var items = new List<ToDoItemDto>
+        {
+            new ToDoItemDto { Id = "1", Description = "Task 1", DueDate = dueDate },
+            new ToDoItemDto { Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero) },
+            new ToDoItemDto { Id = "3", Description = "Task 3", DueDate = dueDate }
+        };
+        TodosRepository.itemsCollection = items;
+
+        // Act
+        var result = repository.GetItemsByDueDate(dueDate);
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Contains(result, item => item.Id == "1");
+        Assert.Contains(result, item => item.Id == "3");
     }
 }
