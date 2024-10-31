@@ -32,7 +32,7 @@ public class TodoItemTest
         todoItem.CreatedDate = DateTime.Now;
 
         var TimeStamps = new List<DateTime>();
-        Assert.Equal(false, todoItem.ModifyItem(todoItem.CreatedDate));
+        Assert.Equal(true, todoItem.ModifyItem(todoItem.CreatedDate));
     }
     [Fact]
     public void Should_return_false_when_modify_item_twice_time()
