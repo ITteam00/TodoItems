@@ -20,7 +20,7 @@ public class TodoItem
     {
         TimeStamps.Add(CreatedDate);
     }
-    public bool ModifyItem(DateTime CreatedDate,string id) 
+    public bool ModifyItem(DateTime CreatedDate) 
     {
         if (TimeStamps == null) return false;
         DateTime LastDate = TimeStamps[TimeStamps.Count - 1];

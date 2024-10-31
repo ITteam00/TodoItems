@@ -22,7 +22,7 @@ public class TodoItemTest
         new DateTime(2024, 10, 30),
         new DateTime(2024, 10, 30)
         };
-        Assert.Equal(false, todoItem.ModifyItem(todoItem.CreatedDate, todoItem.Id));
+        Assert.Equal(false, todoItem.ModifyItem(todoItem.CreatedDate));
     }
     [Fact]
     public void Should_return_False_when_modify_item_TimeStamp_is_null()
@@ -32,7 +32,7 @@ public class TodoItemTest
         todoItem.CreatedDate = DateTime.Now;
 
         var TimeStamps = new List<DateTime>();
-        Assert.Equal(false, todoItem.ModifyItem(todoItem.CreatedDate, todoItem.Id));
+        Assert.Equal(false, todoItem.ModifyItem(todoItem.CreatedDate));
     }
     [Fact]
     public void Should_return_false_when_modify_item_twice_time()
@@ -46,7 +46,7 @@ public class TodoItemTest
         };
         var TimeStamps = new List<DateTime>();
 
-        Assert.Equal(true, todoItem.ModifyItem(todoItem.CreatedDate, todoItem.Id));
+        Assert.Equal(true, todoItem.ModifyItem(todoItem.CreatedDate));
         Assert.Equal(3, todoItem.TimeStamps.Count);
 
     }
