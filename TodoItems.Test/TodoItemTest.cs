@@ -6,7 +6,7 @@ namespace TodoItems.Test;
 public class TodoItemTest
 {
     [Fact]
-    public void should_add_1_when_edit_if_EditTimes_is_small_and_same_day()
+    public async Task should_add_1_when_edit_if_EditTimes_is_small_and_same_dayAsync()
     {
         var todoItemProgram = new TodoItemProgram();
         var itemNow = new ToDoItemModel
@@ -19,7 +19,7 @@ public class TodoItemTest
             LastModifiedTime = DateTimeOffset.Now,
             EditTimes = 0
         };
-        ToDoItemModel itemAfterEdit = todoItemProgram.OnDetectEdit(itemNow);
+        ToDoItemModel itemAfterEdit = await todoItemProgram.OnDetectEdit(itemNow);
 
         var expectedItem = new ToDoItemModel
         {
@@ -36,13 +36,13 @@ public class TodoItemTest
     }
 
     [Fact]
-    public void should_add_1_when_edit_if_EditTimes_is_small_and_different_day()
+    public async void should_add_1_when_edit_if_EditTimes_is_small_and_different_day()
     {
         var todoItemProgram = new TodoItemProgram();
         DateTimeOffset oldDateTime = DateTimeOffset.Now.AddDays(-2);
         var itemNow = new ToDoItemModel
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = "1",
             Description = "Item 1",
             Done = false,
             Favorite = false,
@@ -50,12 +50,12 @@ public class TodoItemTest
             LastModifiedTime = oldDateTime.Date,
             EditTimes = 2
         };
-        ToDoItemModel itemAfterEdit = todoItemProgram.OnDetectEdit(itemNow);
+        ToDoItemModel itemAfterEdit = await todoItemProgram.OnDetectEdit(itemNow);
 
 
         var expectedItem = new ToDoItemModel
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = "1",
             Description = "Item 1",
             Done = false,
             Favorite = false,
@@ -75,7 +75,7 @@ public class TodoItemTest
         var todoItemProgram = new TodoItemProgram();
         var itemNow = new ToDoItemModel
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = "1",
             Description = "Item 1",
             Done = false,
             Favorite = false,

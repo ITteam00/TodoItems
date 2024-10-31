@@ -29,7 +29,7 @@ public class TodoItemProgram
         var modifiedToDoItemModel = new ToDoItemModel
         {
             Description = item.Description,
-            Id = Guid.NewGuid().ToString(),
+            Id = item.Id,
             Favorite = item.Favorite,
             Done = item.Done,
             //CreatedTime = DateTimeOffset.Now,
