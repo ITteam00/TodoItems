@@ -22,7 +22,7 @@ public class TodoItemProgram
             return newItem;
         }
         else {
-            throw new Exception("Too many edits");
+            throw new InvalidOperationException("Too many edits");
 
         }
 
@@ -38,7 +38,6 @@ public class TodoItemProgram
             Id = item.Id,
             Favorite = item.Favorite,
             Done = item.Done,
-            //CreatedTime = DateTimeOffset.Now,
             CreatedTimeDate = item.CreatedTimeDate,
             LastModifiedTimeDate = DateTimeOffset.Now.Date,
             EditTimes = item.EditTimes + 1,

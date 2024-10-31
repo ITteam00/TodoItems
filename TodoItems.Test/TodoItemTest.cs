@@ -87,7 +87,7 @@ public class TodoItemTest
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => todoItemProgram.OnDetectEdit(itemNow));
 
         // ??????
-        Assert.Equal("Your edit time run out", exception.Message);
+        Assert.Equal("Too many edits", exception.Message);
     }
 
 
