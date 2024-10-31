@@ -57,8 +57,8 @@ namespace TodoItems.Core.Services
             {
                 Id = id,
                 Description = updatedToDoItem.Description,
-                isDone = updatedToDoItem.isDone,
-                isFavorite = updatedToDoItem.isFavorite,
+                isDone = updatedToDoItem.IsDone,
+                isFavorite = updatedToDoItem.IsFavorite,
                 CreatedTime = updatedToDoItem.CreatedTime,
             };
             await _todosRepository.ReplaceAsync(id, item);
@@ -71,8 +71,8 @@ namespace TodoItems.Core.Services
             {
                 Id = newToDoItem.Id,
                 Description = newToDoItem.Description,
-                isDone = newToDoItem.isDone,
-                isFavorite = newToDoItem.isFavorite,
+                isDone = newToDoItem.IsDone,
+                isFavorite = newToDoItem.IsFavorite,
                 CreatedTime = newToDoItem.CreatedTime,
             };
 

@@ -54,8 +54,8 @@ public class TodoItemTest
         var updatedToDoItem = new ToDoItemDto
         {
             Description = "Test Description",
-            isDone = false,
-            isFavorite = false,
+            IsDone = false,
+            IsFavorite = false,
             CreatedTime = DateTime.UtcNow,
             ModificationDateTimes = dateTimes,
             Id = "1",
@@ -93,8 +93,8 @@ public class TodoItemTest
         var updatedToDoItem = new ToDoItemDto
         {
             Description = "Test Description",
-            isDone = false,
-            isFavorite = false,
+            IsDone = false,
+            IsFavorite = false,
             CreatedTime = DateTime.UtcNow,
             ModificationDateTimes = dateTimes,
             Id = "1",
@@ -139,8 +139,8 @@ public class TodoItemTest
         {
             Id = "1",
             Description = "Test Description",
-            isDone = false,
-            isFavorite = false,
+            IsDone = false,
+            IsFavorite = false,
             CreatedTime = DateTimeOffset.UtcNow
         };
 
@@ -154,8 +154,8 @@ public class TodoItemTest
         mockRepository.Verify(repo => repo.CreateAsync(It.Is<ToDoItemMongoDTO>(item =>
             item.Id == newToDoItem.Id &&
             item.Description == newToDoItem.Description &&
-            item.isDone == newToDoItem.isDone &&
-            item.isFavorite == newToDoItem.isFavorite &&
+            item.isDone == newToDoItem.IsDone &&
+            item.isFavorite == newToDoItem.IsFavorite &&
             item.CreatedTime == newToDoItem.CreatedTime
         )), Times.Once);
     }
