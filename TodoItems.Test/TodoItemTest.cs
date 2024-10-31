@@ -11,24 +11,24 @@ public class TodoItemTest
         var todoItemProgram = new TodoItemProgram();
         var itemNow = new ToDoItemModel
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = "1",
             Description = "Item 1",
             Done = false,
             Favorite = false,
-            CreatedTime = DateTimeOffset.Now,
-            LastModifiedTime = DateTimeOffset.Now,
+            CreatedTimeDate = DateTimeOffset.Now.Date,
+            LastModifiedTimeDate = DateTimeOffset.Now.Date,
             EditTimes = 0
         };
         ToDoItemModel itemAfterEdit = await todoItemProgram.OnDetectEdit(itemNow);
 
         var expectedItem = new ToDoItemModel
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = "1",
             Description = "Item 1",
             Done = false,
             Favorite = false,
-            CreatedTime = DateTimeOffset.Now,
-            LastModifiedTime = DateTimeOffset.Now,
+            CreatedTimeDate = DateTimeOffset.Now.Date,
+            LastModifiedTimeDate = DateTimeOffset.Now.Date,
             EditTimes = 1
         };
 
@@ -46,8 +46,8 @@ public class TodoItemTest
             Description = "Item 1",
             Done = false,
             Favorite = false,
-            CreatedTime = DateTimeOffset.Now,
-            LastModifiedTime = oldDateTime.Date,
+            CreatedTimeDate = DateTimeOffset.Now.Date,
+            LastModifiedTimeDate = oldDateTime.Date,
             EditTimes = 2
         };
         ToDoItemModel itemAfterEdit = await todoItemProgram.OnDetectEdit(itemNow);
@@ -59,8 +59,8 @@ public class TodoItemTest
             Description = "Item 1",
             Done = false,
             Favorite = false,
-            CreatedTime = DateTimeOffset.Now,
-            LastModifiedTime = DateTimeOffset.Now,
+            CreatedTimeDate = DateTimeOffset.Now.Date,
+            LastModifiedTimeDate = DateTimeOffset.Now.Date,
             EditTimes = 1
         };
 
@@ -79,8 +79,8 @@ public class TodoItemTest
             Description = "Item 1",
             Done = false,
             Favorite = false,
-            CreatedTime = DateTimeOffset.Now,
-            LastModifiedTime = DateTimeOffset.Now,
+            CreatedTimeDate = DateTimeOffset.Now.Date,
+            LastModifiedTimeDate = DateTimeOffset.Now.Date,
             EditTimes = 3
         };
 

@@ -6,8 +6,8 @@
         public required string Description { get; set; }
         public required bool Done { get; set; }
         public required bool Favorite { get; set; }
-        public required DateTimeOffset CreatedTime { get; init; }
-        public required DateTimeOffset LastModifiedTime { get; init; }
+        public required DateTime CreatedTimeDate { get; init; }
+        public required DateTime LastModifiedTimeDate { get; init; }
         public required int EditTimes { get; init; }
 
 

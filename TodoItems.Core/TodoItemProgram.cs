@@ -8,18 +8,24 @@ public class TodoItemProgram
 
     public async Task<ToDoItemModel> OnDetectEdit(ToDoItemModel item)
     {
-        DateTimeOffset lastModifiedDate = item.LastModifiedTime.Date;
-        DateTimeOffset currentDate = DateTimeOffset.Now.Date;
+        DateTime lastModifiedDate = item.LastModifiedTimeDate;
+        DateTime currentDate = DateTimeOffset.Now.Date;
         TimeSpan difference = currentDate - lastModifiedDate;
         if (difference.Days >= 1)
         {
-            return await Task.FromResult(AddEditTimes(item));
-        } 
-        else
+            ToDoItemModel newItem =  await Task.FromResult(AddEditTimes(item));
+            return newItem;
+        }
+        if (item.EditTimes <= 2)
         {
+            ToDoItemModel newItem = await Task.FromResult(AddEditTimes(item));
+            return newItem;
+        }
+        else {
             throw new Exception("Too many edits");
 
         }
+
 
     }
 
@@ -33,9 +39,9 @@ public class TodoItemProgram
             Favorite = item.Favorite,
             Done = item.Done,
             //CreatedTime = DateTimeOffset.Now,
-            CreatedTime = item.LastModifiedTime,
-            LastModifiedTime = item.LastModifiedTime,
-            EditTimes = 0,
+            CreatedTimeDate = item.LastModifiedTimeDate,
+            LastModifiedTimeDate = item.LastModifiedTimeDate,
+            EditTimes = item.EditTimes + 1,
 
         };
 
