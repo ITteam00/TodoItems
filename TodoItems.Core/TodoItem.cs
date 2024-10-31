@@ -14,7 +14,10 @@ public class TodoItem
     {
         return "1";
     }
-
+    public void UpdateItem(string id, DateTime CreatedDate)
+    {
+        TimeStamps.Add(CreatedDate);
+    }
     public bool ModifyItem(List<DateTime> TimeStamps, string id) 
     {
         return true;
