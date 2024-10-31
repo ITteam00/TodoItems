@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq.Expressions;
+using TodoItems.Core.Model;
 
 namespace TodoItems.Core;
 
@@ -9,9 +11,4 @@ public class TodoItem
         return "1";
     }
 
-    public int ModificationCount(List<DateTimeOffset> modificationDateTimes)
-    {
-        var count = modificationDateTimes.Count(d => d.Date == DateTimeOffset.UtcNow.Date); 
-        return count;
-    }
 }
