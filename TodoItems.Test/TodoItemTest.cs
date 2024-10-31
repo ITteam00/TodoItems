@@ -1,13 +1,20 @@
+using MongoDB.Driver;
 using System;
 using System.Xml.Serialization;
 using TodoItems.Core;
 using TodoItems.Core.Model;
 using TodoItems.Core.Services;
+using Moq;
+using Xunit;
 
 namespace TodoItems.Test;
 
 public class TodoItemTest
 {
+    private readonly ToDoItemsService _toDoService;
+    private readonly Mock<ITodosRepository> _mockRepository = new Mock<ITodosRepository>();
+
+
     [Fact]
     public void should_return_2_when_add_1_1()
     {
@@ -27,7 +34,7 @@ public class TodoItemTest
             new DateTimeOffset(2024, 10, 31, 16, 2, 0, TimeSpan.Zero),
             new DateTimeOffset(2024, 10, 31, 16, 2, 0, TimeSpan.Zero)
         };
-        var todoItem = new ToDoItemsService();
+        var todoItem = new ToDoItemsService(_mockRepository.Object);
         Assert.Equal(4, todoItem.ModificationCount(dateTimes));
     }
 
@@ -53,7 +60,7 @@ public class TodoItemTest
             Id = "1",
         };
 
-        var todoItem = new ToDoItemsService();
+        var todoItem = new ToDoItemsService(_mockRepository.Object);
         var str = "";
         try
         {
@@ -64,8 +71,36 @@ public class TodoItemTest
             Console.Write(e);
             str = e.Message;
         }
-        
+
 
         Assert.Equal(str, "to many");
+    }
+
+
+    [Fact]
+    public async Task UpdateAsync_ShouldUpdateItemInCollection()
+    {
+        // Arrange
+        var id = "test-id";
+        List<DateTimeOffset> dateTimes = new List<DateTimeOffset>
+        {
+            new DateTimeOffset(2024, 10, 30, 14, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 10, 31, 9, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 10, 31, 17, 0, 0, TimeSpan.Zero),
+        };
+        var updatedToDoItem = new ToDoItemDto
+        {
+            Description = "Test Description",
+            isDone = false,
+            isFavorite = false,
+            CreatedTime = DateTime.UtcNow,
+            ModificationDateTimes = dateTimes,
+            Id = "1",
+        };
+
+        var todoItem = new ToDoItemsService(_mockRepository.Object);
+        await todoItem.UpdateAsync(updatedToDoItem.Id, updatedToDoItem);
+        Assert.Equal(updatedToDoItem.ModificationDateTimes.Count, 4);
     }
 }

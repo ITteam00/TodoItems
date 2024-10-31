@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using TodoItems.Core.Model;
 
@@ -10,7 +7,12 @@ namespace TodoItems.Core.Services
 {
     public class ToDoItemsService : IToDoItemsService
     {
-        private readonly IMongoCollection<ToDoItemMongoDTO> _ToDoItemsCollection;
+        private ITodosRepository _todosRepository;
+
+        public ToDoItemsService(ITodosRepository todosRepository)
+        {
+            _todosRepository = todosRepository;
+        }
 
         public int ModificationCount(List<DateTimeOffset> modificationDateTimes)
         {
@@ -32,7 +34,15 @@ namespace TodoItems.Core.Services
 
         public async Task UpdateAsync(string id, ToDoItemDto updatedToDoItem)
         {
-            
+            var item = new ToDoItemMongoDTO
+            {
+                Id = id,
+                Description = updatedToDoItem.Description,
+                isDone = updatedToDoItem.isDone,
+                isFavorite = updatedToDoItem.isFavorite,
+                CreatedTime = updatedToDoItem.CreatedTime,
+            };
+            await _todosRepository.ReplaceAsync(id, item);
         }
     }
 
