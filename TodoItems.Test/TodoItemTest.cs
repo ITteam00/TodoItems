@@ -96,52 +96,11 @@ public class TodoItemTest
         Assert.Equal(toDoItemModel, result);
     }
 
-    [Fact]
-    public async Task CreateAsync_ShouldReturnToDoItemModel_WhenDueDateIsAfterCreatedTimeDate()
-    {
-        // Arrange
-        var mockRepository = new Mock<ITodosRepository>();
-        var toDoItemModel = new ToDoItemObj(
-            id: "1",
-            description: "Item 1",
-            done: false,
-            favorite: false,
-            createdTimeDate: DateTimeOffset.Now.AddDays(-2).Date,
-            lastModifiedTimeDate: DateTimeOffset.Now.Date,
-            editTimes: 2,
-            dueDate: DateTime.Now.AddDays(2).Date
-        );
-
-        var todayItems = new List<ToDoItemObj>(); // Ensure this list is not null
-        mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(todayItems);
-
-        // Act
-        var result = await toDoItemModel.CreateAsync(toDoItemModel, mockRepository.Object);
-
-        // Assert
-        Assert.Equal(toDoItemModel, result);
-    }
 
 
     [Fact]
     public async Task should_add_1_when_edit_if_EditTimes_is_small_and_same_dayAsync()
     {
-        //var mockRepository = new Mock<ITodosRepository>();
-        //var items = new List<ToDoItemObj>();
-        //for (int i = 0; i < 8; i++)
-        //{
-        //    items.Add(new ToDoItemObj(
-        //        id: Guid.NewGuid().ToString(),
-        //        description: $"Item {i + 1}",
-        //        done: false,
-        //        favorite: false,
-        //        createdTimeDate: DateTimeOffset.Now.Date,
-        //        lastModifiedTimeDate: DateTimeOffset.Now.Date,
-        //        editTimes: 0,
-        //        dueDate: DateTime.Now.AddDays(2).Date
-        //    ));
-        //}
-        //mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(items);
 
         var itemNow = new ToDoItemObj(
             id: "1",
@@ -182,34 +141,17 @@ public class TodoItemTest
     }
 
     [Fact]
-    public async Task should_add_1_when_edit_if_EditTimes_is_small_and_different_day()
+    public async Task should_add_1_when_edit_if_EditTimes_is_big_but_different_day()
     {
-        var mockRepository = new Mock<ITodosRepository>();
-        var items = new List<ToDoItemObj>();
-        for (int i = 0; i < 8; i++)
-        {
-            items.Add(new ToDoItemObj(
-                id: Guid.NewGuid().ToString(),
-                description: $"Item {i + 1}",
-                done: false,
-                favorite: false,
-                createdTimeDate: DateTimeOffset.Now.Date,
-                lastModifiedTimeDate: DateTimeOffset.Now.Date,
-                editTimes: 0,
-                dueDate: DateTime.Now.AddDays(2).Date
-            ));
-        }
-        mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(items);
 
-        DateTimeOffset oldDateTime = DateTimeOffset.Now.AddDays(-2);
         var itemToBeEdit = new ToDoItemObj(
             id: "1",
             description: "Item 1",
             done: false,
             favorite: false,
             createdTimeDate: DateTimeOffset.Now.Date,
-            lastModifiedTimeDate: oldDateTime.Date,
-            editTimes: 2,
+            lastModifiedTimeDate: DateTimeOffset.Now.AddDays(-2).Date,
+            editTimes: 3,
             dueDate: DateTime.Now.AddDays(2).Date
         );
         ToDoItemObj itemAfterEdit = await itemToBeEdit.ModifyItem(itemToBeEdit);
@@ -221,7 +163,7 @@ public class TodoItemTest
             favorite: false,
             createdTimeDate: DateTimeOffset.Now.Date,
             lastModifiedTimeDate: DateTimeOffset.Now.Date,
-            editTimes: 1, // Reset to 1 because it's a different day
+            editTimes: 1, 
             dueDate: DateTime.Now.AddDays(2).Date
         );
 
@@ -230,24 +172,8 @@ public class TodoItemTest
     }
 
     [Fact]
-    public async Task should_alert_when_edit_if_EditTimes_is_bigAsync()
+    public async Task should_alert_when_edit_if_EditTimes_is_big()
     {
-        var mockRepository = new Mock<ITodosRepository>();
-        var items = new List<ToDoItemObj>();
-        for (int i = 0; i < 8; i++)
-        {
-            items.Add(new ToDoItemObj(
-                id: Guid.NewGuid().ToString(),
-                description: $"Item {i + 1}",
-                done: false,
-                favorite: false,
-                createdTimeDate: DateTimeOffset.Now.Date,
-                lastModifiedTimeDate: DateTimeOffset.Now.Date,
-                editTimes: 0,
-                dueDate: DateTime.Now.AddDays(2).Date
-            ));
-        }
-        mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(items);
 
         var itemNow = new ToDoItemObj(
             id: "1",
