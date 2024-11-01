@@ -7,8 +7,9 @@ public class TodoItem
     public DateTimeOffset CreatedTime { get; set; } = DateTimeOffset.UtcNow;
     public Modification ModificationRecord { get; set; }
     public DateTimeOffset? DueDate { get; set; }
+    public string UserId { get; set; } = "FakeUserBob";
 
-    public void ModifyItem(string newDescription)
+    public void ModifyDescription(string newDescription)
     {
         if(ModificationRecord.CanModify())
         {

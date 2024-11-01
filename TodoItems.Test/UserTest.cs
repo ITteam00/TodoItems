@@ -4,79 +4,71 @@ using Moq;
 using Xunit;
 using TodoItems.Core;
 using TodoItems.Core.Service;
+using Xunit.Abstractions;
 
 namespace TodoItems.Tests
 {
-    public class UserTests
+    public class TodoItemServiceTests
     {
         [Fact]
-        public void AddOneItem_ShouldThrowException_WhenDueDateLimitReached()
+        public void Create_ShouldAddItem_WhenValid()
         {
             // Arrange
             var mockRepo = new Mock<ITodosRepository>();
-            User user = new User(mockRepo.Object);
-            var dueDate = new DateTimeOffset(2024, 10, 31, 0, 0, 0, TimeSpan.Zero);
-            var item = new TodoItem { Id = "1", Description = "Task 1", DueDate = dueDate };
+            var service = new TodoItemService(mockRepo.Object);
+            var id = "1";
+            var description = "Test item";
 
-            mockRepo.Setup(repo => repo.GetItemsByDueDate(dueDate)).Returns(new List<TodoItem>
-            {
-                new TodoItem(), new TodoItem(), new TodoItem(), new TodoItem(),
-                new TodoItem(), new TodoItem(), new TodoItem(), new TodoItem(), new TodoItem()
-            });
+            // Act
+            var result = service.Create(id, description);
+
+            // Assert
+            mockRepo.Verify(r => r.AddItem(It.Is<TodoItem>(i => i.Id == id && i.Description == description)), Times.Once);
+        }
+
+        [Fact]
+        public void Create_ShouldThrowException_WhenDueDateIsEarlierThanToday()
+        {
+            // Arrange
+            var mockRepo = new Mock<ITodosRepository>();
+            var service = new TodoItemService(mockRepo.Object);
+            var id = "1";
+            var description = "Test item";
+            var dueDate = DateTimeOffset.Now.AddDays(-1).Date;
+            var item = new TodoItem { Id = id, Description = description, DueDate =  dueDate};
+            mockRepo.Setup(r => r.AddItem(item)).Returns(item);
 
             // Act & Assert
-            var exception = Assert.Throws<InvalidOperationException>(() => user.AddOneItem(item));
-            Assert.Equal("Item due date limit reached for today.", exception.Message);
-        }
-
-        [Fact]
-        public void AddOneItem_ShouldAddItem_WhenDueDateLimitNotReached()
-        {
-            // Arrange
-            var mockRepo = new Mock<ITodosRepository>();
-            var user = new User(mockRepo.Object);
-            var dueDate = new DateTimeOffset(2024, 10, 31, 0, 0, 0, TimeSpan.Zero);
-            var item = new TodoItem { Id = "1", Description = "Task 1", DueDate = dueDate };
-
-            mockRepo.Setup(repo => repo.GetItemsByDueDate(dueDate)).Returns(new List<TodoItem>());
-            mockRepo.Setup(repo => repo.AddItem(item)).Returns(1);
-
-            // Act
-            var result = user.AddOneItem(item);
-
-            // Assert
-            Assert.Equal(1, result);
-            mockRepo.Verify(repo => repo.AddItem(item), Times.Once);
-        }
-
-        [Fact]
-        public void AddOneItem_ShouldAddItem_WhenDueDateIsNull()
-        {
-            // Arrange
-            var mockRepo = new Mock<ITodosRepository>();
-            var user = new User(mockRepo.Object);
-            var item = new TodoItem { Id = "1", Description = "Task 1", DueDate = null };
-
-            mockRepo.Setup(repo => repo.AddItem(item)).Returns(1);
-
-            // Act
-            var result = user.AddOneItem(item);
-
-            // Assert
-            Assert.Equal(1, result);
-            mockRepo.Verify(repo => repo.AddItem(item), Times.Once);
-        }
-
-        [Fact]
-        public  void AddOneItem_ShouldThrowError_WhenDueDateIsEarlierThanNow()
-        {
-            // Arrange
-            var mockRepo = new Mock<ITodosRepository>();
-            var user = new User(mockRepo.Object);
-            var item = new TodoItem { Id = "2", Description = "Task 2", DueDate = DateTimeOffset.Now.AddDays(7) };
-            var exception = Assert.Throws<InvalidOperationException>(() => user.AddOneItem(item));
+            var exception = Assert.Throws<InvalidOperationException>(() => service.Create(id, description, dueDate));
             Assert.Equal("Item due date is earlier than today.", exception.Message);
-            
+        }
+
+        [Fact]
+        public void Create_ShouldThrowException_WhenDueDateLimitReached()
+        {
+            // Arrange
+            var mockRepo = new Mock<ITodosRepository>();
+            var service = new TodoItemService(mockRepo.Object);
+            var id = "1";
+            var description = "Test item";
+            var dueDate = DateTimeOffset.Now.Date;
+            var items = new List<TodoItem>
+            {
+                new TodoItem { DueDate = dueDate },
+                new TodoItem { DueDate = dueDate },
+                new TodoItem { DueDate = dueDate },
+                new TodoItem { DueDate = dueDate },
+                new TodoItem { DueDate = dueDate },
+                new TodoItem { DueDate = dueDate },
+                new TodoItem { DueDate = dueDate },
+                new TodoItem { DueDate = dueDate },
+                new TodoItem { DueDate = dueDate }
+            };
+            mockRepo.Setup(r => r.GetItemsByDueDate(dueDate)).Returns(items);
+
+            // Act & Assert
+            var exception = Assert.Throws<InvalidOperationException>(() => service.Create(id, description, dueDate));
+            Assert.Equal("Item due date limit reached for today.", exception.Message);
         }
     }
 }

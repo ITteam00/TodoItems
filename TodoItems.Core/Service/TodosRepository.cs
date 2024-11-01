@@ -11,10 +11,10 @@ namespace TodoItems.Core.Service
     {
         static public List<TodoItem> itemsCollection = new List<TodoItem>();
 
-        public int AddItem(TodoItem item)
+        public TodoItem AddItem(TodoItem item)
         {
             itemsCollection.Add(item);
-            return itemsCollection.Count;
+            return item;
         }
 
         public List<TodoItem> GetItemsByDueDate(DateTimeOffset dueDate)
