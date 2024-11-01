@@ -7,12 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoItems.Core", "TodoItems
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoItems.Test", "TodoItems.Test\TodoItems.Test.csproj", "{812ACC5D-E44F-4BF4-918A-D7853B472150}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoItem.Infrastructure", "TodoItem.Infrastructure\TodoItem.Infrastructure.csproj", "{3AF52C85-7CF6-49B3-85D1-002FA121D7F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoItems.Infrastructure", "TodoItem.Infrastructure\TodoItems.Infrastructure.csproj", "{3AF52C85-7CF6-49B3-85D1-002FA121D7F5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{912E8251-B90B-4F77-A792-D21408DDF928}"
 	ProjectSection(SolutionItems) = preProject
 		TodoStoreDatabaseSettrings.cs = TodoStoreDatabaseSettrings.cs
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoItems.Integration.Test", "TodoItems.Integration.Test\TodoItems.Integration.Test.csproj", "{BEE9615C-CB4A-421E-BA15-9F8438004376}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{3AF52C85-7CF6-49B3-85D1-002FA121D7F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AF52C85-7CF6-49B3-85D1-002FA121D7F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AF52C85-7CF6-49B3-85D1-002FA121D7F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEE9615C-CB4A-421E-BA15-9F8438004376}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEE9615C-CB4A-421E-BA15-9F8438004376}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEE9615C-CB4A-421E-BA15-9F8438004376}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEE9615C-CB4A-421E-BA15-9F8438004376}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

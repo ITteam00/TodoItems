@@ -1,6 +1,6 @@
-﻿using TodoItem.Infrastructure;
+﻿using TodoItems.Infrastructure;
 
-namespace TodoItem.Infrastructure
+namespace TodoItems.Infrastructure
 {
     public class ModificationDto
     {
