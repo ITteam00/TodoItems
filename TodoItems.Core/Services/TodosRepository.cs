@@ -9,23 +9,29 @@ namespace TodoItems.Core.Services
 {
     public class TodosRepository : ITodosRepository
     {
-        public static List<ToDoItemDto> itemsCollection = new List<ToDoItemDto>();
+        public static List<ToDoItemDTO> itemsCollection = new List<ToDoItemDTO>();
 
-        public List<ToDoItemDto> GetItemsByDueDate(DateTimeOffset dueDate)
+        public List<ToDoItemDTO> GetItemsByDueDate(DateTimeOffset dueDate)
         {
             var result = itemsCollection.Where(item => { return item.DueDate == dueDate; }).ToList();
             return result;
         }
 
 
-        public Task ReplaceAsync(string s, ToDoItemMongoDTO item)
+        public Task UpdateAsync(string s, ToDoItemDTO item)
         {
             throw new NotImplementedException();
         }
 
-        public Task CreateAsync(ToDoItemMongoDTO item)
+        public Task CreateAsync(ToDoItemDTO newToDoItem)
         {
             throw new NotImplementedException();
         }
+
+        public List<ToDoItemDTO> GetNextFiveDaysItems(DateTimeOffset dueDate)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

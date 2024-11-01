@@ -51,7 +51,7 @@ public class TodoItemTest
             new DateTimeOffset(2024, 10, 31, 16, 2, 0, TimeSpan.Zero),
             new DateTimeOffset(2024, 10, 31, 16, 2, 0, TimeSpan.Zero)
         };
-        var updatedToDoItem = new ToDoItemDto
+        var updatedToDoItem = new ToDoItemDTO
         {
             Description = "Test Description",
             IsDone = false,
@@ -90,7 +90,7 @@ public class TodoItemTest
             new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
             new DateTimeOffset(2024, 10, 31, 17, 0, 0, TimeSpan.Zero),
         };
-        var updatedToDoItem = new ToDoItemDto
+        var updatedToDoItem = new ToDoItemDTO
         {
             Description = "Test Description",
             IsDone = false,
@@ -112,12 +112,12 @@ public class TodoItemTest
         // Arrange
         var repository = new TodosRepository();
         var dueDate = new DateTimeOffset(2024, 10, 31, 0, 0, 0, TimeSpan.Zero);
-        var items = new List<ToDoItemDto>
+        var items = new List<ToDoItemDTO>
         {
-            new ToDoItemDto { Id = "1", Description = "Task 1", DueDate = dueDate },
-            new ToDoItemDto
+            new ToDoItemDTO { Id = "1", Description = "Task 1", DueDate = dueDate },
+            new ToDoItemDTO
                 { Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero) },
-            new ToDoItemDto { Id = "3", Description = "Task 3", DueDate = dueDate }
+            new ToDoItemDTO { Id = "3", Description = "Task 3", DueDate = dueDate }
         };
         TodosRepository.itemsCollection = items;
 
@@ -135,7 +135,7 @@ public class TodoItemTest
     public async Task CreateAsync_ShouldCreateNewItem()
     {
         // Arrange
-        var newToDoItem = new ToDoItemDto
+        var newToDoItem = new ToDoItemDTO
         {
             Id = "1",
             Description = "Test Description",
@@ -195,7 +195,7 @@ public class TodoItemTest
         // Arrange
         var service = new ToDoItemsService(_mockRepository.Object);
         var today = DateTimeOffset.Now.Date;
-        var updatedToDoItem = new ToDoItemDto
+        var updatedToDoItem = new ToDoItemDTO
         {
             Id = "test-id",
             ModificationDateTimes = new List<DateTimeOffset>
@@ -226,7 +226,7 @@ public class TodoItemTest
         // Arrange
         var service = new ToDoItemsService(_mockRepository.Object);
         var today = DateTimeOffset.Now.Date;
-        var updatedToDoItem = new ToDoItemDto
+        var updatedToDoItem = new ToDoItemDTO
         {
             Id = "test-id",
             ModificationDateTimes = new List<DateTimeOffset>

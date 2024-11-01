@@ -9,8 +9,8 @@ namespace TodoItems.Core.Services
 {
     public interface IToDoItemsService
     {
-        Task UpdateAsync(string id, ToDoItemDto updatedToDoItem);
+        Task UpdateAsync(string id, ToDoItemDTO updatedToDoItem);
 
-        Task CreateAsync(ToDoItemDto newToDoItem);
+        Task CreateAsync(ToDoItemDTO newToDoItem);
     }
 }

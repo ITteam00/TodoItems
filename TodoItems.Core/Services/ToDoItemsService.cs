@@ -22,7 +22,7 @@ namespace TodoItems.Core.Services
             return count;
         }
 
-        public async Task CheckCountUpdateAsync(string id, ToDoItemDto updatedToDoItem)
+        public async Task CheckCountUpdateAsync(string id, ToDoItemDTO updatedToDoItem)
         {
             var modificationCount = ModificationCount(updatedToDoItem.ModificationDateTimes);
             if (modificationCount >= 3)
@@ -30,10 +30,10 @@ namespace TodoItems.Core.Services
                 throw new TooManyEntriesException("to many");
             }
 
-            await UpdateAsync(id, updatedToDoItem);
+            await _todosRepository.UpdateAsync(id, updatedToDoItem);
         }
 
-        public bool CanModify(ToDoItemDto updatedToDoItem)
+        public bool CanModify(ToDoItemDTO updatedToDoItem)
         {
             var ModifiedTimes = updatedToDoItem.ModificationDateTimes;
             ModifiedTimes = ModifiedTimes.Where(t => IsTodady(t)).ToList();
@@ -51,7 +51,7 @@ namespace TodoItems.Core.Services
             return dateTime.Date == toady;
         }
 
-        public async Task UpdateAsync(string id, ToDoItemDto updatedToDoItem)
+        public async Task UpdateAsync(string id, ToDoItemDTO updatedToDoItem)
         {
             var item = new ToDoItemMongoDTO
             {
@@ -61,11 +61,11 @@ namespace TodoItems.Core.Services
                 isFavorite = updatedToDoItem.IsFavorite,
                 CreatedTime = updatedToDoItem.CreatedTime,
             };
-            await _todosRepository.ReplaceAsync(id, item);
+            await _todosRepository.UpdateAsync(id, item);
         }
 
 
-        public async Task CreateAsync(ToDoItemDto newToDoItem)
+        public async Task CreateAsync(ToDoItemDTO newToDoItem)
         {
             var item = new ToDoItemMongoDTO
             {
