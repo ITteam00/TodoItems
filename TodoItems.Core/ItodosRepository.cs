@@ -8,6 +8,6 @@ namespace TodoItems.Core
 {
     public interface ItodosRepository
     {
-        public List<TodoItem> FindAllTodoItemsInDueDate();
+        public List<TodoItemDto> FindAllTodoItemsInDueDate();
     }
 }
