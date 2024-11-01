@@ -11,7 +11,6 @@ namespace TodoItems.Core.Services
     {
         private readonly ITodosRepository _todosRepository;
         private readonly TodoItemValidator _todoItemValidator;
-        private int MaximumModificationNumber = 8;
 
         public ToDoItemsService(ITodosRepository todosRepository)
         {
@@ -32,23 +31,7 @@ namespace TodoItems.Core.Services
             await _todosRepository.UpdateAsync(id, updatedTodoItem);
         }
 
-        public bool CanModify(TodoItemDTO updatedTodoItem)
-        {
-            var ModifiedTimes = updatedTodoItem.ModificationDateTimes;
-            ModifiedTimes = ModifiedTimes.Where(t => IsTodady(t)).ToList();
-            if (ModifiedTimes.Count >= MaximumModificationNumber)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public bool IsTodady(DateTimeOffset dateTime)
-        {
-            var toady = DateTimeOffset.Now.Date;
-            return dateTime.Date == toady;
-        }
+       
     }
 
     public class TooManyEntriesException : Exception
