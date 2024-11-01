@@ -4,6 +4,6 @@ namespace TodoItems.Core
 {
     public interface ITodosRepository
     {
-        List<ToDoItemDto> findAllTodoItemsInToday();
+        List<ToDoItem.Api.Models.ToDoItemObj> findAllTodoItemsInToday();
     }
 }
