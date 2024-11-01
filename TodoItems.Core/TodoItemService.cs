@@ -5,6 +5,7 @@ namespace TodoItems.Core;
 public class TodoItemService
 {
     private const int MAX_EDIT_Times = 2;
+    private const int MAX_DUEDATE = 8;
     private readonly ITodosRepository todosRepository;
 
 
@@ -45,7 +46,7 @@ public class TodoItemService
         }
 
         var todayItems = todosRepository.findAllTodoItemsInToday();
-        if (todayItems.Count >= 8)
+        if (todayItems.Count >= MAX_DUEDATE)
         {
             throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
         }
