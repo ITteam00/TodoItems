@@ -8,6 +8,6 @@ namespace TodoItems.Core.services
 {
     public interface ITodoRepository
     {
-        public List<TodoItem> getAllItemsCountInToday(DateTime today);
+        public List<TodoItemDto> getAllItemsCountInToday(DateTime today);
     }
 }
