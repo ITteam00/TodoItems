@@ -7,6 +7,11 @@ using TodoItems.Core.Service;
 
 namespace TodoItems.Core
 {
+    public enum DueDateStrategyType
+    {
+        Earliest,
+        FewestCompleted
+    }
     public class TodoItemService
     {
         public ITodosRepository Repo;
@@ -16,8 +21,9 @@ namespace TodoItems.Core
             Repo = repo;
         }
 
-        public TodoItem Create(string id, string description, DateTimeOffset? dueDate = null)
+        public TodoItem Create(string id, string description, DateTimeOffset? dueDate = null, DueDateStrategyType? dueStrategyType=null)
         {
+            DueDateStrategy dueDateStrategy = new DueDateStrategy();  // todo use stragy pattern refractor
             var item = new TodoItem
             {
                 Id = id,
@@ -26,18 +32,44 @@ namespace TodoItems.Core
             };
             if (item.DueDate != null)
             {
-                var today = DateTimeOffset.Now.Date;
-                if (item.DueDate.Value.Date < today)
+                ValidateDueDate(item);
+
+
+            } else
+            {
+                var fiveDayItems = Repo.GetFiveDayItems();
+                if(dueStrategyType != DueDateStrategyType.Earliest)
                 {
-                    throw new InvalidOperationException("Item due date is earlier than today.");
-                }
-                var findResult = Repo.GetItemsByDueDate(item.DueDate.Value);
-                if (findResult.Count > CompletedLimit)
+                    var dueDateResult = dueDateStrategy.GetEarliestDate(fiveDayItems, CompletedLimit);
+                    item.DueDate = dueDateResult;
+
+                } else
                 {
-                    throw new InvalidOperationException($"Item due date limit reached for today.");
+                    var dueDateResult = dueDateStrategy.GetFewestCompleted(fiveDayItems, CompletedLimit);
+                    item.DueDate = dueDateResult;
+
                 }
+
             }
+
+
             return Repo.AddItem(item);
+        }
+
+        private void ValidateDueDate(TodoItem item)
+        {
+
+            var today = DateTimeOffset.Now.Date;
+            if (item.DueDate.Value.Date < today)
+            {
+                throw new InvalidOperationException("Item due date is earlier than today.");
+            }
+            var findResult = Repo.GetItemsByDueDate(item.DueDate.Value);
+            if (findResult.Count > CompletedLimit)
+            {
+                throw new InvalidOperationException($"Item due date limit reached for today.");
+            }
+
         }
     }
 }

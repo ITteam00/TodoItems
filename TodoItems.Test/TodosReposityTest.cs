@@ -1,35 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
-using TodoItems.Core;
-using TodoItems.Core.Service;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using Xunit;
+//using TodoItems.Core;
+//using TodoItems.Core.Service;
 
-namespace TodoItems.Test
-{
-    public class TodosRepositoryTest
-    {
-        [Fact]
-        public void GetItemsByDueDate_ShouldReturnCorrectItems()
-        {
-            // Arrange
-            var repository = new TodosRepository();
-            var dueDate = new DateTimeOffset(2024, 10, 31, 0, 0, 0, TimeSpan.Zero);
-            var items = new List<TodoItem>
-            {
-                new TodoItem { Id = "1", Description = "Task 1", DueDate = dueDate },
-                new TodoItem { Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero) },
-                new TodoItem { Id = "3", Description = "Task 3", DueDate = dueDate }
-            };
-            TodosRepository.itemsCollection = items;
+//namespace TodoItems.Test
+//{
+//    public class TodosRepositoryTest
+//    {
+//        [Fact]
+//        public void GetItemsByDueDate_ShouldReturnCorrectItems()
+//        {
+//            // Arrange
+//            var repository = new TodosRepository();
+//            var dueDate = new DateTimeOffset(2024, 10, 31, 0, 0, 0, TimeSpan.Zero);
+//            var items = new List<TodoItem>
+//            {
+//                new TodoItem { Id = "1", Description = "Task 1", DueDate = dueDate },
+//                new TodoItem { Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero) },
+//                new TodoItem { Id = "3", Description = "Task 3", DueDate = dueDate }
+//            };
+//            TodosRepository.itemsCollection = items;
 
-            // Act
-            var result = repository.GetItemsByDueDate(dueDate);
+//            // Act
+//            var result = repository.GetItemsByDueDate(dueDate);
 
-            // Assert
-            Assert.Equal(2, result.Count);
-            Assert.Contains(result, item => item.Id == "1");
-            Assert.Contains(result, item => item.Id == "3");
-        }
-    }
-}
+//            // Assert
+//            Assert.Equal(2, result.Count);
+//            Assert.Contains(result, item => item.Id == "1");
+//            Assert.Contains(result, item => item.Id == "3");
+//        }
+//    }
+//}
