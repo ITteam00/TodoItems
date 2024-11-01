@@ -12,9 +12,7 @@ namespace TodoItems.Core.Model
         public string Description { get; set; } = string.Empty;
         public bool isDone { get; set; }
         public bool isFavorite { get; set; }
-
         public DateTimeOffset CreatedTime { get; set; }
-
         public List<DateTimeOffset> ModificationDateTimes { get; set; }
     }
 }

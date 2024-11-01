@@ -13,7 +13,6 @@ namespace TodoItems.Core.Model
         public bool IsDone { get; set; } = false;
         public DateTimeOffset CreatedTime { get; set; } = DateTimeOffset.Now;
         public bool IsFavorite { get; set; } = false;
-        public bool IsDelete { get; set; } = false;
         public List<DateTimeOffset> ModificationDateTimes { get; set; }
         public DateTimeOffset? DueDate { get; set; }
     }
