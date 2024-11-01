@@ -8,6 +8,8 @@ public class TodoItem
     public Modification ModificationRecord { get; set; }
     public DateTimeOffset? DueDate { get; set; }
     public string UserId { get; set; } = "FakeUserBob";
+    public bool Done { get; set; } = false;
+    
 
     public void ModifyDescription(string newDescription)
     {

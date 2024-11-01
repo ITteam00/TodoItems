@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TodoItems.Infrastructure
 {
-    class TodoItemDto
+    public class TodoItemDto
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -16,6 +16,7 @@ namespace TodoItems.Infrastructure
         public string Description { get; set; }
         public ModificationDto ModificationRecord { get; set; }
         public DateTimeOffset? DueDate { get; set; }
+        public bool Done { get; set; } = false;
 
 
     }

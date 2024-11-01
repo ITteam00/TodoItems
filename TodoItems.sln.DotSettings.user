@@ -1,9 +1,11 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4296394a_002D087a_002D48bc_002Dba1f_002D47a70cc3a4b1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;TodoItems.Test&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;Project Location="/Users/zifeiyu/repos/slb-2024-training/practice/TodoItems/TodoItems.Test" Presentation="&amp;lt;TodoItems.Test&amp;gt;" /&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4296394a_002D087a_002D48bc_002Dba1f_002D47a70cc3a4b1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;TodoItems.Test&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::812ACC5D-E44F-4BF4-918A-D7853B472150::net8.0::TodoItems.Tests.TodoItemServiceTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fcacfdb5_002D6448_002D4a5c_002D88a4_002D6f6242f16dde/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="should_return_2_when_add_1_1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;xUnit::812ACC5D-E44F-4BF4-918A-D7853B472150::net8.0::TodoItems.Test.UnitTest1.should_return_2_when_add_1_1&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fcacfdb5_002D6448_002D4a5c_002D88a4_002D6f6242f16dde/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="should_return_2_when_add_1_1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
