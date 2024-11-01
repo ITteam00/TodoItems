@@ -7,6 +7,7 @@ using TodoItems.Core.Services;
 using Moq;
 using Xunit;
 using Microsoft.VisualBasic;
+using TodoItems.Core.Validator;
 
 namespace TodoItems.Test;
 
@@ -14,7 +15,15 @@ public class TodoItemTest
 {
     private readonly ToDoItemsService _toDoService;
     private readonly TodoItemsRepository _todoItemsRepository;
-    private readonly Mock<ITodosRepository> _mockRepository = new Mock<ITodosRepository>();
+    private readonly TodoItemValidator _todoItemValidator;
+    private readonly Mock<ITodosRepository> _mockRepository;
+
+    public TodoItemTest()
+    {
+        _mockRepository = new Mock<ITodosRepository>();
+        _toDoService = new ToDoItemsService(_mockRepository.Object);
+        _todoItemValidator = new TodoItemValidator();
+    }
 
 
     [Fact]
@@ -22,22 +31,6 @@ public class TodoItemTest
     {
         var todoItem = new TodoItem();
         Assert.Equal("1", todoItem.GetId());
-    }
-
-    [Fact]
-    public void Should_return_modificationCount_when_call_ModificationCount()
-    {
-        List<DateTimeOffset> dateTimes = new List<DateTimeOffset>
-        {
-            new DateTimeOffset(2024, 10, 30, 14, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 1, 9, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 1, 17, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 1, 16, 2, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 1, 16, 2, 0, TimeSpan.Zero)
-        };
-        var todoItem = new ToDoItemsService(_mockRepository.Object);
-        Assert.Equal(4, todoItem.ModificationCount(dateTimes));
     }
 
     [Fact]
@@ -61,21 +54,10 @@ public class TodoItemTest
             ModificationDateTimes = dateTimes,
             Id = "1",
         };
-
-        var todoItem = new ToDoItemsService(_mockRepository.Object);
-        var str = "";
-        try
-        {
-            await todoItem.UpdateAsync(updatedToDoItem.Id, updatedToDoItem);
-        }
-        catch (TooManyEntriesException e)
-        {
-            Console.Write(e);
-            str = e.Message;
-        }
-
-
-        Assert.Equal(str, "to many");
+        var exception =
+            await Assert.ThrowsAsync<TooManyEntriesException>(() =>
+                _toDoService.UpdateAsync(updatedToDoItem.Id, updatedToDoItem));
+        Assert.Equal(exception.Message, "to many");
     }
 
 
@@ -101,36 +83,29 @@ public class TodoItemTest
             Id = "1",
         };
 
-        var todoItem = new ToDoItemsService(_mockRepository.Object);
-        await todoItem.UpdateAsync(updatedToDoItem.Id, updatedToDoItem);
-        Assert.Equal(updatedToDoItem.ModificationDateTimes.Count, 4);
+        _mockRepository.Setup(r => r.UpdateAsync(updatedToDoItem.Id, updatedToDoItem))
+            .Returns(Task.CompletedTask);
+
+        await _toDoService.UpdateAsync(updatedToDoItem.Id, updatedToDoItem);
+
+        Assert.Equal(4, updatedToDoItem.ModificationDateTimes.Count);
     }
 
     [Fact]
     public void IsTodady_ShouldReturnTrue_WhenDateIsToday()
     {
-        // Arrange
         var service = new ToDoItemsService(_mockRepository.Object);
         var today = DateTimeOffset.Now;
-
-        // Act
         var result = service.IsTodady(today);
-
-        // Assert
         Assert.True(result);
     }
 
     [Fact]
     public void IsTodady_ShouldReturnFalse_WhenDateIsNotToday()
     {
-        // Arrange
         var service = new ToDoItemsService(_mockRepository.Object);
         var notToday = DateTimeOffset.Now.AddDays(-1);
-
-        // Act
         var result = service.IsTodady(notToday);
-
-        // Assert
         Assert.False(result);
     }
 

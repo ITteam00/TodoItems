@@ -3,28 +3,27 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using TodoItems.Core.Model;
 using DnsClient.Internal;
+using TodoItems.Core.Validator;
 
 namespace TodoItems.Core.Services
 {
     public class ToDoItemsService
     {
-        private ITodosRepository _todosRepository;
+        private readonly ITodosRepository _todosRepository;
+        private readonly TodoItemValidator _todoItemValidator;
         private int MaximumModificationNumber = 8;
 
         public ToDoItemsService(ITodosRepository todosRepository)
         {
             _todosRepository = todosRepository;
+            _todoItemValidator = new TodoItemValidator();
         }
 
-        public int ModificationCount(List<DateTimeOffset> modificationDateTimes)
-        {
-            var count = modificationDateTimes.Count(d => d.Date == DateTimeOffset.UtcNow.Date);
-            return count;
-        }
+
 
         public async Task UpdateAsync(string id, TodoItemDTO updatedTodoItem)
         {
-            var modificationCount = ModificationCount(updatedTodoItem.ModificationDateTimes);
+            var modificationCount = _todoItemValidator.ModificationCount(updatedTodoItem.ModificationDateTimes);
             if (modificationCount >= 3)
             {
                 throw new TooManyEntriesException("to many");
