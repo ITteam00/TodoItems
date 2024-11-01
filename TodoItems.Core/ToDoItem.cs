@@ -7,7 +7,7 @@
         public required bool Done { get; set; }
         public required bool Favorite { get; set; }
         public required DateTime CreatedTimeDate { get; init; }
-        public required DateTime LastModifiedTimeDate { get; init; }
+        public required DateTime LastModifiedTimeDate { get; set; }
         public required int EditTimes { get; set; }
         public DateTime? DueDate { get; set; } 
 
@@ -18,5 +18,23 @@
         {
             throw new NotImplementedException();
         }
+
+        //public async Task<ToDoItemDto> ModifyItem(ToDoItemDto item)
+        //{
+
+        //}
+
+        //public async Task<ToDoItemDto> CreateAsync(ToDoItemDto inputToDoItemModel)
+        //{
+
+        //}
+
+        //public ToDoItemDto AddEditTimes(ToDoItemDto item)
+        //{
+
+        //}
+
+
+
     }
 }
