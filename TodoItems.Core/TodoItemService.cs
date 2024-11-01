@@ -23,6 +23,7 @@ public class TodoItemService
         if (difference.Days >= 1 )
         {
             ToDoItemDto newItem =  await Task.FromResult(AddEditTimes(item));
+            newItem.EditTimes = 0;
             return newItem;
         }
         if (item.EditTimes <= MAX_EDIT_Times)
