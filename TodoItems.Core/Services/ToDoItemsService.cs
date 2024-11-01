@@ -6,7 +6,7 @@ using DnsClient.Internal;
 
 namespace TodoItems.Core.Services
 {
-    public class ToDoItemsService : IToDoItemsService
+    public class ToDoItemsService
     {
         private ITodosRepository _todosRepository;
         private int MaximumModificationNumber = 8;
@@ -22,20 +22,20 @@ namespace TodoItems.Core.Services
             return count;
         }
 
-        public async Task CheckCountUpdateAsync(string id, ToDoItemDTO updatedToDoItem)
+        public async Task UpdateAsync(string id, TodoItemDTO updatedTodoItem)
         {
-            var modificationCount = ModificationCount(updatedToDoItem.ModificationDateTimes);
+            var modificationCount = ModificationCount(updatedTodoItem.ModificationDateTimes);
             if (modificationCount >= 3)
             {
                 throw new TooManyEntriesException("to many");
             }
 
-            await _todosRepository.UpdateAsync(id, updatedToDoItem);
+            await _todosRepository.UpdateAsync(id, updatedTodoItem);
         }
 
-        public bool CanModify(ToDoItemDTO updatedToDoItem)
+        public bool CanModify(TodoItemDTO updatedTodoItem)
         {
-            var ModifiedTimes = updatedToDoItem.ModificationDateTimes;
+            var ModifiedTimes = updatedTodoItem.ModificationDateTimes;
             ModifiedTimes = ModifiedTimes.Where(t => IsTodady(t)).ToList();
             if (ModifiedTimes.Count >= MaximumModificationNumber)
             {
@@ -49,35 +49,6 @@ namespace TodoItems.Core.Services
         {
             var toady = DateTimeOffset.Now.Date;
             return dateTime.Date == toady;
-        }
-
-        public async Task UpdateAsync(string id, ToDoItemDTO updatedToDoItem)
-        {
-            var item = new ToDoItemMongoDTO
-            {
-                Id = id,
-                Description = updatedToDoItem.Description,
-                isDone = updatedToDoItem.IsDone,
-                isFavorite = updatedToDoItem.IsFavorite,
-                CreatedTime = updatedToDoItem.CreatedTime,
-            };
-            await _todosRepository.UpdateAsync(id, item);
-        }
-
-
-        public async Task CreateAsync(ToDoItemDTO newToDoItem)
-        {
-            var item = new ToDoItemMongoDTO
-            {
-                Id = newToDoItem.Id,
-                Description = newToDoItem.Description,
-                isDone = newToDoItem.IsDone,
-                isFavorite = newToDoItem.IsFavorite,
-                CreatedTime = newToDoItem.CreatedTime,
-            };
-
-            await _todosRepository.CreateAsync(item);
-            ;
         }
     }
 

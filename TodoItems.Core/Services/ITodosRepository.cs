@@ -10,9 +10,9 @@ namespace TodoItems.Core.Services
 {
     public interface ITodosRepository
     {
-        List<ToDoItemDTO> GetItemsByDueDate(DateTimeOffset dueDate);
-        Task UpdateAsync(string s, ToDoItemDTO item);
-        Task CreateAsync(ToDoItemDTO newToDoItem);
-        List<ToDoItemDTO> GetNextFiveDaysItems(DateTimeOffset dueDate);
+        Task<List<TodoItemDTO>> GetItemsByDueDate(DateTimeOffset dueDate);
+        Task UpdateAsync(string s, TodoItemDTO item);
+        Task CreateAsync(TodoItemDTO newTodoItem);
+        List<TodoItemDTO> GetNextFiveDaysItems(DateTimeOffset dueDate);
     }
 }

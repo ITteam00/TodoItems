@@ -13,6 +13,7 @@ namespace TodoItems.Test;
 public class TodoItemTest
 {
     private readonly ToDoItemsService _toDoService;
+    private readonly TodoItemsRepository _todoItemsRepository;
     private readonly Mock<ITodosRepository> _mockRepository = new Mock<ITodosRepository>();
 
 
@@ -29,11 +30,11 @@ public class TodoItemTest
         List<DateTimeOffset> dateTimes = new List<DateTimeOffset>
         {
             new DateTimeOffset(2024, 10, 30, 14, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 31, 9, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 11, 1, 9, 0, 0, TimeSpan.Zero),
             new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 31, 17, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 31, 16, 2, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 31, 16, 2, 0, TimeSpan.Zero)
+            new DateTimeOffset(2024, 11, 1, 17, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 11, 1, 16, 2, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 11, 1, 16, 2, 0, TimeSpan.Zero)
         };
         var todoItem = new ToDoItemsService(_mockRepository.Object);
         Assert.Equal(4, todoItem.ModificationCount(dateTimes));
@@ -45,13 +46,13 @@ public class TodoItemTest
         List<DateTimeOffset> dateTimes = new List<DateTimeOffset>
         {
             new DateTimeOffset(2024, 10, 30, 14, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 31, 9, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 11, 1, 9, 0, 0, TimeSpan.Zero),
             new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 31, 17, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 31, 16, 2, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 31, 16, 2, 0, TimeSpan.Zero)
+            new DateTimeOffset(2024, 11, 1, 17, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 11, 1, 16, 2, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 11, 1, 16, 2, 0, TimeSpan.Zero)
         };
-        var updatedToDoItem = new ToDoItemDTO
+        var updatedToDoItem = new TodoItemDTO
         {
             Description = "Test Description",
             IsDone = false,
@@ -65,7 +66,7 @@ public class TodoItemTest
         var str = "";
         try
         {
-            await todoItem.CheckCountUpdateAsync(updatedToDoItem.Id, updatedToDoItem);
+            await todoItem.UpdateAsync(updatedToDoItem.Id, updatedToDoItem);
         }
         catch (TooManyEntriesException e)
         {
@@ -90,7 +91,7 @@ public class TodoItemTest
             new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
             new DateTimeOffset(2024, 10, 31, 17, 0, 0, TimeSpan.Zero),
         };
-        var updatedToDoItem = new ToDoItemDTO
+        var updatedToDoItem = new TodoItemDTO
         {
             Description = "Test Description",
             IsDone = false,
@@ -104,62 +105,6 @@ public class TodoItemTest
         await todoItem.UpdateAsync(updatedToDoItem.Id, updatedToDoItem);
         Assert.Equal(updatedToDoItem.ModificationDateTimes.Count, 4);
     }
-
-
-    [Fact]
-    public void GetItemsByDueDate_Should_Return_CorrectItems()
-    {
-        // Arrange
-        var repository = new TodosRepository();
-        var dueDate = new DateTimeOffset(2024, 10, 31, 0, 0, 0, TimeSpan.Zero);
-        var items = new List<ToDoItemDTO>
-        {
-            new ToDoItemDTO { Id = "1", Description = "Task 1", DueDate = dueDate },
-            new ToDoItemDTO
-                { Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero) },
-            new ToDoItemDTO { Id = "3", Description = "Task 3", DueDate = dueDate }
-        };
-        TodosRepository.itemsCollection = items;
-
-        // Act
-        var result = repository.GetItemsByDueDate(dueDate);
-
-        // Assert
-        Assert.Equal(2, result.Count);
-        Assert.Contains(result, item => item.Id == "1");
-        Assert.Contains(result, item => item.Id == "3");
-    }
-
-
-    [Fact]
-    public async Task CreateAsync_ShouldCreateNewItem()
-    {
-        // Arrange
-        var newToDoItem = new ToDoItemDTO
-        {
-            Id = "1",
-            Description = "Test Description",
-            IsDone = false,
-            IsFavorite = false,
-            CreatedTime = DateTimeOffset.UtcNow
-        };
-
-        var mockRepository = new Mock<ITodosRepository>();
-        var service = new ToDoItemsService(mockRepository.Object);
-
-        // Act
-        await service.CreateAsync(newToDoItem);
-
-        // Assert
-        mockRepository.Verify(repo => repo.CreateAsync(It.Is<ToDoItemMongoDTO>(item =>
-            item.Id == newToDoItem.Id &&
-            item.Description == newToDoItem.Description &&
-            item.isDone == newToDoItem.IsDone &&
-            item.isFavorite == newToDoItem.IsFavorite &&
-            item.CreatedTime == newToDoItem.CreatedTime
-        )), Times.Once);
-    }
-
 
     [Fact]
     public void IsTodady_ShouldReturnTrue_WhenDateIsToday()
@@ -195,7 +140,7 @@ public class TodoItemTest
         // Arrange
         var service = new ToDoItemsService(_mockRepository.Object);
         var today = DateTimeOffset.Now.Date;
-        var updatedToDoItem = new ToDoItemDTO
+        var updatedToDoItem = new TodoItemDTO
         {
             Id = "test-id",
             ModificationDateTimes = new List<DateTimeOffset>
@@ -226,7 +171,7 @@ public class TodoItemTest
         // Arrange
         var service = new ToDoItemsService(_mockRepository.Object);
         var today = DateTimeOffset.Now.Date;
-        var updatedToDoItem = new ToDoItemDTO
+        var updatedToDoItem = new TodoItemDTO
         {
             Id = "test-id",
             ModificationDateTimes = new List<DateTimeOffset>

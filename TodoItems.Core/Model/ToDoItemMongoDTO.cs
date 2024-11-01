@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TodoItems.Core.Model
 {
-    public class ToDoItemMongoDTO
+    public class TodoItemMongoDTO
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Description { get; set; } = string.Empty;
@@ -14,5 +14,6 @@ namespace TodoItems.Core.Model
         public bool isFavorite { get; set; }
         public DateTimeOffset CreatedTime { get; set; }
         public List<DateTimeOffset> ModificationDateTimes { get; set; }
+        public DateTimeOffset? DueDate { get; set; }
     }
 }

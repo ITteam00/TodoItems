@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace TodoItems.Test
 {
-    public class TodoItemRepoTest
+    internal class TodoItemsStrategy
     {
-
     }
 }
