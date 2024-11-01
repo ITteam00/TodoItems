@@ -1,6 +1,6 @@
 ﻿namespace TodoItem.Infrastructure
 {
-    public class Class1
+    public class ModificationDto
     {
 
     }
