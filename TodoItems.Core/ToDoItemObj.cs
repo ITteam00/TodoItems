@@ -10,7 +10,7 @@ namespace ToDoItem.Api.Models
         public bool Favorite { get; set; }
         public DateTime CreatedTimeDate { get; set; }
         public DateTime LastModifiedTimeDate { get; set; }
-        public  int EditTimes { get; set; }
+        public int EditTimes { get; set; }
         public DateTime? DueDate { get; set; }
 
 
