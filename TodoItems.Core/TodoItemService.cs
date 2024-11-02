@@ -16,11 +16,9 @@ namespace TodoItems.Core
     {
         public ITodosRepository Repo;
         public int CompletedLimit { get; set; } = 8;
-
         public TodoItemService(ITodosRepository repo) {
             Repo = repo;
         }
-
         public TodoItem Create(string id, string description, DateTimeOffset? dueDate = null, DueDateStrategyType? dueStrategyType=null)
         {
             DueDateStrategy dueDateStrategy = new DueDateStrategy();  // todo use stragy pattern refractor
@@ -33,8 +31,6 @@ namespace TodoItems.Core
             if (item.DueDate != null)
             {
                 ValidateDueDate(item);
-
-
             } else
             {
                 var fiveDayItems = Repo.GetFiveDayItems();
@@ -42,23 +38,17 @@ namespace TodoItems.Core
                 {
                     var dueDateResult = dueDateStrategy.GetEarliestDate(fiveDayItems, CompletedLimit);
                     item.DueDate = dueDateResult;
-
                 } else
                 {
                     var dueDateResult = dueDateStrategy.GetFewestCompleted(fiveDayItems, CompletedLimit);
                     item.DueDate = dueDateResult;
-
                 }
-
             }
-
-
             return Repo.AddItem(item);
         }
 
         private void ValidateDueDate(TodoItem item)
         {
-
             var today = DateTimeOffset.Now.Date;
             if (item.DueDate.Value.Date < today)
             {
@@ -69,7 +59,6 @@ namespace TodoItems.Core
             {
                 throw new InvalidOperationException($"Item due date limit reached for today.");
             }
-
         }
     }
 }
