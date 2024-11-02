@@ -43,12 +43,6 @@ namespace TodoItems.Infrastructure
                 Description = todoItemPo.Description
             };
         }
-
-        public void Save(TodoItems.Core.TodoItem todoItem)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<TodoItem> GetItemsByDueDate(DateTimeOffset dueDate)
         {
             throw new NotImplementedException();
