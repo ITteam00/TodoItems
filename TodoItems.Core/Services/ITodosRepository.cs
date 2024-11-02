@@ -13,6 +13,6 @@ namespace TodoItems.Core.Services
         Task<List<TodoItemDTO>> GetItemsByDueDate(DateTimeOffset? dueDate);
         Task UpdateAsync(string s, TodoItemDTO item);
         Task CreateAsync(TodoItemDTO newTodoItem);
-        List<TodoItemDTO> GetNextFiveDaysItems(DateTimeOffset dueDate);
+        Task<List<TodoItemDTO>> GetNextFiveDaysItems(DateTimeOffset date);
     }
 }

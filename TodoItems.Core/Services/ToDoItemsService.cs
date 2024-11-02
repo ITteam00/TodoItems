@@ -48,7 +48,7 @@ namespace TodoItems.Core.Services
             {
                 var dateSelector = new DateSelector(type);
                 var nextFiveDaysItems = _todosRepository.GetNextFiveDaysItems(DateTimeOffset.Now);
-                var countDueDates = _todoItemValidator.CountDueDates(nextFiveDaysItems);
+                var countDueDates = _todoItemValidator.CountDueDates(await nextFiveDaysItems);
                 createTodoItem.DueDate = dateSelector.SelectDate(countDueDates);
                 await _todosRepository.CreateAsync(createTodoItem);
             }

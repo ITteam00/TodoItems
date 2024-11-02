@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace TodoItems.Core.Services
                 IsDone = item.IsDone,
                 IsFavorite = item.IsFavorite,
                 CreatedTime = item.CreatedTime,
+                ModificationDateTimes = item.ModificationDateTimes,
                 DueDate = item.DueDate
             }).ToList();
         }
@@ -48,13 +50,17 @@ namespace TodoItems.Core.Services
 
         public async Task UpdateAsync(string id, TodoItemDTO updatedTodoItem)
         {
+            
+            var list = updatedTodoItem.ModificationDateTimes;
+            list.Add(DateTimeOffset.Now);
             var item = new TodoItemMongoDTO
             {
                 Id = id,
                 Description = updatedTodoItem.Description,
                 IsDone = updatedTodoItem.IsDone,
                 IsFavorite = updatedTodoItem.IsFavorite,
-                CreatedTime = updatedTodoItem.CreatedTime,
+                DueDate = updatedTodoItem.DueDate,
+                ModificationDateTimes = list
             };
             await _ToDoItemsCollection.ReplaceOneAsync(x => x.Id == id, item);
         }
@@ -68,6 +74,8 @@ namespace TodoItems.Core.Services
                 IsDone = newTodoItem.IsDone,
                 IsFavorite = newTodoItem.IsFavorite,
                 CreatedTime = newTodoItem.CreatedTime,
+                ModificationDateTimes = newTodoItem.ModificationDateTimes,
+                DueDate = newTodoItem.DueDate
             };
             _Logger.LogInformation($"Inserting new todo item to DB {newTodoItem.Id}");
 
@@ -75,9 +83,28 @@ namespace TodoItems.Core.Services
             ;
         }
 
-        public List<TodoItemDTO> GetNextFiveDaysItems(DateTimeOffset dueDate)
+        public async Task<List<TodoItemDTO>> GetNextFiveDaysItems(DateTimeOffset date)
         {
-            throw new NotImplementedException();
+            
+            DateTimeOffset endDate = date.AddDays(5);
+
+            var filter = Builders<TodoItemMongoDTO>.Filter.And(
+                Builders<TodoItemMongoDTO>.Filter.Gte(item => item.DueDate, date),
+                Builders<TodoItemMongoDTO>.Filter.Lt(item => item.DueDate, endDate)
+            );
+
+            var items = await _ToDoItemsCollection.Find(filter).ToListAsync();
+
+            return items.Select(item => new TodoItemDTO
+            {
+                Id = item.Id,
+                IsDone = item.IsDone,
+                IsFavorite = item.IsFavorite,
+                Description = item.Description,
+                ModificationDateTimes = item.ModificationDateTimes,
+                DueDate = item.DueDate
+
+            }).ToList();
         }
     }
 }
