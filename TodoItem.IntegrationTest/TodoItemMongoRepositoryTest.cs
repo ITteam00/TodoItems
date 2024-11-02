@@ -47,11 +47,44 @@ public class TodoItemMongoRepositoryTest: IAsyncLifetime
         var todoItemPo = new TodoItemPo{
             Id = "5f9a7d8e2d3b4a1eb8a7d8e2", 
             Description = "Buy groceries",
-            IsComplete = false
+            IsDone = true,
+            IsFavorite = true,
         };;
         await _mongoCollection.InsertOneAsync(todoItemPo);
         var todoItem = await _mongoRepository.FindById("5f9a7d8e2d3b4a1eb8a7d8e2");
         
+        Assert.NotNull(todoItem);
+        Assert.Equal("5f9a7d8e2d3b4a1eb8a7d8e2", todoItem.Id);
+        Assert.Equal("Buy groceries", todoItem.Description);
+    }
+
+    [Fact]
+    public async void should_return_items_In_DueDate()
+    {
+        var todoItemPo = new TodoItemPo
+        {
+            Id = "5f9a7d8e2d3b4a1eb8a7d8e2",
+            Description = "Buy groceries",
+            DueDate = new DateTime(2024, 10, 30),
+        }; ;
+        await _mongoCollection.InsertOneAsync(todoItemPo);
+        var todoItem = await _mongoRepository.FindAllTodoItemsInDueDate(todoItemPo.DueDate);
+
+        Assert.NotNull(todoItem);
+        Assert.Equal(new DateTime(2024, 10, 30), todoItem.DueDate);
+    }
+
+    [Fact]
+    public async void should_return_items_In_Five_Days()
+    {
+        var todoItemPo = new TodoItemPo
+        {
+            Id = "5f9a7d8e2d3b4a1eb8a7d8e2",
+            Description = "Buy groceries",
+        }; ;
+        await _mongoCollection.InsertOneAsync(todoItemPo);
+        var todoItem = await _mongoRepository.FindById("5f9a7d8e2d3b4a1eb8a7d8e2");
+
         Assert.NotNull(todoItem);
         Assert.Equal("5f9a7d8e2d3b4a1eb8a7d8e2", todoItem.Id);
         Assert.Equal("Buy groceries", todoItem.Description);
