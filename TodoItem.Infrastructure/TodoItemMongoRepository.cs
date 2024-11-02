@@ -36,9 +36,20 @@ public class TodoItemMongoRepository: ITodoItemsRepository
         };
     }
 
+    private TodoItemPo ConvertToTodoItemPo(TodoItems.Core.TodoItem todoItem)
+    {
+        if (todoItem == null) return null;
+
+        return new TodoItemPo
+        {
+            Id = todoItem.Id,
+            Description = todoItem.Description
+        };
+    }
+
     public async Task<TodoItems.Core.TodoItem> Save(TodoItems.Core.TodoItem todoItem)
     {
-        await _todosCollection.InsertOneAsync(todoItem.convertDB(request));
+        await _todosCollection.InsertOneAsync(ConvertToTodoItemPo(todoItem));
         return todoItem;
     }
 

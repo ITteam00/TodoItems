@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TodoItem.Infrastructure\TodoItems.Infrastructure.csproj" />
+    <ProjectReference Include="..\TodoItem.Infrastructure\TodoItem.Infrastructure.csproj" />
     <ProjectReference Include="..\TodoItems.Core\TodoItems.Core.csproj" />
   </ItemGroup>
 
