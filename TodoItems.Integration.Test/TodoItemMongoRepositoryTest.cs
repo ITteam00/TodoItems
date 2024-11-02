@@ -17,11 +17,12 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
     {
         var mockSettings = new Mock<IOptions<TodoStoreDatabaseSettings>>();
 
+        var CollectionName = "TodoItems";
         mockSettings.Setup(s => s.Value).Returns(new TodoStoreDatabaseSettings
         {
             ConnectionString = "mongodb://localhost:27017",
-            DatabaseName = "TodoTestStore",
-            TodoItemsCollectionName = "Todos"
+            DatabaseName = "TodoItemsTest",
+            TodoItemsCollectionName = CollectionName
         });
 
         // 初始化 TodoService
@@ -29,7 +30,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
 
         var mongoClient = new MongoClient("mongodb://localhost:27017");
         var mongoDatabase = mongoClient.GetDatabase("TodoTestStore");
-        _mongoCollection = mongoDatabase.GetCollection<TodoItemDto>("Todos");
+        _mongoCollection = mongoDatabase.GetCollection<TodoItemDto>(CollectionName);
     }
 
     // IAsyncLifetime 中的 InitializeAsync 方法在每个测试前运行
@@ -56,7 +57,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         var todoItem = await _mongoRepository.FindById("5f9a7d8e2d3b4a1eb8a7d8e2");
 
         Assert.NotNull(todoItem);
-        Assert.That(todoItem.Id, Is.EqualTo("5f9a7d8e2d3b4a1eb8a7d8e2"));
-        // Assert.Equal("Buy groceries", todoItem.Description);
+        Assert.Equal("5f9a7d8e2d3b4a1eb8a7d8e2", todoItem.Id);
+        Assert.Equal("Buy groceries", todoItem.Description);
     }
 }
