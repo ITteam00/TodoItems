@@ -76,16 +76,20 @@ public class TodoItemMongoRepositoryTest: IAsyncLifetime
     [Fact]
     public async void should_return_items_In_Five_Days()
     {
-        var todoItemPo = new TodoItemPo
+        for(int i = 0;i < 5; i++)
         {
-            Id = "5f9a7d8e2d3b4a1eb8a7d8e2",
-            Description = "Buy groceries",
-            DueDate = new DateTime(2024, 10, 30, 10, 30, 0),
+            var todoItemPo = new TodoItemPo
+            {
+                Id = "5f9a7d8e2d3b4a1eb8a7d8e" + i.ToString(),
+                Description = "Buy groceries",
+                DueDate = new DateTime(2024, 10, 10+i, 10, 30, 0),
+            };
+            await _mongoCollection.InsertOneAsync(todoItemPo);
+        }
+        var CreatedDate = new DateTime(2024, 10, 10, 10, 30, 0);
 
-        };
-        await _mongoCollection.InsertOneAsync(todoItemPo);
-        var todoItem = await _mongoRepository.GetAllTodoItemsInFiveDays(todoItemPo.DueDate);
+        var todoItems = await _mongoRepository.GetAllTodoItemsInFiveDays(CreatedDate);
 
-        Assert.NotNull(todoItem);
+        Assert.Equal(5, todoItems.Count);
     }
 }

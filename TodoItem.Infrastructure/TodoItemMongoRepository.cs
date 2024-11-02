@@ -33,6 +33,21 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         return todoItemPos.Count;
     }
 
+    public async Task<List<TodoItems.Core.TodoItem>> GetAllTodoItemsInFiveDays(DateTime createdDate)
+    {
+        DateTime startDate = createdDate;
+        DateTime endDate = createdDate.AddDays(5);
+
+        FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo?>.Filter.And(
+        Builders<TodoItemPo?>.Filter.Gte(x => x.DueDate, startDate),
+        Builders<TodoItemPo?>.Filter.Lte(x => x.DueDate, endDate));
+
+        List<TodoItemPo?> todoItemPos = await _todosCollection.Find(filter).ToListAsync();
+
+        return todoItemPos.Select(ConvertToTodoItem).ToList();
+
+    }
+
 
     private TodoItems.Core.TodoItem ConvertToTodoItem(TodoItemPo? todoItemPo)
     {
