@@ -36,7 +36,7 @@ namespace ToDoItem.Api.Models
             throw new NotImplementedException();
         }
 
-        public async Task<ToDoItemObj> CreateAsync(ToDoItemObj inputToDoItem, ITodosRepository todosRepository)
+        public async Task<ToDoItemObj> CreateAsync(ToDoItemObj inputToDoItem, ITodoItemsRepository todosRepository)
         {
             if (inputToDoItem.DueDate < inputToDoItem.CreatedTimeDate)
             {

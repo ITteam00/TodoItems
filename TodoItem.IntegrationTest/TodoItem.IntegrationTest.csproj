@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TodoItem.Infrastructure\TodoItem.Infrastructure.csproj" />
     <ProjectReference Include="..\TodoItems.Core\TodoItems.Core.csproj" />
+    <ProjectReference Include="..\TodoItems.Test\TodoItems.Test.csproj" />
   </ItemGroup>
 
 </Project>

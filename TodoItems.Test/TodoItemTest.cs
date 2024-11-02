@@ -12,7 +12,7 @@ public class TodoItemTest
     public async Task CreateAsync_ShouldThrowInvalidOperationException_WhenDueDateIsBeforeCreatedTimeDate()
     {
         // Arrange
-        var mockRepository = new Mock<ITodosRepository>();
+        var mockRepository = new Mock<ITodoItemsRepository>();
 
         ToDoItemObj toDoItem = new ToDoItemObj(
            id: "1",
@@ -36,7 +36,7 @@ public class TodoItemTest
     public async Task CreateAsync_ShouldThrowInvalidOperationException_WhenMoreThan8ItemsExistForToday()
     {
         // Arrange
-        var mockRepository = new Mock<ITodosRepository>();
+        var mockRepository = new Mock<ITodoItemsRepository>();
         var toDoItemModel = new ToDoItemObj(
             id: "1",
             description: "Item 1",
@@ -74,7 +74,7 @@ public class TodoItemTest
     public async Task CreateAsync_ShouldReturnToDoItemModel_WhenDueDateIsAfterCreatedTimeDate_AndItemsAreLessThan8()
     {
         // Arrange
-        var mockRepository = new Mock<ITodosRepository>();
+        var mockRepository = new Mock<ITodoItemsRepository>();
         var toDoItemModel = new ToDoItemObj(
             id: "1",
             description: "Item 1",
