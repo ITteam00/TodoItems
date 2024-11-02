@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Moq;
 using TodoItem.Infrastructure;
+using ToDoItem.Api.Models;
 
 namespace TodoItem.IntegrationTest;
 
@@ -50,8 +51,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             Description = "Buy groceries",
             Done = false,
             Favorite = false,
-            CreatedTimeDate = DateTime.UtcNow,
-            LastModifiedTimeDate = DateTime.UtcNow,
+            CreatedTimeDate = DateTime.UtcNow.Date,
+            LastModifiedTimeDate = DateTime.UtcNow.Date,
             EditTimes = 0,
             DueDate = null
         }; ;
@@ -61,5 +62,42 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         Assert.NotNull(todoItem);
         Assert.Equal("5f9a7d8e2d3b4a1eb8a7d8e2", todoItem.Id);
         Assert.Equal("Buy groceries", todoItem.Description);
+    }
+
+
+    [Fact]
+    public async void should_save_item_with_new_values()
+    {
+        var todoItemDao = new TodoItemDao
+        {
+            Id = "5f9a7d8e2d3b4a1eb8a7d8e3",
+            Description = "Buy goods",
+            Done = false,
+            Favorite = false,
+            CreatedTimeDate = DateTime.UtcNow.Date,
+            LastModifiedTimeDate = DateTime.UtcNow.AddDays(-2).Date,
+            EditTimes = 0,
+            DueDate = DateTime.UtcNow.AddDays(2).Date
+        }; 
+        await _mongoCollection.InsertOneAsync(todoItemDao);
+
+        var newTodoItemObj = new ToDoItemObj
+        (
+            "5f9a7d8e2d3b4a1eb8a7d8e3",
+            "Buy goods",
+            true,
+            false,
+            DateTime.UtcNow.Date,
+            DateTime.UtcNow.Date,
+            1,
+            DateTime.UtcNow.Date
+        );
+        var todoItemObj = await _mongoRepository.Save(newTodoItemObj);
+
+        Assert.NotNull(todoItemObj);
+        Assert.Equal("2", todoItemObj.Id);
+        Assert.Equal(1, todoItemObj.EditTimes);
+        Assert.Equal(DateTime.UtcNow.Date, todoItemObj.LastModifiedTimeDate);
+
     }
 }

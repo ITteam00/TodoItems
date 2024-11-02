@@ -6,6 +6,6 @@ namespace TodoItems.Core
     {
         List<ToDoItemObj> findAllTodoItemsInToday();
         public Task<ToDoItemObj> FindById(string id);
-        void Save(ToDoItemObj todoItem);
+        public Task<ToDoItemObj> Save(ToDoItemObj todoItem);
     }
 }

@@ -21,30 +21,30 @@ public class TodoItemMongoRepository : ITodoItemsRepository
     public async Task<ToDoItemObj> FindById(string? id)
     {
         FilterDefinition<TodoItemDao?> filter = Builders<TodoItemDao>.Filter.Eq(x => x.Id, id);
-        TodoItemDao? todoItemPo = await _todosCollection.Find(filter).FirstOrDefaultAsync();
+        TodoItemDao? todoItemDao = await _todosCollection.Find(filter).FirstOrDefaultAsync();
 
-        // 将 TodoItemPo 转换为 TodoItem
-        ToDoItemObj todoItem = ConvertToTodoItem(todoItemPo);
+        // 将 TodoItemDao 转换为 TodoItem
+        ToDoItemObj todoItem = ConvertToTodoItem(todoItemDao);
         return todoItem;
     }
 
-    private ToDoItemObj ConvertToTodoItem(TodoItemDao? todoItemPo)
+    private ToDoItemObj ConvertToTodoItem(TodoItemDao? todoItemDao)
     {
-        if (todoItemPo == null) return null;
+        if (todoItemDao == null) return null;
 
         return new ToDoItemObj(
-            todoItemPo.Id,
-            todoItemPo.Description,
-            todoItemPo.Done,
-            todoItemPo.Favorite,
-            todoItemPo.CreatedTimeDate,
-            todoItemPo.LastModifiedTimeDate,
-            todoItemPo.EditTimes,
-            todoItemPo.DueDate
+            todoItemDao.Id,
+            todoItemDao.Description,
+            todoItemDao.Done,
+            todoItemDao.Favorite,
+            todoItemDao.CreatedTimeDate,
+            todoItemDao.LastModifiedTimeDate,
+            todoItemDao.EditTimes,
+            todoItemDao.DueDate
         );
     }
 
-    public void Save(ToDoItemObj todoItem)
+    public Task<ToDoItemObj> Save(ToDoItemObj todoItem)
     {
         throw new NotImplementedException();
     }
