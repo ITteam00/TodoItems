@@ -496,14 +496,14 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             for (int j = 0; j < 8; j++)
             {
                 var todoItem = new ToDoItemObj(
-                    id: Guid.NewGuid().ToString(),
+                    id: $"5f9a7d8e{2+i}d3b4a1eb8a8d{2+j}ea",
                     description: $"Test ToDo Item {i}-{j}",
                     done: false,
                     favorite: false,
                     createdTimeDate: DateTime.UtcNow.Date,
                     lastModifiedTimeDate: DateTime.UtcNow.Date,
                     editTimes: 0,
-                    dueDate: DateTime.UtcNow.AddDays(i).Date, // ?? DueDate ????5?
+                    dueDate: DateTime.UtcNow.AddDays(i).Date, 
                     dueDateRequirement: null
                 );
                 await _mongoRepository.CreateAsync(todoItem);
@@ -511,7 +511,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         }
 
         var newTodoItem = new ToDoItemObj(
-            id: "5f9a7d8e2d3b4a1eb8a7d8eb",
+            id: "5f9a7d8e2d3b4a1eb8a8d8ea",
             description: "Test ToDo Item",
             done: false,
             favorite: false,
@@ -524,7 +524,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.CreateAsync(newTodoItem));
-        Assert.Equal("Cannot add more than 8 ToDo items for today.", exception.Message);
+        Assert.Equal("Next 5 days all have 8 toDoItems", exception.Message);
     }
 
 }

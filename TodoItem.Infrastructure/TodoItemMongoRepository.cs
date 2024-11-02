@@ -99,22 +99,54 @@ public class TodoItemMongoRepository : ITodoItemsRepository
 
     private DateTime FindGoodDueDateByRequirement(DueDateRequirementType requirement)
     {
-        //List<int>[] itemNumbers = GetItemNumbersForNext5Days();
-        //DateTime earliestDate = itemNumbers.First(i => i < 8);
-        //DateTime fewestDate = itemNumbers.fewestDate
-        //if (requirement == DueDateRequirementType.Earliest)
-        //{
-        //    return earliestDate;
-        //}
-        //return fewestDate;
-        throw new InvalidOperationException("11.");
+        int[] itemNumbers = GetItemNumbersForNext5Days();
 
+        if (itemNumbers.All(count => count == 8))
+        {
+            throw new InvalidOperationException("Next 5 days all have 8 toDoItems");
+        }
+
+        DateTime earliestDate = DateTime.UtcNow.Date;
+        for (int i = 0; i < itemNumbers.Length; i++)
+        {
+            if (itemNumbers[i] < 8)
+            {
+                earliestDate = DateTime.UtcNow.Date.AddDays(i);
+                break;
+            }
+        }
+
+        int minItems = itemNumbers.Min();
+        DateTime fewestDate = DateTime.UtcNow.Date;
+        for (int i = 0; i < itemNumbers.Length; i++)
+        {
+            if (itemNumbers[i] == minItems)
+            {
+                fewestDate = DateTime.UtcNow.Date.AddDays(i);
+                break;
+            }
+        }
+
+        if (requirement == DueDateRequirementType.Earliest)
+        {
+            return earliestDate;
+        }
+        return fewestDate;
 
     }
 
-    private List<int>[] GetItemNumbersForNext5Days()
+    private int[] GetItemNumbersForNext5Days()
     {
-        throw new NotImplementedException();
+        int[] itemNumbers = new int[5];
+
+        for (int i = 0; i < 5; i++)
+        {
+            DateTime targetDate = DateTime.UtcNow.Date.AddDays(i);
+            var itemsOnDate = findAllTodoItemsInOneday(targetDate);
+            itemNumbers[i] = itemsOnDate.Count;
+        }
+
+        return itemNumbers;
     }
 
     public async Task<ToDoItemObj> ModifyItem(ToDoItemObj item)
