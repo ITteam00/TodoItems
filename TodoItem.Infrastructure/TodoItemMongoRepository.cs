@@ -59,7 +59,7 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         return await _todosCollection.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = true });
     }
 
-    public List<ToDoItemObj> findAllTodoItemsInToday()
+    public List<ToDoItemObj> findAllTodoItemsInOneday(DateTime dateTime)
     {
         return new List<ToDoItemObj> { };
     }

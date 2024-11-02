@@ -11,14 +11,14 @@ namespace ToDoItem.Api.Models
         public DateTime CreatedTimeDate { get; set; }
         public DateTime LastModifiedTimeDate { get; set; }
         public int EditTimes { get; set; }
-        public DateTime? DueDate { get; set; }
+        public DateTime DueDate { get; set; }
 
 
         private const int MAX_EDIT_Times = 2;
         private const int MAX_DUEDATE = 8;
 
 
-        public ToDoItemObj(string id, string description, bool done, bool favorite, DateTime createdTimeDate, DateTime lastModifiedTimeDate, int editTimes, DateTime? dueDate)
+        public ToDoItemObj(string id, string description, bool done, bool favorite, DateTime createdTimeDate, DateTime lastModifiedTimeDate, int editTimes, DateTime dueDate)
         {
             
             Description = description;
@@ -43,8 +43,8 @@ namespace ToDoItem.Api.Models
                 throw new InvalidOperationException("due date cannot be before creation date");
             }
 
-            var todayItems = todosRepository.findAllTodoItemsInToday();
-            if (todayItems.Count >= MAX_DUEDATE)
+            var ItemsDueToday = todosRepository.findAllTodoItemsInOneday(inputToDoItem.DueDate);
+            if (ItemsDueToday.Count >= MAX_DUEDATE)
             {
                 throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
             }

@@ -54,7 +54,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             CreatedTimeDate = DateTime.UtcNow.Date,
             LastModifiedTimeDate = DateTime.UtcNow.Date,
             EditTimes = 0,
-            DueDate = null
+            DueDate = DateTime.UtcNow.Date
         }; ;
         await _mongoCollection.InsertOneAsync(todoItemDao);
         var todoItem = await _mongoRepository.FindById("5f9a7d8e2d3b4a1eb8a7d8e2");
@@ -113,4 +113,58 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         Assert.Equal(expectedToDoItemObj.LastModifiedTimeDate, updatedTodoItem.LastModifiedTimeDate);
 
     }
+
+
+    [Fact]
+    public async void should_findAllTodoItemsInToday()
+    {
+        var todoItemDao1 = new TodoItemDao
+        {
+            Id = "5f9a7d8e2d3b4a1eb8a7d8e4",
+            Description = "Buy goods",
+            Done = false,
+            Favorite = false,
+            CreatedTimeDate = DateTime.UtcNow.Date,
+            LastModifiedTimeDate = DateTime.UtcNow.AddDays(-2).Date,
+            EditTimes = 0,
+            DueDate = DateTime.UtcNow.AddDays(2).Date
+        };
+        var todoItemDao2 = new TodoItemDao
+        {
+            Id = "5f9a7d8e2d3b4a1eb8a7d8e5",
+            Description = "Buy goods",
+            Done = false,
+            Favorite = false,
+            CreatedTimeDate = DateTime.UtcNow.Date,
+            LastModifiedTimeDate = DateTime.UtcNow.AddDays(-2).Date,
+            EditTimes = 0,
+            DueDate = DateTime.UtcNow.AddDays(2).Date
+        };
+        await _mongoCollection.InsertOneAsync(todoItemDao1);
+        await _mongoCollection.InsertOneAsync(todoItemDao2);
+
+        var toDoItemsList = _mongoRepository.findAllTodoItemsInOneday(DateTime.UtcNow.AddDays(2).Date);
+
+        var expectedToDoItemObjs = new List<ToDoItemObj>
+    {
+        new ToDoItemObj(todoItemDao1.Id, todoItemDao1.Description, todoItemDao1.Done, todoItemDao1.Favorite, todoItemDao1.CreatedTimeDate, todoItemDao1.LastModifiedTimeDate, todoItemDao1.EditTimes, todoItemDao1.DueDate),
+        new ToDoItemObj(todoItemDao2.Id, todoItemDao2.Description, todoItemDao2.Done, todoItemDao2.Favorite, todoItemDao2.CreatedTimeDate, todoItemDao2.LastModifiedTimeDate, todoItemDao2.EditTimes, todoItemDao2.DueDate)
+    };
+
+        Assert.NotNull(toDoItemsList);
+        Assert.Equal(expectedToDoItemObjs.Count, toDoItemsList.Count);
+        for (int i = 0; i < expectedToDoItemObjs.Count; i++)
+        {
+            Assert.Equal(expectedToDoItemObjs[i].Id, toDoItemsList[i].Id);
+            Assert.Equal(expectedToDoItemObjs[i].Description, toDoItemsList[i].Description);
+            Assert.Equal(expectedToDoItemObjs[i].Done, toDoItemsList[i].Done);
+            Assert.Equal(expectedToDoItemObjs[i].Favorite, toDoItemsList[i].Favorite);
+            Assert.Equal(expectedToDoItemObjs[i].CreatedTimeDate, toDoItemsList[i].CreatedTimeDate);
+            Assert.Equal(expectedToDoItemObjs[i].LastModifiedTimeDate, toDoItemsList[i].LastModifiedTimeDate);
+            Assert.Equal(expectedToDoItemObjs[i].EditTimes, toDoItemsList[i].EditTimes);
+            Assert.Equal(expectedToDoItemObjs[i].DueDate, toDoItemsList[i].DueDate);
+        }
+    }
+
+
 }

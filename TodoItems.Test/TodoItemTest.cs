@@ -63,7 +63,7 @@ public class TodoItemTest
             ));
         }
 
-        mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(todayItems);
+        mockRepository.Setup(repo => repo.findAllTodoItemsInOneday((DateTime)toDoItemModel.DueDate)).Returns(todayItems);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => toDoItemModel.CreateAsync(toDoItemModel, mockRepository.Object));
@@ -87,7 +87,7 @@ public class TodoItemTest
         );
 
         var todayItems = new List<ToDoItemObj>();
-        mockRepository.Setup(repo => repo.findAllTodoItemsInToday()).Returns(todayItems);
+        mockRepository.Setup(repo => repo.findAllTodoItemsInOneday((DateTime)toDoItemModel.DueDate)).Returns(todayItems);
 
         // Act
         var result = await toDoItemModel.CreateAsync(toDoItemModel, mockRepository.Object);

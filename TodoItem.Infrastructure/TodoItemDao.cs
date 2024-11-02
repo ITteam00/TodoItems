@@ -13,6 +13,6 @@ public class TodoItemDao{
     public DateTime CreatedTimeDate { get; set; }
     public DateTime LastModifiedTimeDate { get; set; }
     public int EditTimes { get; set; }
-    public DateTime? DueDate { get; set; }
+    public DateTime DueDate { get; set; }
 }
 
