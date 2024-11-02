@@ -42,7 +42,8 @@ public class TodoItemMongoRepository : ITodoItemsRepository
             todoItemDao.CreatedTimeDate,
             todoItemDao.LastModifiedTimeDate,
             todoItemDao.EditTimes,
-            todoItemDao.DueDate
+            todoItemDao.DueDate,
+            DueDateRequirementType.Earliest
         );
     }
 
@@ -72,18 +73,35 @@ public class TodoItemMongoRepository : ITodoItemsRepository
 
     public async Task<ToDoItemObj> CreateAsync(ToDoItemObj inputToDoItem)
     {
-        inputToDoItem.ValidateDueDate();
-
-        var itemsDueToday = findAllTodoItemsInOneday(inputToDoItem.DueDate);
-        Console.WriteLine($"Items due today: {itemsDueToday.Count}");
-        if (itemsDueToday.Count >= MAX_DUEDATE)
+        if (inputToDoItem.DueDate == null && inputToDoItem.DueDateRequirement == null)
         {
-            Console.WriteLine("Cannot add more than 8 ToDo items for today.");
+            throw new InvalidOperationException("Due Date and DueDateRequirement cannot be empty at the same time.");
+        }
 
-            throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
+        if (inputToDoItem.DueDate != null)
+        {
+            inputToDoItem.ValidateDueDate();
+            var itemsDueToday = findAllTodoItemsInOneday((DateTime)inputToDoItem.DueDate);
+            if (itemsDueToday.Count >= MAX_DUEDATE)
+            {
+                throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
+            }
+
+        } else
+        {
+            DateTime newDueDate = FindGoodDueDateByRequirement((DueDateRequirementType)inputToDoItem.DueDateRequirement);
+            inputToDoItem.DueDate = newDueDate;
         }
         await Save(inputToDoItem);
         return inputToDoItem;
+
+    }
+
+    private DateTime FindGoodDueDateByRequirement(DueDateRequirementType requirement)
+    {
+        throw new InvalidOperationException("11.");
+
+
     }
 
     public async Task<ToDoItemObj> ModifyItem(ToDoItemObj item)

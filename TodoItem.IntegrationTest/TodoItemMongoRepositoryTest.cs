@@ -87,7 +87,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             DateTime.UtcNow.Date,
             DateTime.UtcNow.Date,
             1,
-            DateTime.UtcNow.Date
+            DateTime.UtcNow.Date,
+            DueDateRequirementType.Earliest
         );
         var res = await _mongoRepository.Save(newTodoItemObj);
         var updatedTodoItem = await _mongoRepository.FindById("5f9a7d8e2d3b4a1eb8a7d8e3");
@@ -100,7 +101,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             DateTime.UtcNow.Date,
             DateTime.UtcNow.Date,
             1,
-            DateTime.UtcNow.Date
+            DateTime.UtcNow.Date,
+            DueDateRequirementType.Earliest
         );
 
 
@@ -144,8 +146,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
 
         var expectedToDoItemObjs = new List<ToDoItemObj>
     {
-        new ToDoItemObj(todoItemDao1.Id, todoItemDao1.Description, todoItemDao1.Done, todoItemDao1.Favorite, todoItemDao1.CreatedTimeDate, todoItemDao1.LastModifiedTimeDate, todoItemDao1.EditTimes, todoItemDao1.DueDate),
-        new ToDoItemObj(todoItemDao2.Id, todoItemDao2.Description, todoItemDao2.Done, todoItemDao2.Favorite, todoItemDao2.CreatedTimeDate, todoItemDao2.LastModifiedTimeDate, todoItemDao2.EditTimes, todoItemDao2.DueDate)
+        new ToDoItemObj(todoItemDao1.Id, todoItemDao1.Description, todoItemDao1.Done, todoItemDao1.Favorite, todoItemDao1.CreatedTimeDate, todoItemDao1.LastModifiedTimeDate, todoItemDao1.EditTimes, todoItemDao1.DueDate, DueDateRequirementType.Earliest),
+        new ToDoItemObj(todoItemDao2.Id, todoItemDao2.Description, todoItemDao2.Done, todoItemDao2.Favorite, todoItemDao2.CreatedTimeDate, todoItemDao2.LastModifiedTimeDate, todoItemDao2.EditTimes, todoItemDao2.DueDate, DueDateRequirementType.Earliest)
     };
 
         Assert.NotNull(toDoItemsList);
@@ -176,7 +178,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             DateTime.UtcNow.Date,
             DateTime.UtcNow.Date,
             1,
-            DateTime.UtcNow.AddDays(5).Date
+            DateTime.UtcNow.AddDays(5).Date,
+            DueDateRequirementType.Earliest
         );
         var res = await _mongoRepository.Save(newTodoItemObj);
         var todoItemInRepo = await _mongoRepository.FindById("5f9a7d8e2d3b4a1eb8a7d8e7");
@@ -205,7 +208,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             createdTimeDate: DateTime.Now,
             lastModifiedTimeDate: DateTime.Now,
             editTimes: 0,
-            dueDate: DateTime.Now.AddDays(-1) 
+            dueDate: DateTime.Now.AddDays(-1) ,
+            DueDateRequirementType.Earliest
         );
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.CreateAsync(todoItem));
@@ -239,7 +243,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             createdTimeDate: DateTime.UtcNow.Date,
             lastModifiedTimeDate: DateTime.UtcNow.Date,
             editTimes: 0,
-            dueDate: DateTime.UtcNow.Date
+            dueDate: DateTime.UtcNow.Date,
+            DueDateRequirementType.Earliest
         );
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.CreateAsync(newTodoItem));
@@ -258,7 +263,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             createdTimeDate: DateTime.UtcNow.Date,
             lastModifiedTimeDate: DateTime.UtcNow.Date,
             editTimes: 0,
-            dueDate: DateTime.UtcNow.AddDays(1).Date
+            dueDate: DateTime.UtcNow.AddDays(1).Date,
+            DueDateRequirementType.Earliest
         );
 
         var result = await _mongoRepository.CreateAsync(newTodoItem);
@@ -283,7 +289,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             createdTimeDate: DateTime.UtcNow.Date,
             lastModifiedTimeDate: DateTime.UtcNow.Date,
             editTimes: 1,
-            dueDate: DateTime.UtcNow.AddDays(1).Date
+            dueDate: DateTime.UtcNow.AddDays(1).Date,
+            DueDateRequirementType.Earliest
         );
 
         await _mongoRepository.Save(todoItem);
@@ -307,7 +314,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             createdTimeDate: DateTime.UtcNow.AddDays(-2).Date,
             lastModifiedTimeDate: DateTime.UtcNow.AddDays(-2).Date,
             editTimes: 3,
-            dueDate: DateTime.UtcNow.AddDays(1).Date
+            dueDate: DateTime.UtcNow.AddDays(1).Date,
+            DueDateRequirementType.Earliest
         );
 
         await _mongoRepository.Save(todoItem);
@@ -331,7 +339,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             createdTimeDate: DateTime.UtcNow.Date,
             lastModifiedTimeDate: DateTime.UtcNow.Date,
             editTimes: 3,
-            dueDate: DateTime.UtcNow.AddDays(1).Date
+            dueDate: DateTime.UtcNow.AddDays(1).Date,
+            dueDateRequirement: DueDateRequirementType.Earliest
         );
 
         await _mongoRepository.Save(todoItem);
@@ -339,6 +348,29 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.ModifyItem(todoItem));
         Assert.Equal("Too many edits", exception.Message);
+    }
+
+    [Fact]
+    public async Task should_Throw_when_InputDueDateAndRequirementTypeAreAllEmpty()
+    {
+        // Arrange
+        var todoItem = new ToDoItemObj(
+            id: "4f9a7d8e2d3b4a1eb8a7d8e8",
+            description: "Test ToDo Item",
+            done: false,
+            favorite: false,
+            createdTimeDate: DateTime.UtcNow.Date,
+            lastModifiedTimeDate: DateTime.UtcNow.Date,
+            editTimes: 3,
+            dueDate: null,
+            dueDateRequirement: null
+
+        );
+
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.CreateAsync(todoItem));
+        Assert.Equal("Due Date and DueDateRequirement cannot be empty at the same time.", exception.Message);
     }
 
 }
