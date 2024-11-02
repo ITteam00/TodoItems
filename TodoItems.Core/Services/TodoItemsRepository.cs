@@ -38,8 +38,8 @@ namespace TodoItems.Core.Services
             {
                 Id = item.Id,
                 Description = item.Description,
-                IsDone = item.isDone,
-                IsFavorite = item.isFavorite,
+                IsDone = item.IsDone,
+                IsFavorite = item.IsFavorite,
                 CreatedTime = item.CreatedTime,
                 DueDate = item.DueDate
             }).ToList();
@@ -52,8 +52,8 @@ namespace TodoItems.Core.Services
             {
                 Id = id,
                 Description = updatedTodoItem.Description,
-                isDone = updatedTodoItem.IsDone,
-                isFavorite = updatedTodoItem.IsFavorite,
+                IsDone = updatedTodoItem.IsDone,
+                IsFavorite = updatedTodoItem.IsFavorite,
                 CreatedTime = updatedTodoItem.CreatedTime,
             };
             await _ToDoItemsCollection.ReplaceOneAsync(x => x.Id == id, item);
@@ -65,8 +65,8 @@ namespace TodoItems.Core.Services
             {
                 Id = newTodoItem.Id,
                 Description = newTodoItem.Description,
-                isDone = newTodoItem.IsDone,
-                isFavorite = newTodoItem.IsFavorite,
+                IsDone = newTodoItem.IsDone,
+                IsFavorite = newTodoItem.IsFavorite,
                 CreatedTime = newTodoItem.CreatedTime,
             };
             _Logger.LogInformation($"Inserting new todo item to DB {newTodoItem.Id}");
