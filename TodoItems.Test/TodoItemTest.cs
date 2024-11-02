@@ -39,11 +39,11 @@ public class TodoItemTest
         List<DateTimeOffset> dateTimes = new List<DateTimeOffset>
         {
             new DateTimeOffset(2024, 10, 30, 14, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 1, 9, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 11, 2, 9, 0, 0, TimeSpan.Zero),
             new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 1, 17, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 1, 16, 2, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 1, 16, 2, 0, TimeSpan.Zero)
+            new DateTimeOffset(2024, 11, 2, 17, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 11, 2, 16, 2, 0, TimeSpan.Zero),
+            new DateTimeOffset(2024, 11, 2, 16, 2, 0, TimeSpan.Zero)
         };
         var updatedToDoItem = new TodoItemDTO
         {

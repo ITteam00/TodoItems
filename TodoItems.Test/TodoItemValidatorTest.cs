@@ -23,11 +23,11 @@ namespace TodoItems.Test
             List<DateTimeOffset> dateTimes = new List<DateTimeOffset>
             {
                 new DateTimeOffset(2024, 10, 30, 14, 0, 0, TimeSpan.Zero),
-                new DateTimeOffset(2024, 11, 1, 9, 0, 0, TimeSpan.Zero),
+                new DateTimeOffset(2024, 11, 2, 9, 0, 0, TimeSpan.Zero),
                 new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
-                new DateTimeOffset(2024, 11, 1, 17, 0, 0, TimeSpan.Zero),
-                new DateTimeOffset(2024, 11, 1, 16, 2, 0, TimeSpan.Zero),
-                new DateTimeOffset(2024, 11, 1, 16, 2, 0, TimeSpan.Zero)
+                new DateTimeOffset(2024, 11, 2, 17, 0, 0, TimeSpan.Zero),
+                new DateTimeOffset(2024, 11, 2, 16, 2, 0, TimeSpan.Zero),
+                new DateTimeOffset(2024, 11, 2, 16, 2, 0, TimeSpan.Zero)
             };
 
             Assert.Equal(4, _todoItemValidator.ModificationCount(dateTimes));
@@ -35,40 +35,47 @@ namespace TodoItems.Test
 
 
         [Fact]
-        public void CountDueDates_ShouldThrowArgumentNullException_WhenTodoItemsIsNull()
+        public void CountDueDates_ShouldReturnInitializedDictionary_WhenTodoItemsIsNull()
         {
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => _todoItemValidator.CountDueDates(null));
+            DateTimeOffset currentDate = DateTime.Now.Date;
+            var expected = Enumerable.Range(1, 5)
+                .ToDictionary(i => currentDate.AddDays(i), i => 0);
+
+            var result = _todoItemValidator.CountDueDates(null);
+
+            Assert.Equal(expected, result);
         }
 
         [Fact]
         public void CountDueDates_ShouldReturnCorrectCounts()
         {
-            // Arrange
+            DateTimeOffset currentDate = DateTime.Now.Date;
             var todoItems = new List<TodoItemDTO>
             {
                 new TodoItemDTO
                 {
-                    Id = "1", Description = "Task 1", DueDate = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero)
+                    Id = "1", Description = "Task 1", DueDate = new DateTimeOffset(2024, 11, 3, 0, 0, 0, TimeSpan.Zero)
                 },
                 new TodoItemDTO
                 {
-                    Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero)
+                    Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(2024, 11, 3, 0, 0, 0, TimeSpan.Zero)
                 },
                 new TodoItemDTO
                 {
-                    Id = "3", Description = "Task 3", DueDate = new DateTimeOffset(2024, 11, 2, 0, 0, 0, TimeSpan.Zero)
-                },
-                new TodoItemDTO { Id = "4", Description = "Task 4", DueDate = null }
+                    Id = "3", Description = "Task 3", DueDate = new DateTimeOffset(2024, 11, 4, 0, 0, 0, TimeSpan.Zero)
+                }
             };
+
+            var expected = Enumerable.Range(1, 5)
+                .ToDictionary(i => currentDate.AddDays(i), i => 0);
+            expected[new DateTime(2024, 11, 3)] = 2;
+            expected[new DateTime(2024, 11, 4)] = 1;
 
             // Act
             var result = _todoItemValidator.CountDueDates(todoItems);
 
             // Assert
-            Assert.Equal(2, result.Count);
-            Assert.Equal(2, result[new DateTime(2024, 11, 1)]);
-            Assert.Equal(1, result[new DateTime(2024, 11, 2)]);
+            Assert.Equal(expected, result);
         }
 
 
@@ -112,7 +119,7 @@ namespace TodoItems.Test
             };
 
             // Act
-            var result = _todoItemValidator.CanModify(updatedToDoItem);
+            var result = _todoItemValidator.CanCreate(updatedToDoItem);
 
             // Assert
             Assert.False(result);
@@ -133,7 +140,7 @@ namespace TodoItems.Test
             };
 
             // Act
-            var result = _todoItemValidator.CanModify(updatedToDoItem);
+            var result = _todoItemValidator.CanCreate(updatedToDoItem);
 
             // Assert
             Assert.True(result);

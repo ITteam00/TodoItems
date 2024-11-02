@@ -12,22 +12,38 @@ namespace TodoItems.Core.Validator
             return count;
         }
 
-        public Dictionary<DateTime, int> CountDueDates(List<TodoItemDTO> todoItems)
+        public Dictionary<DateTimeOffset, int> CountDueDates(List<TodoItemDTO> todoItems)
         {
-            if (todoItems == null)
+            DateTimeOffset currentDate = DateTimeOffset.Now.Date;
+
+            var dueDateCounts = new Dictionary<DateTimeOffset, int>();
+            for (int i = 1; i <= 5; i++)
             {
-                throw new ArgumentNullException(nameof(todoItems));
+                dueDateCounts[currentDate.AddDays(i)] = 0;
             }
 
-            var dueDateCounts = todoItems
+            if (todoItems == null)
+            {
+                return dueDateCounts;
+            }
+
+            var countedDueDates = todoItems
                 .Where(item => item.DueDate.HasValue)
                 .GroupBy(item => item.DueDate.Value.Date)
                 .ToDictionary(group => group.Key, group => group.Count());
 
+            foreach (var kvp in countedDueDates)
+            {
+                if (dueDateCounts.ContainsKey(kvp.Key))
+                {
+                    dueDateCounts[kvp.Key] = kvp.Value;
+                }
+            }
+
             return dueDateCounts;
         }
 
-        public bool CanModify(TodoItemDTO updatedTodoItem)
+        public bool CanCreate(TodoItemDTO updatedTodoItem)
         {
             var ModifiedTimes = updatedTodoItem.ModificationDateTimes;
             ModifiedTimes = ModifiedTimes.Where(t => IsTodady(t)).ToList();
