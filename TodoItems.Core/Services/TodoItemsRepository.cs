@@ -29,7 +29,7 @@ namespace TodoItems.Core.Services
             _Logger = logger;
         }
 
-        public async Task<List<TodoItemDTO>> GetItemsByDueDate(DateTimeOffset dueDate)
+        public async Task<List<TodoItemDTO>> GetItemsByDueDate(DateTimeOffset? dueDate)
         {
             var filter = Builders<TodoItemMongoDTO>.Filter.Eq(item => item.DueDate, dueDate);
             var todoItems = await _ToDoItemsCollection.Find(filter).ToListAsync();
