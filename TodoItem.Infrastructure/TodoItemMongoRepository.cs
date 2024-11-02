@@ -10,6 +10,8 @@ namespace TodoItem.Infrastructure;
 public class TodoItemMongoRepository : ITodoItemsRepository
 {
     private readonly IMongoCollection<TodoItemDao?> _todosCollection;
+    private const int MAX_DUEDATE = 8;
+
 
     public TodoItemMongoRepository(IOptions<TodoStoreDatabaseSettings> todoStoreDatabaseSettings)
     {
@@ -66,6 +68,42 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         var todoItemsDao = _todosCollection.Find(filter).ToList();
 
         return todoItemsDao.Select(ConvertToTodoItem).ToList();
+    }
+
+    public async Task<ToDoItemObj> CreateAsync(ToDoItemObj inputToDoItem)
+    {
+        inputToDoItem.ValidateDueDate();
+
+        var itemsDueToday = findAllTodoItemsInOneday(inputToDoItem.DueDate);
+        Console.WriteLine($"Items due today: {itemsDueToday.Count}");
+        if (itemsDueToday.Count >= MAX_DUEDATE)
+        {
+            Console.WriteLine("Cannot add more than 8 ToDo items for today.");
+
+            throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
+        }
+        await Save(inputToDoItem);
+        return inputToDoItem;
+    }
+
+    public async Task<ToDoItemObj> ModifyItem(ToDoItemObj item)
+    {
+        DateTime lastModifiedDate = item.LastModifiedTimeDate;
+        DateTime currentDate = DateTimeOffset.Now.Date;
+        TimeSpan difference = currentDate - lastModifiedDate;
+
+        if (difference.Days >= 1)
+        {
+            item.EditTimes = 1;
+        }
+        else
+        {
+            item.IncrementEditTimes();
+        }
+
+        item.LastModifiedTimeDate = currentDate;
+        await Save(item);
+        return item;
     }
 
 }

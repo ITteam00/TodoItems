@@ -24,7 +24,6 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             TodoItemsCollectionName = "Todos"
         });
 
-        // ??? TodoService
         _mongoRepository = new TodoItemMongoRepository(mockSettings.Object);
 
         var mongoClient = new MongoClient("mongodb://localhost:27017");
@@ -32,14 +31,11 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         _mongoCollection = mongoDatabase.GetCollection<TodoItemDao>("Todos");
     }
 
-    // IAsyncLifetime ?? InitializeAsync ??????????
     public async Task InitializeAsync()
     {
-        // ????
         await _mongoCollection.DeleteManyAsync(FilterDefinition<TodoItemDao>.Empty);
     }
 
-    // DisposeAsync ?????????????????
     public Task DisposeAsync() => Task.CompletedTask;
 
 
@@ -198,5 +194,151 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
 
     }
 
+    [Fact]
+    public async Task CreateAsync_ShouldThrowInvalidOperationException_WhenDueDateIsBeforeCreatedTimeDate()
+    {
+        var todoItem = new ToDoItemObj(
+            id: "1",
+            description: "Test ToDo Item",
+            done: false,
+            favorite: false,
+            createdTimeDate: DateTime.Now,
+            lastModifiedTimeDate: DateTime.Now,
+            editTimes: 0,
+            dueDate: DateTime.Now.AddDays(-1) 
+        );
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.CreateAsync(todoItem));
+        Assert.Equal("Due date cannot be before creation date", exception.Message);
+    }
+
+    [Fact]
+    public async Task CreateAsync_ShouldThrowInvalidOperationException_WhenMoreThan8ItemsExistForToday()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            var todoItemDao = new TodoItemDao
+            {
+                Id = $"{2+i}f9a7d8e1d3b4a1eb8a7d8e8",
+                Description = $"Test ToDo Item {i}",
+                Done = false,
+                Favorite = false,
+                CreatedTimeDate = DateTime.UtcNow.Date,
+                LastModifiedTimeDate = DateTime.UtcNow.Date,
+                EditTimes = 0,
+                DueDate = DateTime.UtcNow.Date
+            };
+            await _mongoCollection.InsertOneAsync(todoItemDao);
+        }
+
+        var newTodoItem = new ToDoItemObj(
+            id: "1f9a7d8e2d3b4a1eb8a7d8e8",
+            description: "New ToDo Item",
+            done: false,
+            favorite: false,
+            createdTimeDate: DateTime.UtcNow.Date,
+            lastModifiedTimeDate: DateTime.UtcNow.Date,
+            editTimes: 0,
+            dueDate: DateTime.UtcNow.Date
+        );
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.CreateAsync(newTodoItem));
+        Assert.Equal("Cannot add more than 8 ToDo items for today.", exception.Message);
+    }
+
+
+    [Fact]
+    public async Task CreateAsync_ShouldReturnToDoItemModel_WhenDueDateIsAfterCreatedTimeDate_AndItemsAreLessThan8()
+    {
+        var newTodoItem = new ToDoItemObj(
+            id: "3f9a7d8e2d3b4a1eb8a7d8e8",
+            description: "New ToDo Item",
+            done: false,
+            favorite: false,
+            createdTimeDate: DateTime.UtcNow.Date,
+            lastModifiedTimeDate: DateTime.UtcNow.Date,
+            editTimes: 0,
+            dueDate: DateTime.UtcNow.AddDays(1).Date
+        );
+
+        var result = await _mongoRepository.CreateAsync(newTodoItem);
+
+        Assert.NotNull(result);
+        Assert.Equal(newTodoItem.Id, result.Id);
+        Assert.Equal(newTodoItem.Description, result.Description);
+        Assert.Equal(newTodoItem.DueDate, result.DueDate);
+    }
+
+
+
+    [Fact]
+    public async Task should_add_1_when_edit_if_EditTimes_is_small_and_same_dayAsync()
+    {
+        // Arrange
+        var todoItem = new ToDoItemObj(
+            id: "3f9a7d8e2d3b4a1eb8a7d8e8",
+            description: "Test ToDo Item",
+            done: false,
+            favorite: false,
+            createdTimeDate: DateTime.UtcNow.Date,
+            lastModifiedTimeDate: DateTime.UtcNow.Date,
+            editTimes: 1,
+            dueDate: DateTime.UtcNow.AddDays(1).Date
+        );
+
+        await _mongoRepository.Save(todoItem);
+
+        // Act
+        var updatedItem = await _mongoRepository.ModifyItem(todoItem);
+
+        // Assert
+        Assert.Equal(2, updatedItem.EditTimes);
+    }
+
+    [Fact]
+    public async Task should_return_1_when_edit_if_EditTimes_is_big_but_different_day()
+    {
+        // Arrange
+        var todoItem = new ToDoItemObj(
+            id: "3f9a7d8e2d3b4a1eb8a7d8e8",
+            description: "Test ToDo Item",
+            done: false,
+            favorite: false,
+            createdTimeDate: DateTime.UtcNow.AddDays(-2).Date,
+            lastModifiedTimeDate: DateTime.UtcNow.AddDays(-2).Date,
+            editTimes: 3,
+            dueDate: DateTime.UtcNow.AddDays(1).Date
+        );
+
+        await _mongoRepository.Save(todoItem);
+
+        // Act
+        var updatedItem = await _mongoRepository.ModifyItem(todoItem);
+
+        // Assert
+        Assert.Equal(1, updatedItem.EditTimes);
+    }
+
+    [Fact]
+    public async Task should_Throw_when_edit_if_EditTimes_is_big()
+    {
+        // Arrange
+        var todoItem = new ToDoItemObj(
+            id: "3f9a7d8e2d3b4a1eb8a7d8e8",
+            description: "Test ToDo Item",
+            done: false,
+            favorite: false,
+            createdTimeDate: DateTime.UtcNow.Date,
+            lastModifiedTimeDate: DateTime.UtcNow.Date,
+            editTimes: 3,
+            dueDate: DateTime.UtcNow.AddDays(1).Date
+        );
+
+        await _mongoRepository.Save(todoItem);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.ModifyItem(todoItem));
+        Assert.Equal("Too many edits", exception.Message);
+    }
 
 }

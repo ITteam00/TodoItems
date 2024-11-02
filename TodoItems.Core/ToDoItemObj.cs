@@ -14,8 +14,7 @@ namespace ToDoItem.Api.Models
         public DateTime DueDate { get; set; }
 
 
-        private const int MAX_EDIT_Times = 2;
-        private const int MAX_DUEDATE = 8;
+        private const int MAX_EDIT_Times = 3;
 
 
 
@@ -37,64 +36,22 @@ namespace ToDoItem.Api.Models
             throw new NotImplementedException();
         }
 
-        public async Task<ToDoItemObj> CreateAsync(ToDoItemObj inputToDoItem, ITodoItemsRepository todosRepository)
+        public void ValidateDueDate()
         {
-            if (inputToDoItem.DueDate < inputToDoItem.CreatedTimeDate)
+            if (DueDate < CreatedTimeDate)
             {
-                throw new InvalidOperationException("due date cannot be before creation date");
+                throw new InvalidOperationException("Due date cannot be before creation date");
             }
-
-            var ItemsDueToday = todosRepository.findAllTodoItemsInOneday(inputToDoItem.DueDate);
-            if (ItemsDueToday.Count >= MAX_DUEDATE)
-            {
-                throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
-            }
-            await todosRepository.Save(inputToDoItem);
-
-
-            return inputToDoItem;
         }
 
-        public async Task<ToDoItemObj> ModifyItem(ToDoItemObj item, ITodoItemsRepository todosRepository)
+        public void IncrementEditTimes()
         {
-            DateTime lastModifiedDate = item.LastModifiedTimeDate;
-            DateTime currentDate = DateTimeOffset.Now.Date;
-            TimeSpan difference = currentDate - lastModifiedDate;
-            if (difference.Days >= 1)
-            {
-                item = await AddEditTimes(item, todosRepository);
-                item.EditTimes = 1;
-                return item;
-            }
-            if (item.EditTimes <= MAX_EDIT_Times)
-            {
-                item = await AddEditTimes(item, todosRepository);
-                return item;
-            }
-            else
+            if (EditTimes >= MAX_EDIT_Times)
             {
                 throw new InvalidOperationException("Too many edits");
             }
+            EditTimes++;
         }
-
-        public async Task<ToDoItemObj> AddEditTimes(ToDoItemObj item, ITodoItemsRepository todosRepository)
-        {
-            var updatedItem = new ToDoItemObj(
-                item.Id,
-                item.Description,
-                item.Done,
-                item.Favorite,
-                item.CreatedTimeDate,
-                DateTimeOffset.Now.Date,
-                item.EditTimes + 1,
-                item.DueDate
-            );
-
-            await todosRepository.Save(updatedItem);
-            return updatedItem;
-        }
-
-
 
     }
 }
