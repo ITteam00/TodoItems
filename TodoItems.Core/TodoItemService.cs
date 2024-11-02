@@ -4,10 +4,10 @@ namespace TodoItems.Core;
 
 public class TodoItemService
 {
-    private readonly ItodosRepository _todosRepository;
+    private readonly ITodoItemsRepository _todosRepository;
     public List<DateTime>? TimeStamps;
 
-    public TodoItemService(ItodosRepository todosRepository)
+    public TodoItemService(ITodoItemsRepository todosRepository)
     {
         _todosRepository = todosRepository;
     }
@@ -21,11 +21,11 @@ public class TodoItemService
         if (ModifyItem(NewTodoItem.CreatedDate))
             NewTodoItem.Description = "update";
     }
-    public bool CreateItem(TodoItemDto NewTodoItem)
+    public async Task<bool> CreateItem(TodoItemDto NewTodoItem)
     {
         if (NewTodoItem.CreatedDate > NewTodoItem.DueDate) return false;
-        var TodoItems = _todosRepository.FindAllTodoItemsInDueDate();
-        if (TodoItems.Count > 8) return false;
+        int TodoItemCount = await _todosRepository.GetAllTodoItemsCountInDueDate(NewTodoItem.DueDate);
+        if (TodoItemCount > 8) return false;
         return true;
     }
     public bool ModifyItem(DateTime CreatedDate)
