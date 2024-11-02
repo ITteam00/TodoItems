@@ -9,26 +9,26 @@ namespace TodoItem.Infrastructure;
 
 public class TodoItemMongoRepository : ITodoItemsRepository
 {
-    private readonly IMongoCollection<TodoItemPo?> _todosCollection;
+    private readonly IMongoCollection<TodoItemDao?> _todosCollection;
 
     public TodoItemMongoRepository(IOptions<TodoStoreDatabaseSettings> todoStoreDatabaseSettings)
     {
         var mongoClient = new MongoClient(todoStoreDatabaseSettings.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(todoStoreDatabaseSettings.Value.DatabaseName);
-        _todosCollection = mongoDatabase.GetCollection<TodoItemPo>(todoStoreDatabaseSettings.Value.TodoItemsCollectionName);
+        _todosCollection = mongoDatabase.GetCollection<TodoItemDao>(todoStoreDatabaseSettings.Value.TodoItemsCollectionName);
     }
 
     public async Task<ToDoItemObj> FindById(string? id)
     {
-        FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.Eq(x => x.Id, id);
-        TodoItemPo? todoItemPo = await _todosCollection.Find(filter).FirstOrDefaultAsync();
+        FilterDefinition<TodoItemDao?> filter = Builders<TodoItemDao>.Filter.Eq(x => x.Id, id);
+        TodoItemDao? todoItemPo = await _todosCollection.Find(filter).FirstOrDefaultAsync();
 
         // 将 TodoItemPo 转换为 TodoItem
         ToDoItemObj todoItem = ConvertToTodoItem(todoItemPo);
         return todoItem;
     }
 
-    private ToDoItemObj ConvertToTodoItem(TodoItemPo? todoItemPo)
+    private ToDoItemObj ConvertToTodoItem(TodoItemDao? todoItemPo)
     {
         if (todoItemPo == null) return null;
 
