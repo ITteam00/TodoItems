@@ -17,19 +17,19 @@ namespace TodoItems.Test
     public class TodoItemRepositoryTest
     {
         private readonly Mock<IMongoCollection<TodoItemMongoDTO>> _mockCollection;
-        private readonly Mock<ILogger<ToDoItemsService>> _mockLogger;
+        private readonly Mock<IMongoDatabase> _mockDatabase;
+        private readonly Mock<IMongoClient> _mockClient;
         private readonly Mock<IOptions<ToDoItemDatabaseSettings>> _mockSettings;
+        private readonly Mock<ILogger<ToDoItemsService>> _mockLogger;
         private readonly TodoItemsRepository _repository;
-        private readonly Mock<IFindFluent<TodoItemMongoDTO, TodoItemMongoDTO>> _mockFindFluent;
-        private readonly Mock<IAsyncCursor<TodoItemMongoDTO>> _mockCursor;
 
         public TodoItemRepositoryTest()
         {
-            _mockFindFluent = new Mock<IFindFluent<TodoItemMongoDTO, TodoItemMongoDTO>>();
             _mockCollection = new Mock<IMongoCollection<TodoItemMongoDTO>>();
-            _mockLogger = new Mock<ILogger<ToDoItemsService>>();
+            _mockDatabase = new Mock<IMongoDatabase>();
+            _mockClient = new Mock<IMongoClient>();
             _mockSettings = new Mock<IOptions<ToDoItemDatabaseSettings>>();
-            _mockCursor = new Mock<IAsyncCursor<TodoItemMongoDTO>>();
+            _mockLogger = new Mock<ILogger<ToDoItemsService>>();
 
             var settings = new ToDoItemDatabaseSettings
             {
@@ -39,13 +39,52 @@ namespace TodoItems.Test
             };
             _mockSettings.Setup(s => s.Value).Returns(settings);
 
+            _mockClient.Setup(c => c.GetDatabase(settings.DatabaseName, null)).Returns(_mockDatabase.Object);
+            _mockDatabase.Setup(d => d.GetCollection<TodoItemMongoDTO>(settings.CollectionName, null))
+                .Returns(_mockCollection.Object);
+
             _repository = new TodoItemsRepository(_mockSettings.Object, _mockLogger.Object);
         }
 
         public async Task InitializeAsync()
         {
         }
+
         public Task DisposeAsync() => Task.CompletedTask;
+
+        [Fact]
+        public async Task GetItemsByDueDate_ReturnsCorrectItems()
+        {
+            var dueDate = DateTimeOffset.Now.Date;
+            var todoItems = new List<TodoItemMongoDTO>
+            {
+                new TodoItemMongoDTO { Id = "1", Description = "Test 1", DueDate = dueDate },
+                new TodoItemMongoDTO { Id = "2", Description = "Test 2", DueDate = dueDate }
+            };
+
+            var mockCursor = new Mock<IAsyncCursor<TodoItemMongoDTO>>();
+            mockCursor.Setup(_ => _.Current).Returns(todoItems);
+            mockCursor
+                .SetupSequence(_ => _.MoveNext(It.IsAny<CancellationToken>()))
+                .Returns(true)
+                .Returns(false);
+            mockCursor
+                .SetupSequence(_ => _.MoveNextAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true)
+                .ReturnsAsync(false);
+
+            _mockCollection.Setup(c => c.FindAsync(
+                    It.IsAny<FilterDefinition<TodoItemMongoDTO>>(),
+                    It.IsAny<FindOptions<TodoItemMongoDTO, TodoItemMongoDTO>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockCursor.Object);
+
+            var result = await _repository.GetItemsByDueDate(dueDate);
+
+            Assert.Equal(2, result.Count);
+            Assert.Equal("Test 1", result[0].Description);
+            Assert.Equal("Test 2", result[1].Description);
+        }
 
         [Fact]
         public async Task UpdateAsync_ShouldReplaceOneAsync()
@@ -61,46 +100,6 @@ namespace TodoItems.Test
             };
             await _repository.UpdateAsync(id, updatedTodoItem);
             Assert.NotNull(updatedTodoItem);
-        }
-
-        [Fact]
-        public async Task GetItemsByDueDate_ReturnsTodoItems()
-        {
-            // Arrange
-            var dueDate = DateTimeOffset.Now;
-            var todoItems = new List<TodoItemMongoDTO>
-            {
-                new TodoItemMongoDTO
-                {
-                    Id = "1", Description = "Test 1", IsDone = false, IsFavorite = true,
-                    CreatedTime = DateTimeOffset.Now, DueDate = dueDate
-                },
-                new TodoItemMongoDTO
-                {
-                    Id = "2", Description = "Test 2", IsDone = true, IsFavorite = false,
-                    CreatedTime = DateTimeOffset.Now, DueDate = dueDate
-                }
-            };
-
-            _mockCursor.SetupSequence(x => x.MoveNext(It.IsAny<CancellationToken>()))
-                .Returns(true)
-                .Returns(false);
-            _mockCursor.SetupSequence(x => x.MoveNextAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(true)
-                .ReturnsAsync(false);
-            _mockCursor.Setup(x => x.Current).Returns(todoItems);
-
-            _mockFindFluent.Setup(m => m.ToCursor(It.IsAny<CancellationToken>())).Returns(_mockCursor.Object);
-            _mockCollection.Setup(c => c.Find(It.IsAny<FilterDefinition<TodoItemMongoDTO>>(), null))
-                .Returns(_mockFindFluent.Object);
-
-            // Act
-            var result = await _repository.GetItemsByDueDate(dueDate);
-
-            // Assert
-            Assert.Equal(2, result.Count);
-            Assert.Equal("Test 1", result[0].Description);
-            Assert.Equal("Test 2", result[1].Description);
         }
 
         [Fact]
@@ -125,10 +124,8 @@ namespace TodoItems.Test
                 CreatedTime = newTodoItem.CreatedTime,
             };
 
-            // Act
             await _repository.CreateAsync(newTodoItem);
 
-            // Assert
             _mockCollection.Verify(c => c.InsertOneAsync(It.Is<TodoItemMongoDTO>(i => i.Id == item.Id &&
                         i.Description == item.Description &&
                         i.IsDone == item.IsDone &&
@@ -139,6 +136,42 @@ namespace TodoItems.Test
                 Times.Once);
 
             _mockLogger.Verify(l => l.LogInformation($"Inserting new todo item to DB {newTodoItem.Id}"), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task GetNextFiveDaysItems_ReturnsCorrectItems()
+        {
+            // Arrange
+            var startDate = DateTimeOffset.Now.Date;
+            var todoItems = new List<TodoItemMongoDTO>
+            {
+                new TodoItemMongoDTO { Id = "1", Description = "Test 1", DueDate = startDate.AddDays(1) },
+                new TodoItemMongoDTO { Id = "2", Description = "Test 2", DueDate = startDate.AddDays(2) }
+            };
+
+            var mockCursor = new Mock<IAsyncCursor<TodoItemMongoDTO>>();
+            mockCursor.Setup(_ => _.Current).Returns(todoItems);
+            mockCursor
+                .SetupSequence(_ => _.MoveNext(It.IsAny<CancellationToken>()))
+                .Returns(true)
+                .Returns(false);
+            mockCursor
+                .SetupSequence(_ => _.MoveNextAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true)
+                .ReturnsAsync(false);
+
+            _mockCollection.Setup(c => c.FindAsync(
+                    It.IsAny<FilterDefinition<TodoItemMongoDTO>>(),
+                    It.IsAny<FindOptions<TodoItemMongoDTO, TodoItemMongoDTO>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockCursor.Object);
+
+            var result = await _repository.GetNextFiveDaysItems(startDate);
+
+            Assert.Equal(2, result.Count);
+            Assert.Equal("Test 1", result[0].Description);
+            Assert.Equal("Test 2", result[1].Description);
         }
     }
 }
