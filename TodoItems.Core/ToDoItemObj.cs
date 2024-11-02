@@ -18,6 +18,7 @@ namespace ToDoItem.Api.Models
         private const int MAX_DUEDATE = 8;
 
 
+
         public ToDoItemObj(string id, string description, bool done, bool favorite, DateTime createdTimeDate, DateTime lastModifiedTimeDate, int editTimes, DateTime dueDate)
         {
             
@@ -48,24 +49,26 @@ namespace ToDoItem.Api.Models
             {
                 throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
             }
+            await todosRepository.Save(inputToDoItem);
+
 
             return inputToDoItem;
         }
 
-        public async Task<ToDoItemObj> ModifyItem(ToDoItemObj item)
+        public async Task<ToDoItemObj> ModifyItem(ToDoItemObj item, ITodoItemsRepository todosRepository)
         {
             DateTime lastModifiedDate = item.LastModifiedTimeDate;
             DateTime currentDate = DateTimeOffset.Now.Date;
             TimeSpan difference = currentDate - lastModifiedDate;
             if (difference.Days >= 1)
             {
-                item = await Task.FromResult(AddEditTimes(item));
+                item = await AddEditTimes(item, todosRepository);
                 item.EditTimes = 1;
                 return item;
             }
             if (item.EditTimes <= MAX_EDIT_Times)
             {
-                item = await Task.FromResult(AddEditTimes(item));
+                item = await AddEditTimes(item, todosRepository);
                 return item;
             }
             else
@@ -74,9 +77,9 @@ namespace ToDoItem.Api.Models
             }
         }
 
-        public ToDoItemObj AddEditTimes(ToDoItemObj item)
+        public async Task<ToDoItemObj> AddEditTimes(ToDoItemObj item, ITodoItemsRepository todosRepository)
         {
-            return new ToDoItemObj(
+            var updatedItem = new ToDoItemObj(
                 item.Id,
                 item.Description,
                 item.Done,
@@ -86,6 +89,9 @@ namespace ToDoItem.Api.Models
                 item.EditTimes + 1,
                 item.DueDate
             );
+
+            await todosRepository.Save(updatedItem);
+            return updatedItem;
         }
 
 

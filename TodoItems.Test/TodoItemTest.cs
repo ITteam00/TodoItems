@@ -101,6 +101,8 @@ public class TodoItemTest
     [Fact]
     public async Task should_add_1_when_edit_if_EditTimes_is_small_and_same_dayAsync()
     {
+        var mockRepository = new Mock<ITodoItemsRepository>();
+        var todosRepository = mockRepository.Object;
 
         var itemNow = new ToDoItemObj(
             id: "1",
@@ -112,7 +114,7 @@ public class TodoItemTest
             editTimes: 0,
             dueDate: DateTimeOffset.Now.AddDays(2).Date
         );
-        ToDoItemObj itemAfterEdit = await itemNow.ModifyItem(itemNow);
+        ToDoItemObj itemAfterEdit = await itemNow.ModifyItem(itemNow, todosRepository);
 
         var expectedItem = new ToDoItemObj(
             id: "1",
@@ -143,7 +145,8 @@ public class TodoItemTest
     [Fact]
     public async Task should_add_1_when_edit_if_EditTimes_is_big_but_different_day()
     {
-
+        var mockRepository = new Mock<ITodoItemsRepository>();
+        var todosRepository = mockRepository.Object;
         var itemToBeEdit = new ToDoItemObj(
             id: "1",
             description: "Item 1",
@@ -154,7 +157,7 @@ public class TodoItemTest
             editTimes: 3,
             dueDate: DateTime.Now.AddDays(2).Date
         );
-        ToDoItemObj itemAfterEdit = await itemToBeEdit.ModifyItem(itemToBeEdit);
+        ToDoItemObj itemAfterEdit = await itemToBeEdit.ModifyItem(itemToBeEdit, todosRepository);
 
         var expectedItem = new ToDoItemObj(
             id: "1",
@@ -174,7 +177,8 @@ public class TodoItemTest
     [Fact]
     public async Task should_alert_when_edit_if_EditTimes_is_big()
     {
-
+        var mockRepository = new Mock<ITodoItemsRepository>();
+        var todosRepository = mockRepository.Object;
         var itemNow = new ToDoItemObj(
             id: "1",
             description: "Item 1",
@@ -186,7 +190,7 @@ public class TodoItemTest
             dueDate: DateTime.Now.AddDays(2).Date
         );
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => itemNow.ModifyItem(itemNow));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => itemNow.ModifyItem(itemNow, todosRepository));
 
         Assert.Equal("Too many edits", exception.Message);
     }
