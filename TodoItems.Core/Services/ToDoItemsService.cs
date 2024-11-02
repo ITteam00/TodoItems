@@ -20,28 +20,28 @@ namespace TodoItems.Core.Services
         }
 
 
-
         public async Task UpdateAsync(string id, TodoItemDTO updatedTodoItem)
         {
             var modificationCount = _todoItemValidator.ModificationCount(updatedTodoItem.ModificationDateTimes);
             if (modificationCount >= 3)
             {
-                throw new TooManyEntriesException("to many");
+                throw new TooManyEntriesException("too many");
             }
 
             await _todosRepository.UpdateAsync(id, updatedTodoItem);
         }
 
 
-        public async Task CreateAsync(TodoItemDTO createTodoItem,string type)
+        public async Task CreateAsync(TodoItemDTO createTodoItem, string type)
         {
             if (createTodoItem.DueDate != null)
             {
-                var dueDateItems =await _todosRepository.GetItemsByDueDate(createTodoItem.DueDate);
+                var dueDateItems = await _todosRepository.GetItemsByDueDate(createTodoItem.DueDate);
                 if (dueDateItems.Count > 8)
                 {
                     throw new Exception("too many");
                 }
+
                 await _todosRepository.CreateAsync(createTodoItem);
             }
             else
@@ -53,7 +53,6 @@ namespace TodoItems.Core.Services
                 await _todosRepository.CreateAsync(createTodoItem);
             }
         }
-
     }
 
     public class TooManyEntriesException : Exception
