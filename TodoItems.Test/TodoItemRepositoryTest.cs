@@ -72,6 +72,8 @@ namespace TodoItems.Test
                 .SetupSequence(_ => _.MoveNextAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true)
                 .ReturnsAsync(false);
+            
+            mockCursor.Setup(_ => _.Current).Returns(todoItems);
 
             _mockCollection.Setup(c => c.FindAsync(
                     It.IsAny<FilterDefinition<TodoItemMongoDTO>>(),
