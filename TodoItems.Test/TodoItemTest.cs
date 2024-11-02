@@ -2,14 +2,13 @@ using Castle.Core.Logging;
 using Moq;
 using System.Runtime.ConstrainedExecution;
 using TodoItems.Core;
-using TodoItems.Core.services;
 
 namespace TodoItems.Test;
 
 public class TodoItemTest
 {
     private readonly ITodoItemService _service;
-    private readonly ITodoRepository _todoRepository;
+    private readonly ITodoItemsRepository _todoRepository;
 
     public TodoItemTest(){
         _service=new TodoItemService(_todoRepository);
@@ -18,7 +17,7 @@ public class TodoItemTest
     [Fact]
     public void should_update_when_time_less_than_three()
     {
-        var oldItem = new TodoItemDto()
+        var oldItem = new TodoItem()
         {
             Id = "1",
             Description = "old item description",
@@ -27,7 +26,7 @@ public class TodoItemTest
             IsFavorite = false,
             ModifyTime= [],
         };
-        var updateItem = new TodoItemDto()
+        var updateItem = new TodoItem()
         {
             Id = "1",
             Description = "should update description",
@@ -47,16 +46,16 @@ public class TodoItemTest
     [Fact]
     public void should_throw_exception_when_time_more_than_three()
     {
-        var oldItem = new TodoItemDto()
+        var oldItem = new TodoItem()
         {
             Id = "1",
             Description = "old item description",
             CreateTime = DateTime.Now,
             IsComplete = false,
             IsFavorite = false,
-            ModifyTime = [new DateTime(2024, 10, 31, 00, 00, 01), new DateTime(2024, 10, 31, 00, 01, 01), new DateTime(2024, 10, 31, 01, 00, 01)],
+            ModifyTime = [new DateTime(2024, 11, 1, 00, 00, 01), new DateTime(2024, 11, 1, 00, 01, 01), new DateTime(2024, 11, 1, 01, 00, 01)],
         };
-        var updateItem = new TodoItemDto()
+        var updateItem = new TodoItem()
         {
             Id = "1",
             Description = "should update description",
@@ -76,7 +75,7 @@ public class TodoItemTest
     [Fact]
     public void should_update_todoItem_when_across_day()
     {
-        var oldItem = new TodoItemDto()
+        var oldItem = new TodoItem()
         {
             Id = "1",
             Description = "old item description",
@@ -85,7 +84,7 @@ public class TodoItemTest
             IsFavorite = false,
             ModifyTime = [new DateTime(2024, 10, 30, 00, 00, 01), new DateTime(2024, 10, 30, 00, 01, 01), new DateTime(2024, 10, 30, 01, 00, 01)],
         };
-        var updateItem = new TodoItemDto()
+        var updateItem = new TodoItem()
         {
             Id = "1",
             Description = "should update description",
@@ -102,16 +101,16 @@ public class TodoItemTest
     [Fact]
     public void should_create_failed_when_item_count_morethan_eight()
     {
-        var _todoRepository = new Mock<ITodoRepository>();
+        var _todoRepository = new Mock<ITodoItemsRepository>();
         var _service = new TodoItemService(_todoRepository.Object);
 
-        var expectReturn = new List<TodoItemDto>();
+        var expectReturn = new List<TodoItem>();
         for (var i = 0; i < 9; i++)
         {
-            expectReturn.Add(new TodoItemDto());
+            expectReturn.Add(new TodoItem());
         }
         _todoRepository.Setup(repo => repo.getAllItemsCountInToday(It.IsAny<DateTime>())).Returns(expectReturn);
-        var todoItem = new TodoItemDto()
+        var todoItem = new TodoItem()
         {
             Id = "",
             Description = "create a new todoItem",
@@ -133,15 +132,15 @@ public class TodoItemTest
     [Fact]
     public void should_not_create_success()
     {
-        var _todoRepository = new Mock<ITodoRepository>();
+        var _todoRepository = new Mock<ITodoItemsRepository>();
         var _service = new TodoItemService(_todoRepository.Object);
-        var expectReturn = new List<TodoItemDto>();
+        var expectReturn = new List<TodoItem>();
         for (var i = 0; i < 3; i++)
         {
-            expectReturn.Add(new TodoItemDto());
+            expectReturn.Add(new TodoItem());
         }
         _todoRepository.Setup(repo => repo.getAllItemsCountInToday(It.IsAny<DateTime>())).Returns(expectReturn);
-        var todoItem = new TodoItemDto()
+        var todoItem = new TodoItem()
         {
             Description = "create a new todoItem",
             CreateTime = DateTime.Now,
@@ -158,12 +157,12 @@ public class TodoItemTest
     [Fact]
     public void should_create_failed_when_dueTime_earlier_createTime()
     {
-        var _todoRepository = new Mock<ITodoRepository>();
+        var _todoRepository = new Mock<ITodoItemsRepository>();
         var _service = new TodoItemService(_todoRepository.Object);
-        var expectReturn = new List<TodoItemDto>();
-        expectReturn.Add(new TodoItemDto());
+        var expectReturn = new List<TodoItem>();
+        expectReturn.Add(new TodoItem());
         _todoRepository.Setup(repo => repo.getAllItemsCountInToday(It.IsAny<DateTime>())).Returns(expectReturn);
-        var todoItem = new TodoItemDto()
+        var todoItem = new TodoItem()
         {
             Description = "create a new todoItem",
             CreateTime = new DateTime(2024, 10, 30, 00, 00, 01),

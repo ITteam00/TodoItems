@@ -8,7 +8,7 @@ namespace TodoItems.Core.services
 {
     internal class TodoRepository
     {
-        public List<TodoItemDto> getAllItemsCountInToday(DateTime today)
+        public List<TodoItem> getAllItemsCountInToday(DateTime today)
         {
             return [];
         }
