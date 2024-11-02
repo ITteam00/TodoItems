@@ -34,7 +34,7 @@ namespace TodoItems.Test
             var settings = new ToDoItemDatabaseSettings
             {
                 ConnectionString = "mongodb://localhost:27081",
-                DatabaseName = "TodoDatabase",
+                DatabaseName = "TestTodoDatabase",
                 CollectionName = "TodoItems"
             };
             _mockSettings.Setup(s => s.Value).Returns(settings);

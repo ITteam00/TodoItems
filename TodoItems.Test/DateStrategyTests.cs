@@ -13,7 +13,7 @@ namespace TodoItems.Test
         public void SelectDate_ShouldReturnClosestDate_WhenMultipleDatesAreValid()
         {
             var strategy = new ClosestDateStrategy();
-            var today = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero);
+            var today = new DateTimeOffset(2024, 11, 2, 0, 0, 0, TimeSpan.Zero);
             var dateCounts = new Dictionary<DateTimeOffset, int>
             {
                 { today.AddDays(1), 3 },
