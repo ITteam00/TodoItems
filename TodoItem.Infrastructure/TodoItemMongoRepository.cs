@@ -63,5 +63,10 @@ namespace TodoItems.Infrastructure
         {
             throw new NotImplementedException();
         }
+
+        public TodoItem GetItemById(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -70,5 +70,33 @@ namespace TodoItems.Tests
             var exception = Assert.Throws<InvalidOperationException>(() => service.Create(id, description, dueDate));
             Assert.Equal("Item due date limit reached for today.", exception.Message);
         }
+
+        [Fact]
+        public void ModifyItem_ShouldReturnModifiedItem_WhenModifiedLimitNotReached()
+        {
+            var mockRepo = new Mock<ITodosRepository>();
+            var service = new TodoItemService(mockRepo.Object);
+
+            string id = "1";
+            string newDescription = "Test item";
+            var modification = new Modification();
+            var item = new TodoItem
+            {
+                Id = id,
+                Description = "old description",
+                ModificationRecord = modification,
+            };
+
+            mockRepo.Setup(r => r.GetItemById(id)).Returns(
+                new TodoItem
+                {
+                    Id = id, 
+                    Description = newDescription,
+                    ModificationRecord = modification,
+
+                });
+            var result = service.ModifyItem(id, newDescription);
+            Assert.Equal(newDescription, result.Description);
+        }
     }
 }

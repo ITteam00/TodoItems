@@ -19,6 +19,15 @@ namespace TodoItems.Core
         public TodoItemService(ITodosRepository repo) {
             Repo = repo;
         }
+
+        public TodoItem ModifyItem(string id, string newDescription)
+        {
+            var item = Repo.GetItemById(id);
+            item.ModifyDescription(newDescription);
+            return item;
+        }
+        
+        
         public TodoItem Create(string id, string description, DateTimeOffset? dueDate = null, DueDateStrategyType? dueStrategyType=null)
         {
             DueDateStrategy dueDateStrategy = new DueDateStrategy();  // todo use stragy pattern refractor
