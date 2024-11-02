@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 using MongoDB.Driver;
 using Moq;
 using TodoItem.Infrastructure;
@@ -164,6 +165,37 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             Assert.Equal(expectedToDoItemObjs[i].EditTimes, toDoItemsList[i].EditTimes);
             Assert.Equal(expectedToDoItemObjs[i].DueDate, toDoItemsList[i].DueDate);
         }
+    }
+
+
+    [Fact]
+    public async void should_create_new_todoItem()
+    {
+        var newTodoItemObj = new ToDoItemObj
+        (
+            "5f9a7d8e2d3b4a1eb8a7d8e7",
+            "Buy goods",
+            true,
+            false,
+            DateTime.UtcNow.Date,
+            DateTime.UtcNow.Date,
+            1,
+            DateTime.UtcNow.AddDays(5).Date
+        );
+        var res = await _mongoRepository.Save(newTodoItemObj);
+        var todoItemInRepo = await _mongoRepository.FindById("5f9a7d8e2d3b4a1eb8a7d8e7");
+
+
+        Assert.NotNull(todoItemInRepo);
+        Assert.Equal(todoItemInRepo.Id, newTodoItemObj.Id);
+        Assert.Equal(todoItemInRepo.Description, newTodoItemObj.Description);
+        Assert.Equal(todoItemInRepo.Done, newTodoItemObj.Done);
+        Assert.Equal(todoItemInRepo.Favorite, newTodoItemObj.Favorite);
+        Assert.Equal(todoItemInRepo.CreatedTimeDate, newTodoItemObj.CreatedTimeDate);
+        Assert.Equal(todoItemInRepo.LastModifiedTimeDate, newTodoItemObj.LastModifiedTimeDate);
+        Assert.Equal(todoItemInRepo.EditTimes, newTodoItemObj.EditTimes);
+        Assert.Equal(todoItemInRepo.DueDate, newTodoItemObj.DueDate);
+
     }
 
 
