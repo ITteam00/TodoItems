@@ -16,15 +16,33 @@ namespace TodoItems.Test
             var today = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero);
             var dateCounts = new Dictionary<DateTimeOffset, int>
             {
-                { today.AddDays(4), 5 },
                 { today.AddDays(1), 3 },
                 { today.AddDays(2), 7 },
-                { today.AddDays(3), 10 }
+                { today.AddDays(3), 10 },
+                { today.AddDays(4), 5 },
             };
 
             var result = strategy.SelectDate(dateCounts);
 
             Assert.Equal(today.AddDays(1), result);
+        }
+
+        [Fact]
+        public void SelectDate_ShouldReturnFreestDate_WhenMultipleDatesAreValid()
+        {
+            var strategy = new FreestDateStrategy();
+            var today = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero);
+            var dateCounts = new Dictionary<DateTimeOffset, int>
+            {
+                { today.AddDays(1), 3 },
+                { today.AddDays(2), 1 },
+                { today.AddDays(3), 10 },
+                { today.AddDays(4), 5 },
+            };
+
+            var result = strategy.SelectDate(dateCounts);
+
+            Assert.Equal(today.AddDays(2), result);
         }
     }
 }
