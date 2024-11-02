@@ -373,4 +373,118 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         Assert.Equal("Due Date and DueDateRequirement cannot be empty at the same time.", exception.Message);
     }
 
+    [Fact]
+    public async Task should_ChooseDueDate_When_DueDateAndRequirementBothExist()
+    {
+        // Arrange
+        var inputTodoItem = new ToDoItemObj(
+            id: "5f9a7d8e2d3b4a1eb8a7d8e8",
+            description: "Test ToDo Item",
+            done: false,
+            favorite: false,
+            createdTimeDate: DateTime.UtcNow.Date,
+            lastModifiedTimeDate: DateTime.UtcNow.Date,
+            editTimes: 3,
+            dueDate: DateTime.UtcNow.AddDays(4).Date, 
+            dueDateRequirement: DueDateRequirementType.Earliest
+        );
+
+
+        // Act
+        var result = await _mongoRepository.CreateAsync(inputTodoItem);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(inputTodoItem.DueDate, result.DueDate); 
+
+
+    }
+
+
+    [Fact]
+    public async Task should_ChooseEarliestDate_WhenNoDueDate()
+    {
+        //????????????????5????????item????8??????todoItem?duedate??????
+        //??5?item?????8??throw error
+        // Arrange
+        var inputTodoItem = new ToDoItemObj(
+            id: "6f9a7d8e2d3b4a1eb8a7d8e9",
+            description: "Test ToDo Item",
+            done: false,
+            favorite: false,
+            createdTimeDate: DateTime.UtcNow.Date,
+            lastModifiedTimeDate: DateTime.UtcNow.Date,
+            editTimes: 1,
+            dueDate: null,
+            dueDateRequirement: DueDateRequirementType.Earliest
+        );
+
+        for (int i = 0; i < 8; i++)
+        {
+            var todoItem = new ToDoItemObj(
+                id: $"6f9a7d8e{2+i}d3b4a1eb8a7d8e9",
+                description: $"Test ToDo Item {i}",
+                done: false,
+                favorite: false,
+                createdTimeDate: DateTime.UtcNow.Date,
+                lastModifiedTimeDate: DateTime.UtcNow.Date,
+                editTimes: 0,
+                dueDate: DateTime.UtcNow.Date, 
+                dueDateRequirement: null
+            );
+            await _mongoRepository.CreateAsync(todoItem);
+        }
+
+
+        // Act
+        var result = await _mongoRepository.CreateAsync(inputTodoItem);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotNull(result.DueDate);
+        Assert.Equal(DateTime.UtcNow.AddDays(1).Date, result.DueDate);
+    }
+
+    [Fact]
+    public async Task should_ChooseFewestDate_WhenNoDueDate()
+    {
+        // Arrange
+        var inputTodoItem = new ToDoItemObj(
+            id: "5f9a7d8e2d3b4a1eb8a7d8ea",
+            description: "Test ToDo Item",
+            done: false,
+            favorite: false,
+            createdTimeDate: DateTime.UtcNow.Date,
+            lastModifiedTimeDate: DateTime.UtcNow.Date,
+            editTimes: 3,
+            dueDate: null,
+            dueDateRequirement: DueDateRequirementType.Fewest
+        );
+
+        for (int i = 0; i < 7; i++)
+        {
+            var todoItem = new ToDoItemObj(
+                id: $"6f9a7d8e2d{2+i}b4a1eb8a7d8e9",
+                description: $"Test ToDo Item {i}",
+                done: false,
+                favorite: false,
+                createdTimeDate: DateTime.UtcNow.Date,
+                lastModifiedTimeDate: DateTime.UtcNow.Date,
+                editTimes: 0,
+                dueDate: DateTime.UtcNow.Date,
+                dueDateRequirement: null
+            );
+            await _mongoRepository.CreateAsync(todoItem);
+        }
+
+        // Act
+        var result = await _mongoRepository.CreateAsync(inputTodoItem);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotNull(result.DueDate);
+        Assert.Equal(DateTime.UtcNow.AddDays(1).Date, result.DueDate);
+
+
+    }
 }

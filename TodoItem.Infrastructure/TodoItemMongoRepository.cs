@@ -93,15 +93,28 @@ public class TodoItemMongoRepository : ITodoItemsRepository
             inputToDoItem.DueDate = newDueDate;
         }
         await Save(inputToDoItem);
-        return inputToDoItem;
+        return await this.FindById(inputToDoItem.Id);
 
     }
 
     private DateTime FindGoodDueDateByRequirement(DueDateRequirementType requirement)
     {
+        //List<int>[] itemNumbers = GetItemNumbersForNext5Days();
+        //DateTime earliestDate = itemNumbers.First(i => i < 8);
+        //DateTime fewestDate = itemNumbers.fewestDate
+        //if (requirement == DueDateRequirementType.Earliest)
+        //{
+        //    return earliestDate;
+        //}
+        //return fewestDate;
         throw new InvalidOperationException("11.");
 
 
+    }
+
+    private List<int>[] GetItemNumbersForNext5Days()
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<ToDoItemObj> ModifyItem(ToDoItemObj item)
