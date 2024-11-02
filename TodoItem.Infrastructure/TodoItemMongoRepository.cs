@@ -61,7 +61,11 @@ public class TodoItemMongoRepository : ITodoItemsRepository
 
     public List<ToDoItemObj> findAllTodoItemsInOneday(DateTime dateTime)
     {
-        return new List<ToDoItemObj> { };
+        var filter = Builders<TodoItemDao>.Filter.Gte(x => x.DueDate, dateTime.Date) &
+                     Builders<TodoItemDao>.Filter.Lt(x => x.DueDate, dateTime.Date.AddDays(1));
+        var todoItemsDao = _todosCollection.Find(filter).ToList();
+
+        return todoItemsDao.Select(ConvertToTodoItem).ToList();
     }
 
 }
