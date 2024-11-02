@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 using MongoDB.Driver;
 using TodoItems.Core;
 
 namespace TodoItem.Infrastructure;
 
-public class TodoItemMongoRepository: ITodoItemsRepository
+public class TodoItemMongoRepository : ITodoItemsRepository
 {
     private readonly IMongoCollection<TodoItemPo?> _todosCollection;
-    
+
     public TodoItemMongoRepository(IOptions<TodoStoreDatabaseSettings> todoStoreDatabaseSettings)
     {
         var mongoClient = new MongoClient(todoStoreDatabaseSettings.Value.ConnectionString);
@@ -25,6 +26,14 @@ public class TodoItemMongoRepository: ITodoItemsRepository
         return todoItem;
     }
 
+    public async Task<int> GetAllTodoItemsCountInDueDate(DateTime dueDate)
+    {
+        FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.Eq(x => x.DueDate, dueDate);
+        List<TodoItemPo?> todoItemPos = await _todosCollection.Find(filter).ToListAsync();
+        return todoItemPos.Count;
+    }
+
+
     private TodoItems.Core.TodoItem ConvertToTodoItem(TodoItemPo? todoItemPo)
     {
         if (todoItemPo == null) return null;
@@ -32,7 +41,8 @@ public class TodoItemMongoRepository: ITodoItemsRepository
         return new TodoItems.Core.TodoItem
         {
             Id = todoItemPo.Id,
-            Description = todoItemPo.Description
+            Description = todoItemPo.Description,
+            DueDate = todoItemPo.DueDate,
         };
     }
 
