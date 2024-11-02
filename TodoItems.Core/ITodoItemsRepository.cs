@@ -1,4 +1,5 @@
-﻿using ToDoItem.Api.Models;
+﻿using MongoDB.Driver;
+using ToDoItem.Api.Models;
 
 namespace TodoItems.Core
 {
@@ -6,6 +7,6 @@ namespace TodoItems.Core
     {
         List<ToDoItemObj> findAllTodoItemsInToday();
         public Task<ToDoItemObj> FindById(string id);
-        public Task<ToDoItemObj> Save(ToDoItemObj todoItem);
+        public Task<UpdateResult> Save(ToDoItemObj todoItem);
     }
 }

@@ -92,12 +92,25 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             1,
             DateTime.UtcNow.Date
         );
-        var todoItemObj = await _mongoRepository.Save(newTodoItemObj);
+        var res = await _mongoRepository.Save(newTodoItemObj);
+        var updatedTodoItem = await _mongoRepository.FindById("5f9a7d8e2d3b4a1eb8a7d8e3");
+        var expectedToDoItemObj = new ToDoItemObj
+        (
+            "5f9a7d8e2d3b4a1eb8a7d8e3",
+            "Buy goods",
+            true,
+            false,
+            DateTime.UtcNow.Date,
+            DateTime.UtcNow.Date,
+            1,
+            DateTime.UtcNow.Date
+        );
 
-        Assert.NotNull(todoItemObj);
-        Assert.Equal("2", todoItemObj.Id);
-        Assert.Equal(1, todoItemObj.EditTimes);
-        Assert.Equal(DateTime.UtcNow.Date, todoItemObj.LastModifiedTimeDate);
+
+        Assert.NotNull(updatedTodoItem);
+        Assert.Equal(expectedToDoItemObj.Id, updatedTodoItem.Id);
+        Assert.Equal(expectedToDoItemObj.EditTimes, updatedTodoItem.EditTimes);
+        Assert.Equal(expectedToDoItemObj.LastModifiedTimeDate, updatedTodoItem.LastModifiedTimeDate);
 
     }
 }

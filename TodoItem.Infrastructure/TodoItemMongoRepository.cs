@@ -44,9 +44,19 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         );
     }
 
-    public Task<ToDoItemObj> Save(ToDoItemObj todoItem)
+    public async Task<UpdateResult> Save(ToDoItemObj todoItem)
     {
-        throw new NotImplementedException();
+        var filter = Builders<TodoItemDao>.Filter.Eq(x => x.Id, todoItem.Id);
+        var update = Builders<TodoItemDao>.Update
+            .Set(x => x.Description, todoItem.Description)
+            .Set(x => x.Done, todoItem.Done)
+            .Set(x => x.Favorite, todoItem.Favorite)
+            .Set(x => x.CreatedTimeDate, todoItem.CreatedTimeDate)
+            .Set(x => x.LastModifiedTimeDate, todoItem.LastModifiedTimeDate)
+            .Set(x => x.EditTimes, todoItem.EditTimes)
+            .Set(x => x.DueDate, todoItem.DueDate);
+
+        return await _todosCollection.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = true });
     }
 
     public List<ToDoItemObj> findAllTodoItemsInToday()
