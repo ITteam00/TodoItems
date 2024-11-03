@@ -42,25 +42,21 @@ public class TodoItemService
         if (TodoItem == null) return;
         TodoItem.Description = description;
     }
-    public bool ModifyItem(TodoItemDto curTodoItem)
+    public TodoItemDto ModifyItem(TodoItemDto curTodoItem)
     {
         if (curTodoItem.TimeStamps.Count > 0)
         {
-
             DateTime LastDate = curTodoItem.TimeStamps[curTodoItem.TimeStamps.Count - 1];
-
             if (AreDatesOneDayApart(LastDate, curTodoItem.CreatedDate))
             {
                 curTodoItem.TimeStamps.Clear();
-                curTodoItem.TimeStamps.Add(LastDate);
-                return true;
             }
-            if (curTodoItem.TimeStamps.Count == 3) return false;
+            if (curTodoItem.TimeStamps.Count == 3) throw new InvalidOperationException("this item is modified over 3 times");
         }
         curTodoItem.TimeStamps.Add(curTodoItem.CreatedDate);
         UpdateItem(curTodoItem.Id, curTodoItem.Description);
 
-        return true;
+        return curTodoItem;
     }
     public bool AreDatesOneDayApart(DateTime LastDate, DateTime CurDate)
     {

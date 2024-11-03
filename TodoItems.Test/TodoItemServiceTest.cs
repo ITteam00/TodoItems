@@ -14,7 +14,7 @@ public class TodoItemServiceTest
         Assert.Equal("1", todoItem.GetId());
     }
     [Fact]
-    public void Should_return_false_when_modify_item_third_time()
+    public void Should_return_exception_when_modify_item_third_time()
     {
         var mockRepository = new Mock<ITodoItemsRepository>();
         var todoItemService = new TodoItemService(mockRepository.Object);
@@ -32,10 +32,12 @@ public class TodoItemServiceTest
         new DateTime(2024, 10, 30)
         }
         };
-        Assert.Equal(false, todoItemService.ModifyItem(todoItemDto));
+        var exception = Assert.Throws<InvalidOperationException>(() => todoItemService.ModifyItem(todoItemDto));
+
+        Assert.Equal("this item is modified over 3 times", exception.Message);
     }
     [Fact]
-    public void Should_return_true_when_modify_item_TimeStamp_is_null()
+    public void Should_return_todoitem_when_modify_item_TimeStamp_is_null()
     {
         var mockRepository = new Mock<ITodoItemsRepository>();
         var todoItemService = new TodoItemService(mockRepository.Object);
@@ -49,10 +51,11 @@ public class TodoItemServiceTest
             CreatedDate = new DateTime(2024, 10, 30),
             TimeStamps = new List<DateTime>()
         };
-        Assert.Equal(true, todoItemService.ModifyItem(todoItemDto));
+        var todoItem = todoItemService.ModifyItem(todoItemDto);
+        Assert.Equal(todoItem.Description, todoItemDto.Description);
     }
     [Fact]
-    public void Should_return_false_when_modify_item_twice_time()
+    public void Should_return_todoitem_when_modify_item_twice_time()
     {
         var mockRepository = new Mock<ITodoItemsRepository>();
         var todoItemService = new TodoItemService(mockRepository.Object);
@@ -71,8 +74,8 @@ public class TodoItemServiceTest
         };
         var TimeStamps = new List<DateTime>();
 
-        Assert.Equal(true, todoItemService.ModifyItem(todoItemDto));
-        Assert.Equal(3, todoItemDto.TimeStamps.Count);
+        var todoItem = todoItemService.ModifyItem(todoItemDto);
+        Assert.Equal(todoItem.Description, todoItemDto.Description);
 
     }
 
