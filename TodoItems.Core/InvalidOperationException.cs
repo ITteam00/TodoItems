@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TodoItems.Core
 {
-    public class InvalidOperationException
+    public class ExceptionHandler
     {
     }
 }
