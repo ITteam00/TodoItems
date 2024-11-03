@@ -8,6 +8,6 @@
         public string? Id { get; init; }
         public Boolean IsComplete { get; set; }
         public Boolean IsFavorite { get; set; }
-        public DateTime[]? ModifyTime { get; set; }
+        public DateTime[]? ModifyTime { get; set; } = [DateTime.Now];
     }
 }
