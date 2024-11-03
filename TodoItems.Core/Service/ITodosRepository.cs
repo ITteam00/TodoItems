@@ -7,5 +7,6 @@ namespace TodoItems.Core.Service
         TodoItem AddItem(TodoItem item);
         List<TodoItem> GetFiveDayItems();
         TodoItem GetItemById(string id);
+        TodoItem UpdateItem(TodoItem item);
     }
 }

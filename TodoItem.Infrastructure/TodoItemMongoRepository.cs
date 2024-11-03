@@ -13,20 +13,20 @@ namespace TodoItems.Infrastructure
 {
     public class TodoItemMongoRepository : ITodosRepository
     {
-        private TodoStoreDatabaseSettings settings;
-        private readonly IMongoCollection<TodoItemDto?> _todosCollection;
+        private TodoStoreDatabaseSettings Settings;
+        public readonly IMongoCollection<TodoItemDto> TodosCollection;
 
         public TodoItemMongoRepository(IOptions<TodoStoreDatabaseSettings> todoStoreDatabaseSettings)
         {
             var mongoClient = new MongoClient(todoStoreDatabaseSettings.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(todoStoreDatabaseSettings.Value.DatabaseName);
-            _todosCollection = mongoDatabase.GetCollection<TodoItemDto>(todoStoreDatabaseSettings.Value.TodoItemsCollectionName);
+            TodosCollection = mongoDatabase.GetCollection<TodoItemDto>(todoStoreDatabaseSettings.Value.TodoItemsCollectionName);
         }
 
         public async Task<TodoItems.Core.TodoItem> FindById(string? id)
         {
             FilterDefinition<TodoItemDto?> filter = Builders<TodoItemDto>.Filter.Eq(x => x.Id, id);
-            TodoItemDto? todoItemPo = await _todosCollection.Find(filter).FirstOrDefaultAsync();
+            TodoItemDto? todoItemPo = await TodosCollection.Find(filter).FirstOrDefaultAsync();
 
             // 将 TodoItemPo 转换为 TodoItem
             TodoItems.Core.TodoItem todoItem = ConvertToTodoItem(todoItemPo);
@@ -50,7 +50,9 @@ namespace TodoItems.Infrastructure
 
         public TodoItem AddItem(TodoItem item)
         {
-            throw new NotImplementedException();
+            var todoItemDto = TodoItemDto.MapToTodoItemDto(item);
+            TodosCollection.InsertOne(todoItemDto);
+            return item;
         }
 
         public List<TodoItem> GetFiveDayItems()
@@ -59,6 +61,11 @@ namespace TodoItems.Infrastructure
         }
 
         public TodoItem GetItemById(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TodoItem UpdateItem(TodoItem item)
         {
             throw new NotImplementedException();
         }

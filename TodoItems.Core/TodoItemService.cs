@@ -24,7 +24,8 @@ namespace TodoItems.Core
         {
             var item = Repo.GetItemById(id);
             item.ModifyDescription(newDescription);
-            return item;
+            var result = Repo.UpdateItem(item);
+            return result;
         }
         
         
