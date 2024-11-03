@@ -57,5 +57,44 @@ namespace TodoItem.IntegrationTest
             Assert.Equal("Buy groceries", todoItem.Description);
             Assert.Equal(todoItemPo.DueDate, todoItem.DueDate);
         }
+
+        [Fact]
+        public async Task GetItemsByDueDate_ShouldReturnItemsWithMatchingDueDate()
+        {
+            // Arrange
+            var dueDate = DateTimeOffset.Now;
+            var todoItemPo1 = new TodoItemMongoDTO
+            {
+                Id = "1",
+                Description = "Test 1",
+                IsDone = false,
+                IsFavorite = false,
+                DueDate = dueDate,
+                ModificationDateTimes = new List<DateTimeOffset>(),
+                CreatedTime = DateTimeOffset.Now
+            };
+            var todoItemPo2 = new TodoItemMongoDTO
+            {
+                Id = "2",
+                Description = "Test 2",
+                IsDone = false,
+                IsFavorite = false,
+                DueDate = dueDate,
+                ModificationDateTimes = new List<DateTimeOffset>(),
+                CreatedTime = DateTimeOffset.Now
+            };
+
+            await _mongoRepository.ToDoItemsCollection.InsertOneAsync(todoItemPo1);
+            await _mongoRepository.ToDoItemsCollection.InsertOneAsync(todoItemPo2);
+
+            // Act
+            var result = await _mongoRepository.GetItemsByDueDate(dueDate);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+            Assert.All(result, item => Assert.Equal(dueDate, item.DueDate));
+        }
+
     }
 }
