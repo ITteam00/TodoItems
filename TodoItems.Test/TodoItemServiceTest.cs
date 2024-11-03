@@ -1,7 +1,6 @@
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Moq;
 using TodoItems.Core;
-
 namespace TodoItems.Test;
 
 public class TodoItemServiceTest

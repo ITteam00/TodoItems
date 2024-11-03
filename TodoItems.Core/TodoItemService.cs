@@ -1,7 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace TodoItems.Core;
+﻿namespace TodoItems.Core;
 
 public class TodoItemService
 {
