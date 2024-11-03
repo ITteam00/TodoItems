@@ -30,14 +30,11 @@ public class TodoItemMongoRepositoryTest: IAsyncLifetime
         _mongoCollection = mongoDatabase.GetCollection<TodoItemPo>("Todos");
     }
     
-    // IAsyncLifetime 中的 InitializeAsync 方法在每个测试前运行
     public async Task InitializeAsync()
     {
-        // 清空集合
         await _mongoCollection.DeleteManyAsync(FilterDefinition<TodoItemPo>.Empty);
     }
 
-    // DisposeAsync 在测试完成后运行（如果有需要的话）
     public Task DisposeAsync() => Task.CompletedTask;
 
 
