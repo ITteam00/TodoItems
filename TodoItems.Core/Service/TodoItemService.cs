@@ -7,6 +7,7 @@ namespace TodoItems.Core.service;
 
 public class TodoItemService : ITodoItemService
 {
+    private const int CompletedLimit = 8;
     private readonly ITodoItemsRepository _todoRepository;
 
     public TodoItemService(ITodoItemsRepository todoRepository)
@@ -20,7 +21,7 @@ public class TodoItemService : ITodoItemService
         {
             var dueDateGenerateStrategy = new DueDateGenerator().getStrategy(type);
             List<TodoItem> nextFiveDaysItem = await _todoRepository.GetNextFiveDaysItem(item.CreateTime.Date);
-            Dictionary<DateTime, List<TodoItem>> dueDateDic = countTodoItemByDueDate(nextFiveDaysItem);
+            Dictionary<DateTime, List<TodoItem>> dueDateDic = countTodoItemByDueDate(item.CreateTime.Date,nextFiveDaysItem);
             DateTime dueDate = dueDateGenerateStrategy.generateDueDate(dueDateDic);
             item.DueDate = dueDate;
             await _todoRepository.CreateTodoItemAsync(item);
@@ -28,7 +29,7 @@ public class TodoItemService : ITodoItemService
         else
         {
             List<TodoItem> todoItems = await _todoRepository.GetAllItemsInDueDate(item.DueDate.Date);
-            if (todoItems.Count > 8)
+            if (todoItems.Count > CompletedLimit)
             {
                 throw new TooManyTodoItemInDueDateException("A maximum of eight todoitems can be completed per day");
             }
@@ -42,19 +43,18 @@ public class TodoItemService : ITodoItemService
         return item;
     }
 
-    private Dictionary<DateTime, List<TodoItem>> countTodoItemByDueDate(List<TodoItem> items)
+    private Dictionary<DateTime, List<TodoItem>> countTodoItemByDueDate(DateTime createTime,List<TodoItem> items)
     {
         Dictionary<DateTime, List<TodoItem>> todoItemByDueDate = new Dictionary<DateTime, List<TodoItem>>();
+        for (int i = 1; i< 6; i++)
+        {
+            todoItemByDueDate.Add(createTime.AddDays(i), []);
+        }
         foreach (TodoItem item in items)
         {
-            if (todoItemByDueDate.ContainsKey(item.DueDate.Date))
-            {
-                todoItemByDueDate[item.DueDate.Date].Add(item);
-            }
-            else
-            {
-                todoItemByDueDate.Add(item.DueDate.Date, [item]);
-            }
+
+            todoItemByDueDate[item.DueDate.Date].Add(item);
+
         }
         return todoItemByDueDate;
     }

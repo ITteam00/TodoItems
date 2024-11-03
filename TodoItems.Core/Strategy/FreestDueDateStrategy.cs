@@ -18,7 +18,6 @@ namespace TodoItems.Core.Strategy
             if (result.Equals(default(KeyValuePair<DateTime, List<TodoItem>>)))
             {
                 throw new NoSuitableDueDateException("No suitable due date found.");
-
             }
             return result.Key;
         }

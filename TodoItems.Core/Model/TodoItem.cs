@@ -2,6 +2,8 @@
 {
     public class TodoItem
     {
+        private const int ModifyTimeLimited = 3;
+
         public DateTime CreateTime { get; init; } = DateTime.Now;
         public string Description { get; set; }
         public DateTime DueDate { get; set; }
@@ -21,7 +23,7 @@
             }
             else
             {
-                if (ModifyTime.Length >= 3)
+                if (ModifyTime.Length >= ModifyTimeLimited)
                 {
                     throw new NoModifyTimeException("No modify time");
                 }
