@@ -185,12 +185,12 @@ public class TodoItemServiceTest
             Description = "new task",
             IsDone = true,
             IsFavorite = true,
-            DueDate = new DateTime(2024, 10, 29),
             CreatedDate = new DateTime(2024, 10, 30)
         };
-        mockRepository.Setup(repo => repo.GetAllTodoItemsCountInDueDate(It.IsAny<DateTime>())).ReturnsAsync(6);
+        List<TodoItemDto> todoItems = new List<TodoItemDto>();
+        mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
-        bool RealResult = await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
-        Assert.Equal(false, RealResult);
+        DateTime RealDueDate = (DateTime)await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
+        Assert.Equal(todoItemDto.CreatedDate, RealDueDate.Date);
     }
 }

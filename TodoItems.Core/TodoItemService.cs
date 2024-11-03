@@ -54,8 +54,28 @@ public class TodoItemService
         return difference.TotalDays >= 1;
     }
 
-    public async Task<bool> SetEarlyDuedateInFiveDays(TodoItemDto todoItemDto)
+    public async Task<DateTime?> SetEarlyDuedateInFiveDays(TodoItemDto todoItemDto)
     {
+        List<TodoItemDto> todoItems = await _todosRepository.GetAllTodoItemsInFiveDays(todoItemDto.CreatedDate);
+        if (todoItems.Count == 0) return todoItemDto.CreatedDate;
+        var groupedDuedateItems = todoItems
+        .GroupBy(item => item.DueDate.Date)
+        .Select(group => new
+        {
+            DueDate = group.Key,
+            Count = group.Count()
+        })
+        .ToList();
+
+        var validDueDates = groupedDuedateItems
+            .Where(group => group.Count < 8)
+            .Select(group => group.DueDate)
+            .ToList();
+        if (validDueDates.Any())
+        {
+            return validDueDates.Min();
+        }
+
         throw new NotImplementedException();
     }
 }
