@@ -7,7 +7,7 @@ using TodoItems.Core.Model;
 
 namespace TodoItems.Core.Strategy
 {
-    internal class FreestDueDateStrategy : IDueDateSelectStrategy
+    public class FreestDueDateStrategy : IDueDateSelectStrategy
     {
         public DateTime generateDueDate(Dictionary<DateTime, List<TodoItem>> dueDateDic)
         {
