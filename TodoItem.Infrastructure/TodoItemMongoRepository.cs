@@ -21,7 +21,6 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.Eq(x => x.Id, id);
         TodoItemPo? todoItemPo = await _todosCollection.Find(filter).FirstOrDefaultAsync();
 
-        // 将 TodoItemPo 转换为 TodoItem
         TodoItems.Core.TodoItemDto todoItem = ConvertToTodoItem(todoItemPo);
         return todoItem;
     }
