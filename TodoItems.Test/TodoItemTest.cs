@@ -1,7 +1,9 @@
 using Castle.Core.Logging;
+using Microsoft.VisualBasic;
 using Moq;
 using System.Runtime.ConstrainedExecution;
 using TodoItems.Core;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TodoItems.Test;
 
@@ -213,6 +215,61 @@ public class TodoItemTest
         var createdTodoItem = await _service.CreateTodoItem(todoItem, strategytype);
         Assert.Equal(today.AddDays(1), createdTodoItem.DueTime);
         _todoRepository.Verify(repo => repo.SaveAsync(todoItem), Times.Once);
+    }
+
+    [Fact]
+    public async void should_throw_Invalid_daueDate_generate_strategy_exception()
+    {
+        var todoItem = new TodoItem()
+        {
+            Id = Guid.NewGuid().ToString(),
+            Description = "create a new todoItem",
+            CreateTime = DateTime.Now,
+            IsComplete = false,
+            IsFavorite = false,
+        };
+        string strategytype = "invalid strategy";
+        DateTime today = DateTime.Now.Date;
+        List<TodoItem> nextFiveDaysItems = [];
+        for (int i = 1; i < 6; i++)
+        {
+            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+        }
+        nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(1) });
+        _todoRepository.Setup(repo => repo.getNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
+        var exception = await Assert.ThrowsAsync<InvalidDueDateGenerateStrategyException>(() => _service.CreateTodoItem(todoItem,strategytype));
+        Assert.Equal(exception.Message, "Invalid daueDate generate strategy");
+    }
+
+    [Fact]
+    public async void should_throw_No_Suitable_DueDate_Exception()
+    {
+        var todoItem = new TodoItem()
+        {
+            Id = Guid.NewGuid().ToString(),
+            Description = "create a new todoItem",
+            CreateTime = DateTime.Now,
+            IsComplete = false,
+            IsFavorite = false,
+        };
+        string strategytype = "freest";
+        DateTime today = DateTime.Now.Date;
+        List<TodoItem> nextFiveDaysItems = [];
+        for (int i = 1; i < 6; i++)
+        {
+            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+
+        }
+        _todoRepository.Setup(repo => repo.getNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
+        var exception = await Assert.ThrowsAsync<NoSuitableDueDateException>(() => _service.CreateTodoItem(todoItem,strategytype));
+        Assert.Equal(exception.Message, "No suitable due date found");
     }
 
 
