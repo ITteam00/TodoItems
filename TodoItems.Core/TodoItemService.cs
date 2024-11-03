@@ -17,11 +17,21 @@ public class TodoItemService
     {
         return "1";
     }
-    public async Task<bool> CreateItem(TodoItemDto NewTodoItem)
+    public async Task<bool> CreateItem(TodoItemDto NewTodoItem, string DuedateStrategy = "Early Duedate")
     {
-        if (NewTodoItem.CreatedDate > NewTodoItem.DueDate) return false;
-        int TodoItemCount = await _todosRepository.GetAllTodoItemsCountInDueDate(NewTodoItem.DueDate);
-        if (TodoItemCount > 8) return false;
+        DateTime duedate = new DateTime();
+        if (NewTodoItem.DueDate != null)
+        {
+            if (NewTodoItem.CreatedDate > NewTodoItem.DueDate) return false;
+            int TodoItemCount = await _todosRepository.GetAllTodoItemsCountInDueDate(NewTodoItem.DueDate);
+            if (TodoItemCount > 8) return false;
+            duedate = (DateTime)NewTodoItem.DueDate?.Date;
+        }
+        else
+        {
+            duedate = (DateTime)await SetDuedate(NewTodoItem, DuedateStrategy);
+        }
+
         return true;
     }
     public async void UpdateItem(string id, string description)
@@ -73,8 +83,6 @@ public class TodoItemService
         })
         .ToList();
 
-        var userDuedateCount = groupedDuedateItems.FirstOrDefault(group => group.DueDate == todoItemDto.DueDate)?.Count ?? 0;
-
         var dueDateCounts = futureDates.ToDictionary(date => date, date => 0);
 
         foreach (var item in groupedDuedateItems)
@@ -84,7 +92,6 @@ public class TodoItemService
                 dueDateCounts[(DateTime)item.DueDate] = item.Count; 
             }            
         }
-        if (todoItemDto.DueDate != null && userDuedateCount < 8) return todoItemDto.DueDate?.Date;
 
         var duedateSetters = DuedateSetters.GetValueOrDefault(DuedateStrategy, this.earlyDuedateStrategy);
         var duedate = duedateSetters.SetDuedate(dueDateCounts);
