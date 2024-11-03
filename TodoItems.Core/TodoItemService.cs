@@ -20,6 +20,14 @@ namespace TodoItems.Core
             Repo = repo;
         }
 
+        public TodoItem SetItemDone(string id, bool done)
+        {
+            var item = Repo.GetItemById(id);
+            item.Done = done;
+            var result = Repo.UpdateItem(item);
+            return result;
+        }
+
         public TodoItem ModifyItem(string id, string newDescription)
         {
             var item = Repo.GetItemById(id);
@@ -27,7 +35,6 @@ namespace TodoItems.Core
             var result = Repo.UpdateItem(item);
             return result;
         }
-        
         
         public TodoItem Create(string id, string description, DateTimeOffset? dueDate = null, DueDateStrategyType? dueStrategyType=null)
         {
