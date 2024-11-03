@@ -61,7 +61,6 @@ namespace TodoItem.IntegrationTest
         [Fact]
         public async Task GetItemsByDueDate_ShouldReturnItemsWithMatchingDueDate()
         {
-            // Arrange
             var dueDate = DateTimeOffset.Now;
             var todoItemPo1 = new TodoItemMongoDTO
             {
@@ -87,14 +86,50 @@ namespace TodoItem.IntegrationTest
             await _mongoRepository.ToDoItemsCollection.InsertOneAsync(todoItemPo1);
             await _mongoRepository.ToDoItemsCollection.InsertOneAsync(todoItemPo2);
 
-            // Act
             var result = await _mongoRepository.GetItemsByDueDate(dueDate);
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(2, result.Count);
             Assert.All(result, item => Assert.Equal(dueDate, item.DueDate));
         }
 
+        [Fact]
+        public async Task UpdateAsync_ShouldUpdateItem()
+        {
+            var todoItemPo = new TodoItemMongoDTO
+            {
+                Id = "1",
+                Description = "Initial Description",
+                IsDone = false,
+                IsFavorite = false,
+                DueDate = DateTimeOffset.Now.AddDays(2),
+                ModificationDateTimes = new List<DateTimeOffset>(),
+                CreatedTime = DateTimeOffset.Now
+            };
+
+            await _mongoRepository.ToDoItemsCollection.InsertOneAsync(todoItemPo);
+
+            var updatedTodoItem = new TodoItemDTO
+            {
+                Id = "1",
+                Description = "Updated Description",
+                IsDone = true,
+                IsFavorite = true,
+                DueDate = DateTimeOffset.Now.AddDays(3),
+                ModificationDateTimes = new List<DateTimeOffset> { DateTimeOffset.Now.AddDays(-1) }
+            };
+
+            await _mongoRepository.UpdateAsync("1", updatedTodoItem);
+
+            var filter = Builders<TodoItemMongoDTO>.Filter.Eq(item => item.Id, "1");
+            var updatedItem = await _mongoRepository.ToDoItemsCollection.Find(filter).FirstOrDefaultAsync();
+
+            Assert.NotNull(updatedItem);
+            Assert.Equal("Updated Description", updatedItem.Description);
+            Assert.True(updatedItem.IsDone);
+            Assert.True(updatedItem.IsFavorite);
+            Assert.Equal(updatedTodoItem.DueDate, updatedItem.DueDate);
+            Assert.Equal(2, updatedItem.ModificationDateTimes.Count); 
+        }
     }
 }
