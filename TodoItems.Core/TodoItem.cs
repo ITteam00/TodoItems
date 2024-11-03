@@ -1,4 +1,8 @@
-﻿namespace TodoItems.Core;
+﻿using System;
+using System.Linq.Expressions;
+using TodoItems.Core.Model;
+
+namespace TodoItems.Core;
 
 public class TodoItem
 {
@@ -6,4 +10,5 @@ public class TodoItem
     {
         return "1";
     }
+
 }
