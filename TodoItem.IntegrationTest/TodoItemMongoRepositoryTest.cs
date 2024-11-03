@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Moq;
 using TodoItem.Infrastructure;
+using TodoItems.Core;
 
 namespace TodoItem.IntegrationTest;
 
@@ -101,8 +102,25 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             IsDone = true,
             IsFavorite = true,
             DueDate = new DateTime(2024, 10, 10, 10, 30, 0)
-        }; ;
+        }; 
         await _mongoRepository.Save(todoItemDto);
+        var result = await _mongoCollection.CountDocumentsAsync(FilterDefinition<TodoItemPo>.Empty);
+        Assert.Equal(1, result);
+    }
+
+    [Fact]
+    public async void should_return_implement_when_update_todoitem()
+    {
+        var todoItemPo = new TodoItemPo
+        {
+            Id = "5f9a7d8e2d3b4a1eb8a7d8e2",
+            Description = "Buy groceries",
+            DueDate = new DateTime(2024, 10, 30, 10, 30, 0),
+        };
+        await _mongoCollection.InsertOneAsync(todoItemPo);
+
+        string description = "new task";
+        await _mongoRepository.Update(todoItemPo.Id, description);
         var result = await _mongoCollection.CountDocumentsAsync(FilterDefinition<TodoItemPo>.Empty);
         Assert.Equal(1, result);
     }

@@ -77,4 +77,9 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         TodoItemPo todoItemPo = ReconvertToTodoItem(todoItem);
         await _todosCollection.InsertOneAsync(todoItemPo);
     }
+
+    public async Task Update(string id, string description)
+    {
+        throw new NotImplementedException();
+    }
 }
