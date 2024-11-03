@@ -257,6 +257,6 @@ public class TodoItemServiceTest
         mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
         DateTime RealDueDate = (DateTime)await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
-        Assert.Equal(todoItemDto.DueDate.Date, RealDueDate.Date);
+        Assert.Equal(todoItemDto.DueDate?.Date, RealDueDate.Date);
     }
 }

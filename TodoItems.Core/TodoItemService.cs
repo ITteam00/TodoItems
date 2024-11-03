@@ -64,7 +64,7 @@ public class TodoItemService
         List<TodoItemDto> todoItems = await _todosRepository.GetAllTodoItemsInFiveDays(todoItemDto.CreatedDate);
 
         var groupedDuedateItems = todoItems
-        .GroupBy(item => item.DueDate.Date)
+        .GroupBy(item => item.DueDate?.Date)
         .Select(group => new
         {
             DueDate = group.Key,
@@ -72,14 +72,17 @@ public class TodoItemService
         })
         .ToList();
 
+        var userDuedateCount = groupedDuedateItems.FirstOrDefault(group => group.DueDate == todoItemDto.DueDate)?.Count ?? 0;
+        if (todoItemDto.DueDate!=null && userDuedateCount < 8) return todoItemDto.DueDate?.Date;
+
         var dueDateCounts = futureDates.ToDictionary(date => date, date => 0);
 
         foreach (var item in groupedDuedateItems)
         {
-            if (dueDateCounts.ContainsKey(item.DueDate))
+            if (dueDateCounts.ContainsKey((DateTime)item.DueDate))
             {
-                dueDateCounts[item.DueDate] = item.Count; 
-            }
+                dueDateCounts[(DateTime)item.DueDate] = item.Count; 
+            }            
         }
 
         var earliestDueDate = dueDateCounts

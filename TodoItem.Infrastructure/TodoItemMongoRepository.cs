@@ -26,7 +26,7 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         return todoItem;
     }
 
-    public async Task<int> GetAllTodoItemsCountInDueDate(DateTime dueDate)
+    public async Task<int> GetAllTodoItemsCountInDueDate(DateTime? dueDate)
     {
         FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.Eq(x => x.DueDate, dueDate);
         List<TodoItemPo?> todoItemPos = await _todosCollection.Find(filter).ToListAsync();
