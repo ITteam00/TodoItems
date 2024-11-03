@@ -1,15 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualBasic;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TodoItems.Core.Model;
+using TodoItems.Core.Services;
 
-namespace TodoItems.Core.Services
+namespace TodoItem.Infrastructure
 {
     public class TodoItemsRepository : ITodosRepository
     {

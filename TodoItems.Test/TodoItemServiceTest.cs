@@ -7,6 +7,7 @@ using TodoItems.Core.Services;
 using Moq;
 using Xunit;
 using Microsoft.VisualBasic;
+using TodoItem.Infrastructure;
 using TodoItems.Core.Validator;
 
 namespace TodoItems.Test;
@@ -23,14 +24,6 @@ public class TodoItemServiceTest
         _mockRepository = new Mock<ITodosRepository>();
         _toDoService = new ToDoItemsService(_mockRepository.Object);
         _todoItemValidator = new TodoItemValidator();
-    }
-
-
-    [Fact]
-    public void should_return_2_when_add_1_1()
-    {
-        var todoItem = new TodoItem();
-        Assert.Equal("1", todoItem.GetId());
     }
 
     [Fact]

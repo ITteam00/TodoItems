@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoItems.Test", "TodoItems
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoItem.Infrastructure", "TodoItem.Infrastructure\TodoItem.Infrastructure.csproj", "{F0F8D074-E4E7-4B5C-B665-616BB21999FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoItem.IntegrationTest", "TodoItem.IntegrationTest\TodoItem.IntegrationTest.csproj", "{ABCE63FA-D868-4B09-A617-64EB74854B2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{F0F8D074-E4E7-4B5C-B665-616BB21999FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0F8D074-E4E7-4B5C-B665-616BB21999FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0F8D074-E4E7-4B5C-B665-616BB21999FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABCE63FA-D868-4B09-A617-64EB74854B2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABCE63FA-D868-4B09-A617-64EB74854B2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABCE63FA-D868-4B09-A617-64EB74854B2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABCE63FA-D868-4B09-A617-64EB74854B2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

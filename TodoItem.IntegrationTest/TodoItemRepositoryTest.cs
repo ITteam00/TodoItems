@@ -2,17 +2,12 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TodoItem.Infrastructure;
+using TodoItems.Core;
 using TodoItems.Core.Model;
 using TodoItems.Core.Services;
-using TodoItems.Core;
-using Xunit;
 
-namespace TodoItems.Test
+namespace TodoItem.IntegrationTest
 {
     public class TodoItemRepositoryTest
     {
@@ -137,7 +132,7 @@ namespace TodoItems.Test
                     default),
                 Times.Once);
 
-            _mockLogger.Verify(l => l.LogInformation($"Inserting new todo item to DB {newTodoItem.Id}"), Times.Once);
+            _mockLogger.Verify(l => LoggerExtensions.LogInformation(l, $"Inserting new todo item to DB {newTodoItem.Id}"), Times.Once);
         }
 
 
