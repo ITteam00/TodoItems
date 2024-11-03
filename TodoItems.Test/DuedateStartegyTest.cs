@@ -26,7 +26,7 @@ public class DuedateStartegyTest
     }
 
     [Fact]
-    public async void Should_return_second_early_Duedate_when_create_item_auto_set_in_five_days_query_less_than_8()
+    public async void Should_return_second_early_Duedate_when_create_item_auto_set_in_five_days()
     {
         var earlyDuedateStrategy = new EarlyDuedateStrategy();
         var dueDateCounts = new Dictionary<DateTime, int>();
@@ -42,7 +42,7 @@ public class DuedateStartegyTest
 
 
     [Fact]
-    public async void Should_return_least_count_Duedate_when_create_item_auto_set_in_five_days_query_less_than_8()
+    public async void Should_return_least_count_Duedate_when_SetDuedate_query_none()
     {
         var leastCountDuedateStrategy = new LeastCountDuedateStrategy();
         var dueDateCounts = new Dictionary<DateTime, int>();
@@ -56,7 +56,7 @@ public class DuedateStartegyTest
     }
 
     [Fact]
-    public async void Should_return_least_count_Duedate_when_create_item_auto_set_in_five_days_query_over_than_8()
+    public async void Should_return_least_count_Duedate_when_SetDuedate()
     {
         var leastCountDuedateStrategy = new LeastCountDuedateStrategy();
         var dueDateCounts = new Dictionary<DateTime, int>();
