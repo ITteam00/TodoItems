@@ -9,5 +9,7 @@
         public String Id { get; set; }
         public bool IsDone { get; set; }
         public bool IsFavorite { get; set; }
+
+        public List<DateTime>? TimeStamps { get; set; }
     }
 }

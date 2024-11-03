@@ -5,7 +5,6 @@ namespace TodoItems.Core;
 public class TodoItemService
 {
     private readonly ITodoItemsRepository _todosRepository;
-    public List<DateTime>? TimeStamps;
 
     public TodoItemService(ITodoItemsRepository todosRepository)
     {
@@ -16,11 +15,6 @@ public class TodoItemService
     {
         return "1";
     }
-    public void UpdateItem(TodoItemDto NewTodoItem)
-    {
-        if (ModifyItem(NewTodoItem.CreatedDate))
-            NewTodoItem.Description = "update";
-    }
     public async Task<bool> CreateItem(TodoItemDto NewTodoItem)
     {
         if (NewTodoItem.CreatedDate > NewTodoItem.DueDate) return false;
@@ -28,21 +22,29 @@ public class TodoItemService
         if (TodoItemCount > 8) return false;
         return true;
     }
-    public bool ModifyItem(DateTime CreatedDate)
+    public async void UpdateItem(string id, string description)
     {
-        if (TimeStamps.Count > 0)
+        var TodoItem = await _todosRepository.FindById(id);
+        if (TodoItem == null) return;
+        TodoItem.Description = description;
+    }
+    public bool ModifyItem(TodoItemDto curTodoItem)
+    {
+        if (curTodoItem.TimeStamps.Count > 0)
         {
-            DateTime LastDate = TimeStamps[TimeStamps.Count - 1];
 
-            if (AreDatesOneDayApart(LastDate, CreatedDate))
+            DateTime LastDate = curTodoItem.TimeStamps[curTodoItem.TimeStamps.Count - 1];
+
+            if (AreDatesOneDayApart(LastDate, curTodoItem.CreatedDate))
             {
-                TimeStamps.Clear();
-                TimeStamps.Add(LastDate);
+                curTodoItem.TimeStamps.Clear();
+                curTodoItem.TimeStamps.Add(LastDate);
                 return true;
             }
-            if (TimeStamps.Count == 3) return false;
+            if (curTodoItem.TimeStamps.Count == 3) return false;
         }
-        TimeStamps.Add(CreatedDate);
+        curTodoItem.TimeStamps.Add(curTodoItem.CreatedDate);
+        UpdateItem(curTodoItem.Id, curTodoItem.Description);
 
         return true;
     }
