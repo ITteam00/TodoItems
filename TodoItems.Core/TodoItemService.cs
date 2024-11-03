@@ -53,4 +53,9 @@ public class TodoItemService
         TimeSpan difference = (LastDate - CurDate).Duration();
         return difference.TotalDays >= 1;
     }
+
+    public async Task<bool> SetEarlyDuedateInFiveDays(TodoItemDto todoItemDto)
+    {
+        throw new NotImplementedException();
+    }
 }
