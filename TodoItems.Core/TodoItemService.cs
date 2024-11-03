@@ -1,4 +1,5 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TodoItems.Core;
 
@@ -56,8 +57,12 @@ public class TodoItemService
 
     public async Task<DateTime?> SetEarlyDuedateInFiveDays(TodoItemDto todoItemDto)
     {
+        var futureDates = Enumerable.Range(0, 5)
+        .Select(offset => todoItemDto.CreatedDate.Date.AddDays(offset))
+        .ToList();
+
         List<TodoItemDto> todoItems = await _todosRepository.GetAllTodoItemsInFiveDays(todoItemDto.CreatedDate);
-        if (todoItems.Count == 0) return todoItemDto.CreatedDate;
+
         var groupedDuedateItems = todoItems
         .GroupBy(item => item.DueDate.Date)
         .Select(group => new
@@ -67,15 +72,28 @@ public class TodoItemService
         })
         .ToList();
 
-        var validDueDates = groupedDuedateItems
-            .Where(group => group.Count < 8)
-            .Select(group => group.DueDate)
-            .ToList();
-        if (validDueDates.Any())
+        var dueDateCounts = futureDates.ToDictionary(date => date, date => 0);
+
+        foreach (var item in groupedDuedateItems)
         {
-            return validDueDates.Min();
+            if (dueDateCounts.ContainsKey(item.DueDate))
+            {
+                dueDateCounts[item.DueDate] = item.Count; 
+            }
         }
 
-        throw new NotImplementedException();
+        var earliestDueDate = dueDateCounts
+            .Where(kvp => kvp.Value < 8) 
+            .Select(kvp => kvp.Key)
+            .OrderBy(date => date)
+            .FirstOrDefault();
+
+        if (earliestDueDate == default(DateTime))
+        {
+            throw new InvalidOperationException("No valid due date found, all dates have 8 or more items.");
+        }
+
+        return earliestDueDate;
+
     }
 }
