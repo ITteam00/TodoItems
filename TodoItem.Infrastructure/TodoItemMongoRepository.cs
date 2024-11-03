@@ -63,11 +63,11 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         return await _todosCollection.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = true });
     }
 
-    public List<ToDoItemObj> findAllTodoItemsInOneday(DateTime dateTime)
+    public async Task<List<ToDoItemObj>> FindAllTodoItemsInOneDay(DateTime dateTime)
     {
         var filter = Builders<TodoItemDao>.Filter.Gte(x => x.DueDate, dateTime.Date) &
                      Builders<TodoItemDao>.Filter.Lt(x => x.DueDate, dateTime.Date.AddDays(1));
-        var todoItemsDao = _todosCollection.Find(filter).ToList();
+        var todoItemsDao = await _todosCollection.Find(filter).ToListAsync();
 
         return todoItemsDao.Select(ConvertToTodoItem).ToList();
     }
@@ -80,10 +80,10 @@ public class TodoItemMongoRepository : ITodoItemsRepository
             throw new InvalidOperationException("Due Date and DueDateRequirement cannot be empty at the same time.");
         }
 
-        inputToDoItem.DueDate = _dueDateStrategy.DetermineDueDate(inputToDoItem);
+        inputToDoItem.DueDate = await _dueDateStrategy.DetermineDueDateAsync(inputToDoItem).ConfigureAwait(false);
 
         await Save(inputToDoItem);
-        return await this.FindById(inputToDoItem.Id);
+        return await FindById(inputToDoItem.Id);
 
     }
 

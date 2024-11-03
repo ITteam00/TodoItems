@@ -6,7 +6,7 @@ namespace TodoItems.Core
     public interface ITodoItemsRepository
     {
 
-        public List<ToDoItemObj> findAllTodoItemsInOneday(DateTime dateTime);
+        public Task<List<ToDoItemObj>> FindAllTodoItemsInOneDay(DateTime dateTime);
         public Task<ToDoItemObj> FindById(string id);
         public Task<UpdateResult> Save(ToDoItemObj todoItem);
         public Task<ToDoItemObj> CreateAsync(ToDoItemObj toDoItem);

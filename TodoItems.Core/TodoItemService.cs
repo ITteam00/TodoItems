@@ -1,25 +1,60 @@
 ﻿using ToDoItem.Api.Models;
 
-namespace TodoItems.Core;
-
-public class TodoItemService
+namespace TodoItems.Core
 {
-    private const int MAX_EDIT_Times = 2;
-    private const int MAX_DUEDATE = 8;
-    private readonly ITodoItemsRepository todosRepository;
-
-
-    public TodoItemService(ITodoItemsRepository repository)
+    public class TodoItemService
     {
-        todosRepository = repository;
+        private const int MAX_EDIT_TIMES = 2;
+        private const int MAX_DUEDATE = 8;
+        private readonly ITodoItemsRepository _todosRepository;
+
+        public TodoItemService(ITodoItemsRepository repository)
+        {
+            _todosRepository = repository;
+        }
+
+        public async Task<ToDoItemObj> CreateToDoItem(ToDoItemObj inputToDoItem)
+        {
+
+            return await _todosRepository.CreateAsync(inputToDoItem);
+        }
+
+        public async Task<ToDoItemObj> EditToDoItem(ToDoItemObj inputToDoItem)
+        {
+            String id = inputToDoItem.Id;
+            var existingItem = await _todosRepository.FindById(id);
+            if (existingItem == null)
+            {
+                throw new KeyNotFoundException("Todo item not found.");
+            }
+
+            existingItem.Description = inputToDoItem.Description;
+            existingItem.Favorite = inputToDoItem.Favorite;
+            existingItem.DueDate = inputToDoItem.DueDate;
+            existingItem.LastModifiedTimeDate = DateTime.UtcNow;
+
+            return await _todosRepository.EditItem(existingItem);
+        }
+
+        public async Task<ToDoItemObj> GetToDoItemById(string id)
+        {
+            return await _todosRepository.FindById(id);
+        }
+
+        public async Task<List<ToDoItemObj>> GetAllToDoItemsInOneDay(DateTime date)
+        {
+            return await _todosRepository.FindAllTodoItemsInOneDay(date);
+        }
+
+        public async Task DeleteToDoItem(string id)
+        {
+            var item = await _todosRepository.FindById(id);
+            if (item == null)
+            {
+                throw new KeyNotFoundException("Todo item not found.");
+            }
+
+            await _todosRepository.Save(item); // Assuming Save method handles deletion logic
+        }
     }
-
-    //public async void AddToDoItem(ToDoItemDto inputToDoItemModel, ITodosRepository todosRepository)
-    //{
-
-    //}
-
-
-
-
 }

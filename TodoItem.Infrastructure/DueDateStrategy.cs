@@ -13,12 +13,12 @@ namespace TodoItem.Infrastructure
             _repository = repository;
         }
 
-        public DateTime DetermineDueDate(ToDoItemObj inputToDoItem)
+        public async Task<DateTime> DetermineDueDateAsync(ToDoItemObj inputToDoItem)
         {
             if (inputToDoItem.DueDate != null)
             {
                 inputToDoItem.ValidateDueDateIsAfterCreatedTime();
-                var itemsDueToday = _repository.findAllTodoItemsInOneday((DateTime)inputToDoItem.DueDate);
+                var itemsDueToday = await _repository.FindAllTodoItemsInOneDay(inputToDoItem.DueDate.Value);
                 if (itemsDueToday.Count >= MAX_DUEDATE)
                 {
                     throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
@@ -26,7 +26,7 @@ namespace TodoItem.Infrastructure
                 return (DateTime)inputToDoItem.DueDate;
             }
 
-            int[] itemNumbers = GetItemNumbersForNext5Days();
+            int[] itemNumbers = await GetItemNumbersForNext5Days();
 
             if (itemNumbers.All(count => count >= MAX_DUEDATE))
             {
@@ -61,14 +61,14 @@ namespace TodoItem.Infrastructure
             return fewestDate;
         }
 
-        private int[] GetItemNumbersForNext5Days()
+        private async Task<int[]> GetItemNumbersForNext5Days()
         {
             int[] itemNumbers = new int[5];
 
             for (int i = 0; i < 5; i++)
             {
                 DateTime targetDate = DateTime.UtcNow.Date.AddDays(i);
-                var itemsOnDate = _repository.findAllTodoItemsInOneday(targetDate);
+                var itemsOnDate = await _repository.FindAllTodoItemsInOneDay(targetDate); // 使用 await 等待异步结果
                 itemNumbers[i] = itemsOnDate.Count;
             }
 

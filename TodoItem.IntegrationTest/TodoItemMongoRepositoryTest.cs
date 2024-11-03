@@ -141,7 +141,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         await _mongoCollection.InsertOneAsync(todoItemDao1);
         await _mongoCollection.InsertOneAsync(todoItemDao2);
 
-        var toDoItemsList = _mongoRepository.findAllTodoItemsInOneday(DateTime.UtcNow.AddDays(2).Date);
+        var toDoItemsList = await _mongoRepository.FindAllTodoItemsInOneDay(DateTime.UtcNow.AddDays(2).Date);
 
         var expectedToDoItemObjs = new List<ToDoItemObj>
     {
