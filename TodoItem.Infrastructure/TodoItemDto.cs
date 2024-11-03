@@ -35,7 +35,6 @@ namespace TodoItems.Infrastructure
                 CreatedTime = todoItem.CreatedTime,
             };
             return dto;
-
         }
 
 
@@ -53,7 +52,6 @@ namespace TodoItems.Infrastructure
                 Done = this.Done,
                 CreatedTime = this.CreatedTime,
             };
-            
             return item;
         }
     }

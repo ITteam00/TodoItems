@@ -45,7 +45,20 @@ namespace TodoItems.Infrastructure
         }
         public List<TodoItem> GetItemsByDueDate(DateTimeOffset dueDate)
         {
-            throw new NotImplementedException();
+            var filter = Builders<TodoItemDto>.Filter.And(
+                Builders<TodoItemDto>.Filter.Ne(item => item.DueDate, null),
+                Builders<TodoItemDto>.Filter.Gte(item => item.DueDate, dueDate.Date.AddDays(-1)),
+                Builders<TodoItemDto>.Filter.Lt(item => item.DueDate, dueDate.Date.AddDays(1))
+            );
+            var result = TodosCollection
+                
+                .Find(filter)
+                .SortBy(item => item.DueDate)
+                .ToList()
+                .Where(x => x.DueDate.Value.Date == dueDate.Date)
+                .Select(x => x.MapToTodoItem())
+                .ToList();
+            return result;
         }
 
         public TodoItem AddItem(TodoItem item)

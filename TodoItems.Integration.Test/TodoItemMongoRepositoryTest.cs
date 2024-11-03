@@ -14,6 +14,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
     private readonly TodoItemMongoRepository _mongoRepository;
     private readonly string _collectionName = "TodoItems";
     private readonly string _databaseName = "TodoItemsTest";
+
     public TodoItemMongoRepositoryTest()
     {
         var mockSettings = new Mock<IOptions<TodoStoreDatabaseSettings>>();
@@ -63,7 +64,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
     public void InsertOneItem_ShouldReturnItem_WithEmptyModificationRecord()
     {
         var id = ObjectId.GenerateNewId().ToString();
-        
+
         var item = new TodoItem
         {
             Id = id,
@@ -82,7 +83,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         Assert.Equal(todoItemDto.ModificationRecord.ModifiedTimes, findResult.ModificationRecord.ModifiedTimes);
         Assert.Equal(todoItemDto.DueDate, findResult.DueDate);
     }
-    
+
     [Fact]
     public void InsertOneItem_ShouldReturnItem_WithModificationRecord()
     {
@@ -113,7 +114,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         Assert.True(item.ModificationRecord.ModifiedTimes.SequenceEqual(findResult.ModificationRecord.ModifiedTimes));
         Assert.Equal(item.ModificationRecord.ModifiedTimes, findResult.ModificationRecord.ModifiedTimes);
     }
-    
+
     [Fact]
     public void GetItemById_ShouldReturnItemWithId()
     {
@@ -127,27 +128,116 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         };
         var items = new List<TodoItem>
         {
-            new TodoItem() { Id = ObjectId.GenerateNewId().ToString(), Description = "aaa", ModificationRecord = new()},
-            new TodoItem() { Id = ObjectId.GenerateNewId().ToString(), Description = "bbb", ModificationRecord = new()},
+            new TodoItem()
+                { Id = ObjectId.GenerateNewId().ToString(), Description = "aaa", ModificationRecord = new() },
+            new TodoItem()
+                { Id = ObjectId.GenerateNewId().ToString(), Description = "bbb", ModificationRecord = new() },
             item
         };
         foreach (var i in items)
         {
             _mongoRepository.AddItem(i);
         }
+
         var findResult = _mongoRepository.GetItemById(id);
         Assert.NotNull(findResult);
         Assert.Equal(item.Id, findResult.Id);
         Assert.Equal(item.Description, findResult.Description);
     }
-    
+
     [Fact]
-    public void InsertOneItem_Should()
+    public void InsertOneItem()
     {
-        var dto = new TodoItemDto(){Description = "jjjjjjjjjjj"};
+        var dto = new TodoItemDto() { Description = "jjjjjjjjjjj" };
         _mongoRepository.TodosCollection.InsertOne(dto);
         var findResult = _mongoRepository.TodosCollection.Find(x => x.Description == dto.Description);
         Assert.Equal(dto.Description, findResult.FirstOrDefault().Description);
     }
+
+    [Fact]
+    public void GetItemsByDueDate_ShouldReturnItems_WithDueDate()
+    {
+
+        var items = new List<TodoItem>
+        {
+            new TodoItem()
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                Description = "aaa", 
+                ModificationRecord = new(),
+                DueDate = DateTimeOffset.Now.AddDays(1),
+            },
+            new TodoItem()
+            {
+                Id = ObjectId.GenerateNewId().ToString(), 
+                Description = "bbb", 
+                ModificationRecord = new(),
+                DueDate = DateTimeOffset.Now.AddDays(2),
+            },
+            new TodoItem()
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                Description = "ccc", 
+                ModificationRecord = new(),
+                DueDate = DateTimeOffset.Now.AddDays(2),
+            },
+            new TodoItem()
+            {
+                Id = ObjectId.GenerateNewId().ToString(), 
+                Description = "ddd", 
+                ModificationRecord = new(),
+                DueDate = DateTimeOffset.Now.AddDays(3),
+            },
+            new TodoItem()
+            {
+                Id = ObjectId.GenerateNewId().ToString(), 
+                Description = "eee", 
+                ModificationRecord = new(),
+            },
+        };
+        foreach (var i in items)
+        {
+            _mongoRepository.AddItem(i);
+        }
+        var result = _mongoRepository.GetItemsByDueDate(DateTimeOffset.Now.AddDays(2));
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count());
+    }
     
+    [Fact]
+    public void GetItemsByDueDate_ShouldReturnNull()
+    {
+
+        var items = new List<TodoItem>
+        {
+            new TodoItem()
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                Description = "aaa", 
+                ModificationRecord = new(),
+            },
+            new TodoItem()
+            {
+                Id = ObjectId.GenerateNewId().ToString(), 
+                Description = "bbb", 
+                ModificationRecord = new(),
+            },
+            new TodoItem()
+            {
+                Id = ObjectId.GenerateNewId().ToString(), 
+                Description = "ddd", 
+                ModificationRecord = new(),
+                DueDate = DateTimeOffset.Now.AddDays(3),
+            },
+
+        };
+        foreach (var i in items)
+        {
+            _mongoRepository.AddItem(i);
+        }
+        var result = _mongoRepository.GetItemsByDueDate(DateTimeOffset.Now.AddDays(2));
+        Assert.NotNull(result);
+        Assert.Empty(result);
+    }
+
 }
