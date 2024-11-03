@@ -15,14 +15,14 @@ namespace TodoItems.Test
         {
             var dueDateGenerateStrategy=new FreestDueDateStrategy();
             DateTime today= DateTime.Now.Date;
-            var dueDateDic = new Dictionary<DateTime, List<TodoItems.Core.Model.TodoItem>>
+            var dueDateDic = new Dictionary<DateTime, List<TodoItem>>
             {
-                {today.AddDays(1),[new TodoItems.Core.Model.TodoItem(), new TodoItems.Core.Model.TodoItem(), new TodoItems.Core.Model.TodoItem()] },
-                {today.AddDays(2),[new TodoItems.Core.Model.TodoItem()] },
-                {today.AddDays(3),[new TodoItems.Core.Model.TodoItem(), new TodoItems.Core.Model.TodoItem(), new TodoItems.Core.Model.TodoItem()
-                ,new TodoItems.Core.Model.TodoItem(),new TodoItems.Core.Model.TodoItem(),new TodoItems.Core.Model.TodoItem()
-                ,new TodoItems.Core.Model.TodoItem(),new TodoItems.Core.Model.TodoItem(),new TodoItems.Core.Model.TodoItem()] },
-                {today.AddDays(4),[new TodoItems.Core.Model.TodoItem(), new TodoItems.Core.Model.TodoItem()] },
+                {today.AddDays(1),[new TodoItem(), new TodoItem(), new TodoItem()] },
+                {today.AddDays(2),[new TodoItem()] },
+                {today.AddDays(3),[new TodoItem(), new TodoItem(), new TodoItem()
+                ,new  TodoItem(),new TodoItem(),new  TodoItem()
+                ,new  TodoItem(),new TodoItem(),new TodoItem()] },
+                {today.AddDays(4),[new TodoItem(), new TodoItem()] },
             };
             var result = dueDateGenerateStrategy.generateDueDate(dueDateDic);
             Assert.Equal(today.AddDays(2),result);
@@ -33,14 +33,14 @@ namespace TodoItems.Test
         {
             var dueDateGenerateStrategy = new ClosestDueDateStrategy();
             DateTime today = DateTime.Now.Date;
-            var dueDateDic = new Dictionary<DateTime, List<TodoItems.Core.Model.TodoItem>>
+            var dueDateDic = new Dictionary<DateTime, List< TodoItem>>
             {
-                {today.AddDays(1),[new TodoItems.Core.Model.TodoItem(), new TodoItems.Core.Model.TodoItem(), new TodoItems.Core.Model.TodoItem()] },
-                {today.AddDays(2),[new TodoItems.Core.Model.TodoItem()] },
-                {today.AddDays(3),[new TodoItems.Core.Model.TodoItem(), new TodoItems.Core.Model.TodoItem(), new TodoItems.Core.Model.TodoItem()
-                ,new TodoItems.Core.Model.TodoItem(),new TodoItems.Core.Model.TodoItem(),new TodoItems.Core.Model.TodoItem()
-                ,new TodoItems.Core.Model.TodoItem(),new TodoItems.Core.Model.TodoItem(),new TodoItems.Core.Model.TodoItem()] },
-                {today.AddDays(4),[new TodoItems.Core.Model.TodoItem(), new TodoItems.Core.Model.TodoItem()] },
+                {today.AddDays(1),[new TodoItem(), new TodoItem(), new TodoItem()] },
+                {today.AddDays(2),[new TodoItem()] },
+                {today.AddDays(3),[new TodoItem(), new TodoItem(), new TodoItem()
+                ,new  TodoItem(),new TodoItem(),new TodoItem()
+                ,new  TodoItem(),new TodoItem(),new  TodoItem()] },
+                {today.AddDays(4),[new TodoItem(), new TodoItem()] },
             };
             var result = dueDateGenerateStrategy.generateDueDate(dueDateDic);
             Assert.Equal(today.AddDays(1), result);
