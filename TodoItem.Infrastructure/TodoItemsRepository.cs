@@ -8,7 +8,7 @@ namespace TodoItem.Infrastructure
 {
     public class TodoItemsRepository : ITodosRepository
     {
-        private readonly IMongoCollection<TodoItemMongoDTO> _ToDoItemsCollection;
+        public readonly IMongoCollection<TodoItemMongoDTO> ToDoItemsCollection;
         private readonly ILogger<ToDoItemsService> _Logger;
 
         public TodoItemsRepository(IOptions<ToDoItemDatabaseSettings> ToDoItemStoreDatabaseSettings,
@@ -20,7 +20,7 @@ namespace TodoItem.Infrastructure
             var mongoDatabase = mongoClient.GetDatabase(
                 ToDoItemStoreDatabaseSettings.Value.DatabaseName);
 
-            _ToDoItemsCollection = mongoDatabase.GetCollection<TodoItemMongoDTO>(
+            ToDoItemsCollection = mongoDatabase.GetCollection<TodoItemMongoDTO>(
                 ToDoItemStoreDatabaseSettings.Value.CollectionName);
             _Logger = logger;
         }
@@ -28,7 +28,7 @@ namespace TodoItem.Infrastructure
         public async Task<List<TodoItemDTO>> GetItemsByDueDate(DateTimeOffset? dueDate)
         {
             var filter = Builders<TodoItemMongoDTO>.Filter.Eq(item => item.DueDate, dueDate);
-            var todoItems = await _ToDoItemsCollection.Find(filter).ToListAsync();
+            var todoItems = await ToDoItemsCollection.Find(filter).ToListAsync();
 
             return todoItems.Select(item => new TodoItemDTO
             {
@@ -57,7 +57,7 @@ namespace TodoItem.Infrastructure
                 DueDate = updatedTodoItem.DueDate,
                 ModificationDateTimes = list
             };
-            await _ToDoItemsCollection.ReplaceOneAsync(x => x.Id == id, item);
+            await ToDoItemsCollection.ReplaceOneAsync(x => x.Id == id, item);
         }
 
         public async Task CreateAsync(TodoItemDTO newTodoItem)
@@ -74,7 +74,7 @@ namespace TodoItem.Infrastructure
             };
             _Logger.LogInformation($"Inserting new todo item to DB {newTodoItem.Id}");
 
-            await _ToDoItemsCollection.InsertOneAsync(item);
+            await ToDoItemsCollection.InsertOneAsync(item);
             ;
         }
 
@@ -88,7 +88,7 @@ namespace TodoItem.Infrastructure
                 Builders<TodoItemMongoDTO>.Filter.Lt(item => item.DueDate, endDate)
             );
 
-            var items = await _ToDoItemsCollection.Find(filter).ToListAsync();
+            var items = await ToDoItemsCollection.Find(filter).ToListAsync();
 
             return items.Select(item => new TodoItemDTO
             {
