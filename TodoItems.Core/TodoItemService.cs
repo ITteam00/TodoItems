@@ -100,7 +100,7 @@ public class TodoItemService
 
     }
 
-    public async Task<DateTime> SetLeastCountDuedateInFiveDays(TodoItemDto todoItemDto)
+    public async Task<DateTime?> SetLeastCountDuedateInFiveDays(TodoItemDto todoItemDto)
     {
 
         var futureDates = Enumerable.Range(0, 5)
@@ -119,7 +119,7 @@ public class TodoItemService
         .ToList();
 
         var userDuedateCount = groupedDuedateItems.FirstOrDefault(group => group.DueDate == todoItemDto.DueDate)?.Count ?? 0;
-        if (todoItemDto.DueDate != null && userDuedateCount < 8) return (DateTime)(todoItemDto.DueDate?.Date);
+        if (todoItemDto.DueDate != null && userDuedateCount < 8) return todoItemDto.DueDate?.Date;
 
         var dueDateCounts = futureDates.ToDictionary(date => date, date => 0);
 
