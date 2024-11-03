@@ -31,7 +31,7 @@ public class TodoItemServiceTest
         new DateTime(2024, 10, 30),
         new DateTime(2024, 10, 30)
         }
-    };
+        };
         Assert.Equal(false, todoItemService.ModifyItem(todoItemDto));
     }
     [Fact]
@@ -48,7 +48,7 @@ public class TodoItemServiceTest
             DueDate = new DateTime(2024, 10, 31),
             CreatedDate = new DateTime(2024, 10, 30),
             TimeStamps = new List<DateTime>()
-    };
+        };
         Assert.Equal(true, todoItemService.ModifyItem(todoItemDto));
     }
     [Fact]
@@ -90,7 +90,7 @@ public class TodoItemServiceTest
             DueDate = new DateTime(2024, 10, 31),
             CreatedDate = new DateTime(2024, 10, 30),
             TimeStamps = new List<DateTime>()
-    };
+        };
         todoItemService.UpdateItem(todoItemDto.Id, todoItemDto.Description);
         Assert.Equal("new task", todoItemDto.Description);
     }
@@ -208,7 +208,7 @@ public class TodoItemServiceTest
             CreatedDate = new DateTime(2024, 10, 10)
         };
         List<TodoItemDto> todoItems = new List<TodoItemDto>();
-        for(int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
         {
             var todoItem = new TodoItemDto
             {
@@ -279,3 +279,4 @@ public class TodoItemServiceTest
         DateTime RealDueDate = (DateTime)await todoItemService.SetLeastCountDuedateInFiveDays(todoItemDto);
         Assert.Equal(todoItemDto.CreatedDate, RealDueDate.Date);
     }
+}

@@ -102,6 +102,46 @@ public class TodoItemService
 
     public async Task<DateTime> SetLeastCountDuedateInFiveDays(TodoItemDto todoItemDto)
     {
-        throw new NotImplementedException();
+
+        var futureDates = Enumerable.Range(0, 5)
+        .Select(offset => todoItemDto.CreatedDate.Date.AddDays(offset))
+        .ToList();
+
+        List<TodoItemDto> todoItems = await _todosRepository.GetAllTodoItemsInFiveDays(todoItemDto.CreatedDate);
+
+        var groupedDuedateItems = todoItems
+        .GroupBy(item => item.DueDate?.Date)
+        .Select(group => new
+        {
+            DueDate = group.Key,
+            Count = group.Count()
+        })
+        .ToList();
+
+        var userDuedateCount = groupedDuedateItems.FirstOrDefault(group => group.DueDate == todoItemDto.DueDate)?.Count ?? 0;
+        if (todoItemDto.DueDate != null && userDuedateCount < 8) return (DateTime)(todoItemDto.DueDate?.Date);
+
+        var dueDateCounts = futureDates.ToDictionary(date => date, date => 0);
+
+        foreach (var item in groupedDuedateItems)
+        {
+            if (dueDateCounts.ContainsKey((DateTime)item.DueDate))
+            {
+                dueDateCounts[(DateTime)item.DueDate] = item.Count;
+            }
+        }
+
+        var minCountDueDate = dueDateCounts
+            .Where(kvp => kvp.Value < 8) 
+            .OrderBy(kvp => kvp.Value) 
+            .ThenBy(kvp => kvp.Key) 
+            .FirstOrDefault();
+
+        if (minCountDueDate.Equals(default(KeyValuePair<DateTime, int>)))
+        {
+            throw new InvalidOperationException("No valid due date found, all dates have 8 or more items.");
+        }
+
+        return minCountDueDate.Key;
     }
 }
