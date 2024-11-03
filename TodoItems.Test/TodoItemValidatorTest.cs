@@ -22,12 +22,12 @@ namespace TodoItems.Test
         {
             List<DateTimeOffset> dateTimes = new List<DateTimeOffset>
             {
-                new DateTimeOffset(2024, 10, 30, 14, 0, 0, TimeSpan.Zero),
-                new DateTimeOffset(2024, 11, 2, 9, 0, 0, TimeSpan.Zero),
-                new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
-                new DateTimeOffset(2024, 11, 2, 17, 0, 0, TimeSpan.Zero),
-                new DateTimeOffset(2024, 11, 2, 16, 2, 0, TimeSpan.Zero),
-                new DateTimeOffset(2024, 11, 2, 16, 2, 0, TimeSpan.Zero)
+                new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(-3)),
+                new DateTimeOffset(DateTimeOffset.Now.Date.AddHours(3)),
+                new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(-4)),
+                new DateTimeOffset(DateTimeOffset.Now.Date.AddHours(4)),
+                new DateTimeOffset(DateTimeOffset.Now.Date.AddHours(5)),
+                new DateTimeOffset(DateTimeOffset.Now.Date.AddHours(6))
             };
 
             Assert.Equal(4, _todoItemValidator.ModificationCount(dateTimes));
@@ -54,22 +54,22 @@ namespace TodoItems.Test
             {
                 new TodoItemDTO
                 {
-                    Id = "1", Description = "Task 1", DueDate = new DateTimeOffset(2024, 11, 3, 0, 0, 0, TimeSpan.Zero)
+                    Id = "1", Description = "Task 1", DueDate = new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(1))
                 },
                 new TodoItemDTO
                 {
-                    Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(2024, 11, 3, 0, 0, 0, TimeSpan.Zero)
+                    Id = "2", Description = "Task 2", DueDate = new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(1))
                 },
                 new TodoItemDTO
                 {
-                    Id = "3", Description = "Task 3", DueDate = new DateTimeOffset(2024, 11, 4, 0, 0, 0, TimeSpan.Zero)
+                    Id = "3", Description = "Task 3", DueDate = new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(2))
                 }
             };
 
             var expected = Enumerable.Range(1, 5)
                 .ToDictionary(i => currentDate.AddDays(i), i => 0);
-            expected[new DateTime(2024, 11, 3)] = 2;
-            expected[new DateTime(2024, 11, 4)] = 1;
+            expected[new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(1))] = 2;
+            expected[new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(2))] = 1;
 
             // Act
             var result = _todoItemValidator.CountDueDates(todoItems);

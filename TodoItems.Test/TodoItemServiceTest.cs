@@ -38,12 +38,12 @@ public class TodoItemServiceTest
     {
         List<DateTimeOffset> dateTimes = new List<DateTimeOffset>
         {
-            new DateTimeOffset(2024, 10, 30, 14, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 2, 9, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 2, 17, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 2, 16, 2, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 11, 2, 16, 2, 0, TimeSpan.Zero)
+            new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(-2)),
+            new DateTimeOffset(DateTimeOffset.Now.Date),
+            new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(-4)),
+            new DateTimeOffset(DateTimeOffset.Now.Date),
+            new DateTimeOffset(DateTimeOffset.Now.Date),
+            new DateTimeOffset(DateTimeOffset.Now.Date)
         };
         var updatedToDoItem = new TodoItemDTO
         {
@@ -68,10 +68,10 @@ public class TodoItemServiceTest
         var id = "test-id";
         List<DateTimeOffset> dateTimes = new List<DateTimeOffset>
         {
-            new DateTimeOffset(2024, 10, 30, 14, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 31, 9, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 29, 18, 0, 0, TimeSpan.Zero),
-            new DateTimeOffset(2024, 10, 31, 17, 0, 0, TimeSpan.Zero),
+            new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(-4)),
+            new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(-3)),
+            new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(-5)),
+            new DateTimeOffset(DateTimeOffset.Now.Date.AddDays(-2)),
         };
         var updatedToDoItem = new TodoItemDTO
         {
