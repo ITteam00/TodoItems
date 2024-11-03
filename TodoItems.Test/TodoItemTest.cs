@@ -8,10 +8,11 @@ namespace TodoItems.Test;
 public class TodoItemTest
 {
     private readonly ITodoItemService _service;
-    private readonly ITodoItemsRepository _todoRepository;
+    private readonly Mock<ITodoItemsRepository> _todoRepository;
 
     public TodoItemTest(){
-        _service=new TodoItemService(_todoRepository);
+        _todoRepository = new Mock<ITodoItemsRepository>();
+        _service = new TodoItemService(_todoRepository.Object);
     }
 
     [Fact]
@@ -98,27 +99,9 @@ public class TodoItemTest
         Assert.Equal(1, updatedItem.ModifyTime.Length);
     }
 
-    //[Fact]
-    //public async void should_create_success_when_has_dueDate_and_isAvailable()
-    //{
-    //    var _todoRepository = new Mock<ITodoItemsRepository>();
-    //    var _service = new TodoItemService(_todoRepository.Object);
-    //    var expectReturn = new List<TodoItem>();
-
-
-    //    for (var i = 0; i < 6; i++)
-    //    {
-    //        expectReturn.Add(new TodoItem());
-    //    }
-    //    _todoRepository.Setup(repo => repo.getAllItemsCountInToday(It.IsAny<DateTime>())).ReturnsAsync(expectReturn);
-
-    //}
-
     [Fact]
     public async void should_create_failed_when_item_count_morethan_eight()
     {
-        var _todoRepository = new Mock<ITodoItemsRepository>();
-        var _service = new TodoItemService(_todoRepository.Object);
         var expectReturn = new List<TodoItem>();
         for (var i = 0; i < 9; i++)
         {
@@ -139,10 +122,8 @@ public class TodoItemTest
     }
 
     [Fact]
-    public async void should_create_success()
+    public async void should_create_success_when_have_special_available_dueTime()
     {
-        var _todoRepository = new Mock<ITodoItemsRepository>();
-        var _service = new TodoItemService(_todoRepository.Object);
         var expectReturn = new List<TodoItem>();
         for (var i = 0; i < 3; i++)
         {
@@ -153,7 +134,6 @@ public class TodoItemTest
         {
             Id=Guid.NewGuid().ToString(),
             Description = "create a new todoItem",
-            CreateTime = DateTime.Now,
             IsComplete = false,
             IsFavorite = false,
             ModifyTime = [DateTime.Now.Date],
@@ -167,21 +147,19 @@ public class TodoItemTest
     [Fact]
     public async void should_create_failed_when_dueTime_earlier_createTime()
     {
-        var _todoRepository = new Mock<ITodoItemsRepository>();
-        var _service = new TodoItemService(_todoRepository.Object);
         var expectReturn = new List<TodoItem>();
         _todoRepository.Setup(repo => repo.getAllItemsCountInToday(It.IsAny<DateTime>())).ReturnsAsync(expectReturn);
         var todoItem = new TodoItem()
         {
             Id=Guid.NewGuid().ToString(),
             Description = "create a new todoItem",
-            CreateTime = new DateTime(2024, 10, 30, 00, 00, 01),
+            CreateTime = DateTime.Now,
             IsComplete = false,
             IsFavorite = false,
             ModifyTime = [new DateTime(2024, 10, 30, 00, 00, 01)],
-            DueTime = DateTime.Now.Date,
+            DueTime = DateTime.Now.AddDays(-2).Date,
         };
-        var exception = await Assert.ThrowsAsync<TooManyTodoItemInDueDateException>(() => _service.CreateTodoItem(todoItem));
-        Assert.Equal(exception.Message, "A maximum of eight todoitems can be completed per day");
+        var exception = await Assert.ThrowsAsync<DueDateEarlierThanCreateDateException>(() => _service.CreateTodoItem(todoItem));
+        Assert.Equal(exception.Message, "Due time should later than create time");
     }
 }
