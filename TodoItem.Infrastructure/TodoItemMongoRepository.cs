@@ -63,6 +63,15 @@ public class TodoItemMongoRepository: ITodoItemsRepository
             todoItems.Add(ConvertToTodoItem(item));
         }
         return todoItems;
-
     }
+
+    public async Task<List<TodoItems.Core.TodoItem>> getNextFiveDaysItem(DateTime date)
+    {
+        FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.And(
+            Builders<TodoItemPo>.Filter.Gte(item => item.DueDate, date),
+            Builders<TodoItemPo>.Filter.Lt(item => item.DueDate, date.AddDays(5)));
+        var nextFiveDaysItem = await _todosCollection.Find(filter).ToListAsync();
+        return nextFiveDaysItem.Select(item => ConvertToTodoItem(item)).ToList();
+    }
+
 }
