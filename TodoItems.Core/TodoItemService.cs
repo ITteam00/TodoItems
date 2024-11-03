@@ -31,7 +31,6 @@ namespace TodoItems.Core
             existingItem.Description = inputToDoItem.Description;
             existingItem.Favorite = inputToDoItem.Favorite;
             existingItem.DueDate = inputToDoItem.DueDate;
-            existingItem.LastModifiedTimeDate = DateTime.UtcNow;
 
             return await _todosRepository.EditItem(existingItem);
         }
@@ -46,15 +45,6 @@ namespace TodoItems.Core
             return await _todosRepository.FindAllTodoItemsInOneDay(date);
         }
 
-        public async Task DeleteToDoItem(string id)
-        {
-            var item = await _todosRepository.FindById(id);
-            if (item == null)
-            {
-                throw new KeyNotFoundException("Todo item not found.");
-            }
 
-            await _todosRepository.Save(item); // Assuming Save method handles deletion logic
-        }
     }
 }

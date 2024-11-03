@@ -80,7 +80,7 @@ public class TodoItemMongoRepository : ITodoItemsRepository
             throw new InvalidOperationException("Due Date and DueDateRequirement cannot be empty at the same time.");
         }
 
-        inputToDoItem.DueDate = await _dueDateStrategy.DetermineDueDateAsync(inputToDoItem).ConfigureAwait(false);
+        inputToDoItem.DueDate = await _dueDateStrategy.DetermineDueDateAsync(inputToDoItem);
 
         await Save(inputToDoItem);
         return await FindById(inputToDoItem.Id);
