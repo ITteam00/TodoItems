@@ -67,7 +67,7 @@ public class TodoItemTest
         };
         _todoRepository.Setup(repo => repo.FindById(It.IsAny<string>())).ReturnsAsync(oldItem);
         var exception = await Assert.ThrowsAsync<NoModifyTimeException>(() => _service.ModifyTodoItem("1",updateItem));
-        _todoRepository.Verify(repo => repo.SaveAsync(oldItem), Times.Never);
+        _todoRepository.Verify(repo => repo.CreateTodoItemAsync(oldItem), Times.Never);
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class TodoItemTest
         {
             expectReturn.Add(new TodoItem());
         }
-        _todoRepository.Setup(repo => repo.getAllItemsCountInToday(It.IsAny<DateTime>())).ReturnsAsync(expectReturn);
+        _todoRepository.Setup(repo => repo.GetAllItemsInDueDate(It.IsAny<DateTime>())).ReturnsAsync(expectReturn);
         var todoItem = new TodoItem()
         {
             Id=Guid.NewGuid().ToString(),
@@ -113,7 +113,7 @@ public class TodoItemTest
             CreateTime = DateTime.Now,
             IsComplete = false,
             IsFavorite = false,
-            DueTime = DateTime.Now,
+            DueDate = DateTime.Now,
         };
         var exception= await Assert.ThrowsAsync<TooManyTodoItemInDueDateException>(()=> _service.CreateTodoItem(todoItem)) ;
         Assert.Equal(exception.Message, "A maximum of eight todoitems can be completed per day");
@@ -127,7 +127,7 @@ public class TodoItemTest
         {
             expectReturn.Add(new TodoItem());
         }
-        _todoRepository.Setup(repo => repo.getAllItemsCountInToday(It.IsAny<DateTime>())).ReturnsAsync(expectReturn);
+        _todoRepository.Setup(repo => repo.GetAllItemsInDueDate(It.IsAny<DateTime>())).ReturnsAsync(expectReturn);
         var todoItem = new TodoItem()
         {
             Id=Guid.NewGuid().ToString(),
@@ -135,12 +135,12 @@ public class TodoItemTest
             IsComplete = false,
             IsFavorite = false,
             ModifyTime = [DateTime.Now.Date],
-            DueTime = DateTime.Now.AddDays(3).Date,
+            DueDate = DateTime.Now.AddDays(3).Date,
         };
 
         var createToDoItem = await _service.CreateTodoItem(todoItem);
         Assert.Equal("create a new todoItem", createToDoItem.Description);
-        _todoRepository.Verify(repo => repo.SaveAsync(todoItem), Times.Once);
+        _todoRepository.Verify(repo => repo.CreateTodoItemAsync(todoItem), Times.Once);
 
         Assert.NotEmpty(createToDoItem.Id);
     }
@@ -148,7 +148,7 @@ public class TodoItemTest
     public async void should_create_failed_when_dueTime_earlier_createTime()
     {
         var expectReturn = new List<TodoItem>();
-        _todoRepository.Setup(repo => repo.getAllItemsCountInToday(It.IsAny<DateTime>())).ReturnsAsync(expectReturn);
+        _todoRepository.Setup(repo => repo.GetAllItemsInDueDate(It.IsAny<DateTime>())).ReturnsAsync(expectReturn);
         var todoItem = new TodoItem()
         {
             Id=Guid.NewGuid().ToString(),
@@ -157,7 +157,7 @@ public class TodoItemTest
             IsComplete = false,
             IsFavorite = false,
             ModifyTime = [new DateTime(2024, 10, 30, 00, 00, 01)],
-            DueTime = DateTime.Now.AddDays(-2).Date,
+            DueDate = DateTime.Now.AddDays(-2).Date,
         };
         var exception = await Assert.ThrowsAsync<DueDateEarlierThanCreateDateException>(() => _service.CreateTodoItem(todoItem));
         Assert.Equal(exception.Message, "Due time should later than create time");
@@ -179,13 +179,13 @@ public class TodoItemTest
         List<TodoItem> nextFiveDaysItems = [];
         for (int i = 1; i < 6; i++)
         {
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
         }
-        nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(1) });
-        _todoRepository.Setup(repo => repo.getNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
+        nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(1) });
+        _todoRepository.Setup(repo => repo.GetNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
         var createdTodoItem= await _service.CreateTodoItem(todoItem,strategytype);
-        Assert.Equal(today.AddDays(2), createdTodoItem.DueTime);
-        _todoRepository.Verify(repo => repo.SaveAsync(todoItem), Times.Once);
+        Assert.Equal(today.AddDays(2), createdTodoItem.DueDate);
+        _todoRepository.Verify(repo => repo.CreateTodoItemAsync(todoItem), Times.Once);
     }
 
     [Fact]
@@ -204,13 +204,13 @@ public class TodoItemTest
         List<TodoItem> nextFiveDaysItems = [];
         for (int i = 1; i < 6; i++)
         {
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
         }
-        nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(1) });
-        _todoRepository.Setup(repo => repo.getNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
+        nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(1) });
+        _todoRepository.Setup(repo => repo.GetNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
         var createdTodoItem = await _service.CreateTodoItem(todoItem, strategytype);
-        Assert.Equal(today.AddDays(1), createdTodoItem.DueTime);
-        _todoRepository.Verify(repo => repo.SaveAsync(todoItem), Times.Once);
+        Assert.Equal(today.AddDays(1), createdTodoItem.DueDate);
+        _todoRepository.Verify(repo => repo.CreateTodoItemAsync(todoItem), Times.Once);
     }
 
     [Fact]
@@ -229,13 +229,13 @@ public class TodoItemTest
         List<TodoItem> nextFiveDaysItems = [];
         for (int i = 1; i < 6; i++)
         {
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
         }
-        nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(1) });
-        _todoRepository.Setup(repo => repo.getNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
+        nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(1) });
+        _todoRepository.Setup(repo => repo.GetNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
         var exception = await Assert.ThrowsAsync<InvalidDueDateGenerateStrategyException>(() => _service.CreateTodoItem(todoItem,strategytype));
         Assert.Equal(exception.Message, "Invalid daueDate generate strategy");
-        _todoRepository.Verify(repo => repo.SaveAsync(todoItem), Times.Never);
+        _todoRepository.Verify(repo => repo.CreateTodoItemAsync(todoItem), Times.Never);
 
     }
 
@@ -255,20 +255,20 @@ public class TodoItemTest
         List<TodoItem> nextFiveDaysItems = [];
         for (int i = 1; i < 6; i++)
         {
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
-            nextFiveDaysItems.Add(new TodoItem() { DueTime = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
+            nextFiveDaysItems.Add(new TodoItem() { DueDate = today.AddDays(i) });
 
         }
-        _todoRepository.Setup(repo => repo.getNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
+        _todoRepository.Setup(repo => repo.GetNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
         var exception = await Assert.ThrowsAsync<NoSuitableDueDateException>(() => _service.CreateTodoItem(todoItem,strategytype));
         Assert.Equal(exception.Message, "No suitable due date found");
-        _todoRepository.Verify(repo => repo.SaveAsync(todoItem),Times.Never);
+        _todoRepository.Verify(repo => repo.CreateTodoItemAsync(todoItem),Times.Never);
     }
 
 

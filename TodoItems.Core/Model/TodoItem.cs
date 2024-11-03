@@ -4,7 +4,7 @@
     {
         public DateTime CreateTime { get; init; } = DateTime.Now;
         public string Description { get; set; }
-        public DateTime DueTime { get; set; }
+        public DateTime DueDate { get; set; }
         public string? Id { get; init; } = Guid.NewGuid().ToString();
         public bool IsComplete { get; set; }
         public bool IsFavorite { get; set; }

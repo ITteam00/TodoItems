@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using TodoItems.Core;
+using TodoItems.Core.Model;
+using TodoItems.Core.service;
 
 namespace TodoItem.Infrastructure;
 
@@ -15,49 +16,53 @@ public class TodoItemMongoRepository: ITodoItemsRepository
         _todosCollection = mongoDatabase.GetCollection<TodoItemPo>(todoStoreDatabaseSettings.Value.TodoItemsCollectionName);
     }
 
-    public async Task<TodoItems.Core.TodoItem> FindById(string? id)
+    public async Task<TodoItems.Core.Model.TodoItem> FindById(string? id)
     {
         FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.Eq(x => x.Id, id);
         TodoItemPo? todoItemPo = await _todosCollection.Find(filter).FirstOrDefaultAsync();
 
         // 将 TodoItemPo 转换为 TodoItem
-        TodoItems.Core.TodoItem todoItem = ConvertToTodoItem(todoItemPo);
+        TodoItems.Core.Model.TodoItem todoItem = ConvertToTodoItem(todoItemPo);
         return todoItem;
     }
 
-    private TodoItems.Core.TodoItem ConvertToTodoItem(TodoItemPo? todoItemPo)
+    private TodoItems.Core.Model.TodoItem ConvertToTodoItem(TodoItemPo? todoItemPo)
     {
         if (todoItemPo == null) return null;
 
-        return new TodoItems.Core.TodoItem
+        return new TodoItems.Core.Model.TodoItem
         {
             Id = todoItemPo.Id,
-            Description = todoItemPo.Description
+            Description = todoItemPo.Description,
+            DueDate=todoItemPo.DueDate.ToLocalTime(),
+            IsComplete = todoItemPo.IsComplete,
         };
     }
 
-    private TodoItemPo ConvertToTodoItemPo(TodoItems.Core.TodoItem todoItem)
+    private TodoItemPo ConvertToTodoItemPo(TodoItems.Core.Model.TodoItem todoItem)
     {
         if (todoItem == null) return null;
 
         return new TodoItemPo
         {
             Id = todoItem.Id,
-            Description = todoItem.Description
+            Description = todoItem.Description,
+            DueDate = todoItem.DueDate.ToLocalTime(),
+            IsComplete = todoItem.IsComplete,
         };
     }
 
-    public async Task<TodoItems.Core.TodoItem> SaveAsync(TodoItems.Core.TodoItem todoItem)
+    public async Task<TodoItems.Core.Model.TodoItem> CreateTodoItemAsync(TodoItems.Core.Model.TodoItem todoItem)
     {
         await _todosCollection.InsertOneAsync(ConvertToTodoItemPo(todoItem));
         return todoItem;
     }
 
-    public async Task<List<TodoItems.Core.TodoItem>> getAllItemsCountInToday(DateTime today)
+    public async Task<List<TodoItems.Core.Model.TodoItem>> GetAllItemsInDueDate(DateTime dueDate)
     {
-        FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.Eq(x => x.DueDate.Date, today);
+        FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.Eq(x => x.DueDate, dueDate);
         List<TodoItemPo>? todoItemPos = await _todosCollection.Find(filter).ToListAsync();
-        List<TodoItems.Core.TodoItem> todoItems = [];
+        List<TodoItems.Core.Model.TodoItem> todoItems = [];
         foreach (TodoItemPo item in todoItemPos)
         {
             todoItems.Add(ConvertToTodoItem(item));
@@ -65,13 +70,19 @@ public class TodoItemMongoRepository: ITodoItemsRepository
         return todoItems;
     }
 
-    public async Task<List<TodoItems.Core.TodoItem>> getNextFiveDaysItem(DateTime date)
+    public async Task<List<TodoItems.Core.Model.TodoItem>> GetNextFiveDaysItem(DateTime date)
     {
         FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.And(
             Builders<TodoItemPo>.Filter.Gte(item => item.DueDate, date),
             Builders<TodoItemPo>.Filter.Lt(item => item.DueDate, date.AddDays(5)));
         var nextFiveDaysItem = await _todosCollection.Find(filter).ToListAsync();
         return nextFiveDaysItem.Select(item => ConvertToTodoItem(item)).ToList();
+    }
+
+    public async Task UpdateAsync(string id, TodoItems.Core.Model.TodoItem updateTodoItem)
+    {
+        TodoItemPo updateItem=ConvertToTodoItemPo(updateTodoItem);
+        await _todosCollection.ReplaceOneAsync(x=>x.Id==id,updateItem);
     }
 
 }

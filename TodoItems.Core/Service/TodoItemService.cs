@@ -12,33 +12,32 @@ public class TodoItemService : ITodoItemService
     public TodoItemService(ITodoItemsRepository todoRepository)
     {
         _todoRepository = todoRepository;
-
     }
 
     public async Task<TodoItem> CreateTodoItem(TodoItem item, string? type = "")
     {
-        if (item.DueTime == DateTime.MinValue)
+        if (item.DueDate == DateTime.MinValue)
         {
             var dueDateGenerateStrategy = new DueDateGenerator().getStrategy(type);
-            List<TodoItem> nextFiveDaysItem = await _todoRepository.getNextFiveDaysItem(item.CreateTime.Date);
+            List<TodoItem> nextFiveDaysItem = await _todoRepository.GetNextFiveDaysItem(item.CreateTime.Date);
             Dictionary<DateTime, List<TodoItem>> dueDateDic = countTodoItemByDueDate(nextFiveDaysItem);
             DateTime dueDate = dueDateGenerateStrategy.generateDueDate(dueDateDic);
-            item.DueTime = dueDate;
-            await _todoRepository.SaveAsync(item);
+            item.DueDate = dueDate;
+            await _todoRepository.CreateTodoItemAsync(item);
         }
         else
         {
-            List<TodoItem> todoItems = await _todoRepository.getAllItemsCountInToday(item.DueTime.Date);
+            List<TodoItem> todoItems = await _todoRepository.GetAllItemsInDueDate(item.DueDate.Date);
             if (todoItems.Count > 8)
             {
                 throw new TooManyTodoItemInDueDateException("A maximum of eight todoitems can be completed per day");
             }
             else
-            if (item.DueTime.Date < DateTime.Now.Date)
+            if (item.DueDate.Date < DateTime.Now.Date)
             {
                 throw new DueDateEarlierThanCreateDateException("Due time should later than create time");
             }
-            await _todoRepository.SaveAsync(item);
+            await _todoRepository.CreateTodoItemAsync(item);
         }
         return item;
     }
@@ -48,13 +47,13 @@ public class TodoItemService : ITodoItemService
         Dictionary<DateTime, List<TodoItem>> todoItemByDueDate = new Dictionary<DateTime, List<TodoItem>>();
         foreach (TodoItem item in items)
         {
-            if (todoItemByDueDate.ContainsKey(item.DueTime.Date))
+            if (todoItemByDueDate.ContainsKey(item.DueDate.Date))
             {
-                todoItemByDueDate[item.DueTime.Date].Add(item);
+                todoItemByDueDate[item.DueDate.Date].Add(item);
             }
             else
             {
-                todoItemByDueDate.Add(item.DueTime.Date, [item]);
+                todoItemByDueDate.Add(item.DueDate.Date, [item]);
             }
         }
         return todoItemByDueDate;
@@ -65,7 +64,7 @@ public class TodoItemService : ITodoItemService
     {
         TodoItem item = await _todoRepository.FindById(id);
         item.Modify(newTodoItem);
-        await _todoRepository.SaveAsync(item);
+        await _todoRepository.UpdateAsync(id,item);
         return item;
     }
 }
