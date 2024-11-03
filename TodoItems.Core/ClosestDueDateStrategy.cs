@@ -10,9 +10,15 @@ namespace TodoItems.Core
     {
         public DateTime generateDueDate(Dictionary<DateTime, List<TodoItem>> dueDateDic)
         {
-            return dueDateDic.Where(dueDateItemsPairs=> dueDateItemsPairs.Value.Count < 8).
-                OrderBy(dueDateItemsPairs => Math.Abs((dueDateItemsPairs.Key-DateTime.Now).TotalDays))
-                .FirstOrDefault().Key;
+            var result= dueDateDic.Where(dueDateItemsPairs => dueDateItemsPairs.Value.Count < 8).
+                OrderBy(dueDateItemsPairs => Math.Abs((dueDateItemsPairs.Key - DateTime.Now).TotalDays))
+                .FirstOrDefault();
+            if (result.Equals(default(KeyValuePair<DateTime, List<TodoItem>>)))
+            {
+                throw new NoSuitableDueDateException("No suitable due date found.");
+
+            }
+            return result.Key;
         }
     }
 }

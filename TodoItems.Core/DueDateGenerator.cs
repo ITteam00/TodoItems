@@ -14,7 +14,7 @@ namespace TodoItems.Core
             {
                 "closest" => new ClosestDueDateStrategy(),
                 "freest"=>new FreestDueDateStrategy(),
-                _=>throw new Exception("Invalid daueDate generate strategy")
+                _=>throw new InvalidDueDateGenerateStrategyException("Invalid daueDate generate strategy")
             };
         }
     }
