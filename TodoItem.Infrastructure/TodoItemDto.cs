@@ -9,7 +9,6 @@ using TodoItems.Core;
 
 namespace TodoItems.Infrastructure
 {
-    [BsonIgnoreExtraElements]
     public class TodoItemDto
     {
         [BsonId]
@@ -26,8 +25,11 @@ namespace TodoItems.Infrastructure
             {
                 Id = todoItem.Id,
                 Description = todoItem.Description,
-                ModificationRecord = new ModificationDto() { },
-                // todo DueDate = todoItem.DueDate,
+                ModificationRecord = new ModificationDto()
+                {
+                    ModifiedTimes = new List<DateTimeOffset>(todoItem.ModificationRecord.ModifiedTimes),
+                },
+                DueDate = todoItem.DueDate,
                 Done = todoItem.Done,
             };
             return dto;

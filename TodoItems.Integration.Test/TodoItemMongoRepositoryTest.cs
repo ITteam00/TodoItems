@@ -48,16 +48,18 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             Id = "5f9a7d8e2d3b4a1eb8a7d8e2",
             Description = "Buy groceries",
             ModificationRecord = new ModificationDto() { },
-            Done = false
+            Done = false,
+            DueDate = DateTimeOffset.Now.AddDays(2),
         };
         await _mongoRepository.TodosCollection.InsertOneAsync(todoItemPo);
         var filter = Builders<TodoItemDto>.Filter
-            .Eq(itee => itee.Id, "5f9a7d8e2d3b4a1eb8a7d8e2");
+            .Eq(item => item.Id, "5f9a7d8e2d3b4a1eb8a7d8e2");
 
         var todoItem = _mongoRepository.TodosCollection.Find(filter).FirstOrDefault();
         Assert.NotNull(todoItem);
         Assert.Equal("5f9a7d8e2d3b4a1eb8a7d8e2", todoItem.Id);
         Assert.Equal("Buy groceries", todoItem.Description);
+        Assert.Equal(todoItemPo.DueDate, todoItem.DueDate);
     }
 
     [Fact]
@@ -70,7 +72,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             Id = id,
             Description = "AAA",
             ModificationRecord = new Modification() { },
-            Done = true
+            Done = true,
+            DueDate = DateTimeOffset.Now.AddDays(2),
         };
         var todoItemDto = _mongoRepository.AddItem(item);
 
@@ -80,7 +83,9 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         Assert.Equal(todoItemDto.Description, findResult.Description);
         Assert.Equal(todoItemDto.Done, findResult.Done);
         Assert.Equal(todoItemDto.ModificationRecord.ModifiedTimes, findResult.ModificationRecord.ModifiedTimes);
+        Assert.Equal(todoItemDto.DueDate, findResult.DueDate);
     }
+    
     [Fact]
     public void InsertOneItem_ShouldReturnItem_WithModificationRecord()
     {
@@ -90,7 +95,10 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         {
             Id = id,
             Description = "Test with modifications",
-            ModificationRecord = new Modification {},
+            ModificationRecord = new Modification
+            {
+                ModifiedTimes = new List<DateTimeOffset> { DateTimeOffset.Now, DateTimeOffset.Now.AddHours(1) }
+            },
             Done = false
         };
 
@@ -107,8 +115,5 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         Assert.Equal(item.ModificationRecord.ModifiedTimes.Count, findResult.ModificationRecord.ModifiedTimes.Count);
         Assert.True(item.ModificationRecord.ModifiedTimes.SequenceEqual(findResult.ModificationRecord.ModifiedTimes));
         Assert.Equal(item.ModificationRecord.ModifiedTimes, findResult.ModificationRecord.ModifiedTimes);
-
     }
-    
-    
 }
