@@ -44,7 +44,7 @@ namespace ToDoItem.Api.Models
             throw new NotImplementedException();
         }
 
-        public void ValidateDueDate()
+        public void ValidateDueDateIsAfterCreatedTime()
         {
             if (DueDate < CreatedTimeDate)
             {

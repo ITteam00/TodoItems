@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using System.Threading.Tasks;
-using System;
 using TodoItems.Core;
 using ToDoItem.Api.Models;
 
@@ -11,6 +9,9 @@ public class TodoItemMongoRepository : ITodoItemsRepository
 {
     private readonly IMongoCollection<TodoItemDao?> _todosCollection;
     private const int MAX_DUEDATE = 8;
+    private const int MAX_DUE_DATE_IN_ONE_DAY = 8;
+    private const int MAX_DUE_DATE_RANGE = 5;
+    private readonly DueDateStrategy _dueDateStrategy;
 
 
     public TodoItemMongoRepository(IOptions<TodoStoreDatabaseSettings> todoStoreDatabaseSettings)
@@ -18,14 +19,14 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         var mongoClient = new MongoClient(todoStoreDatabaseSettings.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(todoStoreDatabaseSettings.Value.DatabaseName);
         _todosCollection = mongoDatabase.GetCollection<TodoItemDao>(todoStoreDatabaseSettings.Value.TodoItemsCollectionName);
+        _dueDateStrategy = new DueDateStrategy(this);
     }
 
-    public async Task<ToDoItemObj> FindById(string? id)
+    public async Task<ToDoItemObj> FindById(string id)
     {
         FilterDefinition<TodoItemDao?> filter = Builders<TodoItemDao>.Filter.Eq(x => x.Id, id);
         TodoItemDao? todoItemDao = await _todosCollection.Find(filter).FirstOrDefaultAsync();
 
-        // 将 TodoItemDao 转换为 TodoItem
         ToDoItemObj todoItem = ConvertToTodoItem(todoItemDao);
         return todoItem;
     }
@@ -73,83 +74,20 @@ public class TodoItemMongoRepository : ITodoItemsRepository
 
     public async Task<ToDoItemObj> CreateAsync(ToDoItemObj inputToDoItem)
     {
+
         if (inputToDoItem.DueDate == null && inputToDoItem.DueDateRequirement == null)
         {
             throw new InvalidOperationException("Due Date and DueDateRequirement cannot be empty at the same time.");
         }
 
-        if (inputToDoItem.DueDate != null)
-        {
-            inputToDoItem.ValidateDueDate();
-            var itemsDueToday = findAllTodoItemsInOneday((DateTime)inputToDoItem.DueDate);
-            if (itemsDueToday.Count >= MAX_DUEDATE)
-            {
-                throw new InvalidOperationException("Cannot add more than 8 ToDo items for today.");
-            }
+        inputToDoItem.DueDate = _dueDateStrategy.DetermineDueDate(inputToDoItem);
 
-        } else
-        {
-            DateTime newDueDate = FindGoodDueDateByRequirement((DueDateRequirementType)inputToDoItem.DueDateRequirement);
-            inputToDoItem.DueDate = newDueDate;
-        }
         await Save(inputToDoItem);
         return await this.FindById(inputToDoItem.Id);
 
     }
 
-    private DateTime FindGoodDueDateByRequirement(DueDateRequirementType requirement)
-    {
-        int[] itemNumbers = GetItemNumbersForNext5Days();
-
-        if (itemNumbers.All(count => count == 8))
-        {
-            throw new InvalidOperationException("Next 5 days all have 8 toDoItems");
-        }
-
-        DateTime earliestDate = DateTime.UtcNow.Date;
-        for (int i = 0; i < itemNumbers.Length; i++)
-        {
-            if (itemNumbers[i] < 8)
-            {
-                earliestDate = DateTime.UtcNow.Date.AddDays(i);
-                break;
-            }
-        }
-
-        int minItems = itemNumbers.Min();
-        DateTime fewestDate = DateTime.UtcNow.Date;
-        for (int i = 0; i < itemNumbers.Length; i++)
-        {
-            if (itemNumbers[i] == minItems)
-            {
-                fewestDate = DateTime.UtcNow.Date.AddDays(i);
-                break;
-            }
-        }
-
-        if (requirement == DueDateRequirementType.Earliest)
-        {
-            return earliestDate;
-        }
-        return fewestDate;
-
-    }
-
-    private int[] GetItemNumbersForNext5Days()
-    {
-        int[] itemNumbers = new int[5];
-
-        for (int i = 0; i < 5; i++)
-        {
-            DateTime targetDate = DateTime.UtcNow.Date.AddDays(i);
-            var itemsOnDate = findAllTodoItemsInOneday(targetDate);
-            itemNumbers[i] = itemsOnDate.Count;
-        }
-
-        return itemNumbers;
-    }
-
-    public async Task<ToDoItemObj> ModifyItem(ToDoItemObj item)
+    public async Task<ToDoItemObj> EditItem(ToDoItemObj item)
     {
         DateTime lastModifiedDate = item.LastModifiedTimeDate;
         DateTime currentDate = DateTimeOffset.Now.Date;

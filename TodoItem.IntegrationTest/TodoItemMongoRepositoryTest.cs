@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Options;
-using Microsoft.VisualBasic;
 using MongoDB.Driver;
 using Moq;
 using TodoItem.Infrastructure;
@@ -280,7 +279,6 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
     [Fact]
     public async Task should_add_1_when_edit_if_EditTimes_is_small_and_same_dayAsync()
     {
-        // Arrange
         var todoItem = new ToDoItemObj(
             id: "3f9a7d8e2d3b4a1eb8a7d8e8",
             description: "Test ToDo Item",
@@ -294,18 +292,13 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         );
 
         await _mongoRepository.Save(todoItem);
-
-        // Act
-        var updatedItem = await _mongoRepository.ModifyItem(todoItem);
-
-        // Assert
+        var updatedItem = await _mongoRepository.EditItem(todoItem);
         Assert.Equal(2, updatedItem.EditTimes);
     }
 
     [Fact]
     public async Task should_return_1_when_edit_if_EditTimes_is_big_but_different_day()
     {
-        // Arrange
         var todoItem = new ToDoItemObj(
             id: "3f9a7d8e2d3b4a1eb8a7d8e8",
             description: "Test ToDo Item",
@@ -320,17 +313,14 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
 
         await _mongoRepository.Save(todoItem);
 
-        // Act
-        var updatedItem = await _mongoRepository.ModifyItem(todoItem);
+        var updatedItem = await _mongoRepository.EditItem(todoItem);
 
-        // Assert
         Assert.Equal(1, updatedItem.EditTimes);
     }
 
     [Fact]
     public async Task should_Throw_when_edit_if_EditTimes_is_big()
     {
-        // Arrange
         var todoItem = new ToDoItemObj(
             id: "3f9a7d8e2d3b4a1eb8a7d8e8",
             description: "Test ToDo Item",
@@ -344,16 +334,13 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         );
 
         await _mongoRepository.Save(todoItem);
-
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.ModifyItem(todoItem));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.EditItem(todoItem));
         Assert.Equal("Too many edits", exception.Message);
     }
 
     [Fact]
     public async Task should_Throw_when_InputDueDateAndRequirementTypeAreAllEmpty()
     {
-        // Arrange
         var todoItem = new ToDoItemObj(
             id: "4f9a7d8e2d3b4a1eb8a7d8e8",
             description: "Test ToDo Item",
@@ -367,8 +354,6 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
 
         );
 
-
-        // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.CreateAsync(todoItem));
         Assert.Equal("Due Date and DueDateRequirement cannot be empty at the same time.", exception.Message);
     }
@@ -376,7 +361,6 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
     [Fact]
     public async Task should_ChooseDueDate_When_DueDateAndRequirementBothExist()
     {
-        // Arrange
         var inputTodoItem = new ToDoItemObj(
             id: "5f9a7d8e2d3b4a1eb8a7d8e8",
             description: "Test ToDo Item",
@@ -389,11 +373,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             dueDateRequirement: DueDateRequirementType.Earliest
         );
 
-
-        // Act
         var result = await _mongoRepository.CreateAsync(inputTodoItem);
 
-        // Assert
         Assert.NotNull(result);
         Assert.Equal(inputTodoItem.DueDate, result.DueDate); 
 
@@ -404,9 +385,7 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
     [Fact]
     public async Task should_ChooseEarliestDate_WhenNoDueDate()
     {
-        //????????????????5????????item????8??????todoItem?duedate??????
-        //??5?item?????8??throw error
-        // Arrange
+
         var inputTodoItem = new ToDoItemObj(
             id: "6f9a7d8e2d3b4a1eb8a7d8e9",
             description: "Test ToDo Item",
@@ -436,10 +415,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         }
 
 
-        // Act
         var result = await _mongoRepository.CreateAsync(inputTodoItem);
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.DueDate);
         Assert.Equal(DateTime.UtcNow.AddDays(1).Date, result.DueDate);
@@ -448,7 +425,6 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
     [Fact]
     public async Task should_ChooseFewestDate_WhenNoDueDate()
     {
-        // Arrange
         var inputTodoItem = new ToDoItemObj(
             id: "5f9a7d8e2d3b4a1eb8a7d8ea",
             description: "Test ToDo Item",
@@ -477,10 +453,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             await _mongoRepository.CreateAsync(todoItem);
         }
 
-        // Act
         var result = await _mongoRepository.CreateAsync(inputTodoItem);
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.DueDate);
         Assert.Equal(DateTime.UtcNow.AddDays(1).Date, result.DueDate);
@@ -490,7 +464,6 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
     [Fact]
     public async Task should_ThrowError_WhenNext5DdaysAllHave8Items()
     {
-        // Arrange
         for (int i = 0; i < 5; i++)
         {
             for (int j = 0; j < 8; j++)
@@ -522,7 +495,6 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
             dueDateRequirement: DueDateRequirementType.Earliest
         );
 
-        // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _mongoRepository.CreateAsync(newTodoItem));
         Assert.Equal("Next 5 days all have 8 toDoItems", exception.Message);
     }
