@@ -7,6 +7,7 @@ using TodoItems.Core.Service;
 
 namespace TodoItems.Core
 {
+
     public enum DueDateStrategyType
     {
         Earliest,
@@ -36,9 +37,13 @@ namespace TodoItems.Core
             return result;
         }
         
-        public TodoItem Create(string id, string description, DateTimeOffset? dueDate = null, DueDateStrategyType? dueStrategyType=null)
+        public TodoItem Create(string id, string description, DateTimeOffset? dueDate = null, DueDateStrategyType? dueStrategyType=DueDateStrategyType.Earliest)  // todo add test
         {
-            DueDateStrategy dueDateStrategy = new DueDateStrategy();  // todo use stragy pattern refractor
+            var dueDateStrategy = new Dictionary<DueDateStrategyType, IDueDateStrategy>
+            {
+                { DueDateStrategyType.Earliest, new GetEarliestDateStategy() },
+                { DueDateStrategyType.FewestCompleted, new GetFewestCompletedStrategy() }
+            };
             var item = new TodoItem
             {
                 Id = id,
@@ -50,16 +55,10 @@ namespace TodoItems.Core
                 ValidateDueDate(item);
             } else
             {
+                
                 var fiveDayItems = Repo.GetFiveDayItems();
-                if(dueStrategyType != DueDateStrategyType.Earliest)
-                {
-                    var dueDateResult = dueDateStrategy.GetEarliestDate(fiveDayItems, CompletedLimit);
-                    item.DueDate = dueDateResult;
-                } else
-                {
-                    var dueDateResult = dueDateStrategy.GetFewestCompleted(fiveDayItems, CompletedLimit);
-                    item.DueDate = dueDateResult;
-                }
+                var dueDateResult = dueDateStrategy[dueStrategyType.Value].GetDate(fiveDayItems, CompletedLimit);
+                item.DueDate = dueDateResult;
             }
             return Repo.AddItem(item);
         }

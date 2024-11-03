@@ -11,7 +11,7 @@ namespace TodoItems.Test
         public void GetEarliestDate_ShouldReturnEarliestDate_WhenItemsAreValid()
         {
             // Arrange
-            var strategy = new DueDateStrategy();
+            var strategy = new GetEarliestDateStategy();
             var items = new List<TodoItem>
             {
                 new TodoItem { DueDate = new DateTimeOffset(new DateTime(2024, 1, 1)) },
@@ -21,7 +21,7 @@ namespace TodoItems.Test
             int completedLimit = 5;
 
             // Act
-            var result = strategy.GetEarliestDate(items, completedLimit);
+            var result = strategy.GetDate(items, completedLimit);
 
             // Assert
             Assert.Equal(new DateTimeOffset(new DateTime(2024, 1, 1)), result);
@@ -31,7 +31,7 @@ namespace TodoItems.Test
         public void GetEarliestDate_ShouldThrowException_WhenNoDateMeetsLimit()
         {
             // Arrange
-            var strategy = new DueDateStrategy();
+            var strategy = new GetEarliestDateStategy();
             var items = new List<TodoItem>
             {
                 new TodoItem { DueDate = new DateTimeOffset(new DateTime(2024, 1, 1)) },
@@ -41,14 +41,14 @@ namespace TodoItems.Test
             int completedLimit = 2;
 
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => strategy.GetEarliestDate(items, completedLimit));
+            Assert.Throws<InvalidOperationException>(() => strategy.GetDate(items, completedLimit));
         }
 
         [Fact]
         public void GetFewestCompleted_ShouldReturnDateWithFewestItems_WhenItemsAreValid()
         {
             // Arrange
-            var strategy = new DueDateStrategy();
+            var strategy = new GetFewestCompletedStrategy();
             var items = new List<TodoItem>
             {
                 new TodoItem { DueDate = new DateTimeOffset(new DateTime(2024, 1, 1)) },
@@ -59,7 +59,7 @@ namespace TodoItems.Test
             int completedLimit = 5;
 
             // Act
-            var result = strategy.GetFewestCompleted(items, completedLimit);
+            var result = strategy.GetDate(items, completedLimit);
 
             // Assert
             Assert.Equal(new DateTimeOffset(new DateTime(2024, 1, 1)), result);
@@ -69,7 +69,7 @@ namespace TodoItems.Test
         public void GetFewestCompleted_ShouldThrowException_WhenNoDateMeetsLimit()
         {
             // Arrange
-            var strategy = new DueDateStrategy();
+            var strategy = new GetFewestCompletedStrategy();
             var items = new List<TodoItem>
             {
                 new TodoItem { DueDate = new DateTimeOffset(new DateTime(2024, 1, 1)) },
@@ -79,19 +79,19 @@ namespace TodoItems.Test
             int completedLimit = 2;
 
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => strategy.GetFewestCompleted(items, completedLimit));
+            Assert.Throws<InvalidOperationException>(() => strategy.GetDate(items, completedLimit));
         }
 
         [Fact]
         public void GetEarliestDate_ShouldReturnCurrentDate_WhenItemsAreNullOrEmpty()
         {
             // Arrange
-            var strategy = new DueDateStrategy();
+            var strategy = new GetEarliestDateStategy();
             List<TodoItem> items = null;
             int completedLimit = 5;
 
             // Act
-            var result = strategy.GetEarliestDate(items, completedLimit);
+            var result = strategy.GetDate(items, completedLimit);
 
             // Assert
             Assert.Equal(DateTimeOffset.Now.Date, result.Date);
@@ -101,12 +101,12 @@ namespace TodoItems.Test
         public void GetFewestCompleted_ShouldReturnCurrentDate_WhenItemsAreNullOrEmpty()
         {
             // Arrange
-            var strategy = new DueDateStrategy();
+            var strategy = new GetFewestCompletedStrategy();
             List<TodoItem> items = null;
             int completedLimit = 5;
 
             // Act
-            var result = strategy.GetFewestCompleted(items, completedLimit);
+            var result = strategy.GetDate(items, completedLimit);
 
             // Assert
             Assert.Equal(DateTimeOffset.Now.Date, result.Date);
@@ -116,7 +116,7 @@ namespace TodoItems.Test
         public void GetFewestCompleted_ShouldReturnDateWithFewestItems_WhenItemsWithNull()
         {
             // Arrange
-            var strategy = new DueDateStrategy();
+            var strategy = new GetFewestCompletedStrategy();
             var items = new List<TodoItem>
             {
                 new TodoItem { DueDate = new DateTimeOffset(new DateTime(2024, 1, 1)) },
@@ -127,7 +127,7 @@ namespace TodoItems.Test
             int completedLimit = 5;
 
             // Act
-            var result = strategy.GetFewestCompleted(items, completedLimit);
+            var result = strategy.GetDate(items, completedLimit);
 
             // Assert
             Assert.Equal(new DateTimeOffset(new DateTime(2024, 1, 1)), result);
