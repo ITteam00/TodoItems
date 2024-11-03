@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using TodoItem.Infrastructure.Model;
 using TodoItems.Core.Model;
 using TodoItems.Core.Services;
 

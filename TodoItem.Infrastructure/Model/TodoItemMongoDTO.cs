@@ -1,4 +1,4 @@
-﻿namespace TodoItem.Infrastructure
+﻿namespace TodoItem.Infrastructure.Model
 {
     public class TodoItemMongoDTO
     {

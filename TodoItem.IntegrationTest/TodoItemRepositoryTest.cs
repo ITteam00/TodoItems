@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Moq;
 using TodoItem.Infrastructure;
+using TodoItem.Infrastructure.Model;
 using TodoItems.Core;
 using TodoItems.Core.Model;
 using TodoItems.Core.Services;
