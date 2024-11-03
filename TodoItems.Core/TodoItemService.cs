@@ -36,6 +36,8 @@ public class TodoItemService
 
         NewTodoItem.DueDate = duedate;
 
+        _todosRepository.Save(NewTodoItem);
+
         return NewTodoItem;
     }
     public async void UpdateItem(string id, string description)

@@ -60,8 +60,21 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         };
     }
 
-    public void Save(TodoItems.Core.TodoItemDto todoItem)
+    private TodoItemPo ReconvertToTodoItem(TodoItems.Core.TodoItemDto todoItemDto)
     {
-        throw new NotImplementedException();
+        if (todoItemDto == null) return null;
+
+        return new TodoItemPo
+        {
+            Id = todoItemDto.Id,
+            Description = todoItemDto.Description,
+            DueDate = (DateTime)todoItemDto.DueDate,
+        };
+    }
+
+    public async Task Save(TodoItems.Core.TodoItemDto todoItem)
+    {
+        TodoItemPo todoItemPo = ReconvertToTodoItem(todoItem);
+        await _todosCollection.InsertOneAsync(todoItemPo);
     }
 }
