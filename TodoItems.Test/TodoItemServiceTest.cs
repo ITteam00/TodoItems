@@ -175,7 +175,7 @@ public class TodoItemServiceTest
     }
 
     [Fact]
-    public async void Should_return_early_Duedate_when_create_item_auto_set_in_five_days()
+    public async void Should_return_early_Duedate_when_create_item_auto_set_in_five_days_query_none()
     {
         var mockRepository = new Mock<ITodoItemsRepository>();
         var todoItemService = new TodoItemService(mockRepository.Object);
@@ -188,6 +188,38 @@ public class TodoItemServiceTest
             CreatedDate = new DateTime(2024, 10, 30)
         };
         List<TodoItemDto> todoItems = new List<TodoItemDto>();
+        mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
+
+        DateTime RealDueDate = (DateTime)await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
+        Assert.Equal(todoItemDto.CreatedDate, RealDueDate.Date);
+    }
+
+    [Fact]
+    public async void Should_return_second_early_Duedate_when_create_item_auto_set_in_five_days_query_less_than_8()
+    {
+        var mockRepository = new Mock<ITodoItemsRepository>();
+        var todoItemService = new TodoItemService(mockRepository.Object);
+        var todoItemDto = new TodoItemDto
+        {
+            Id = "1",
+            Description = "new task",
+            IsDone = true,
+            IsFavorite = true,
+            CreatedDate = new DateTime(2024, 10, 10)
+        };
+        List<TodoItemDto> todoItems = new List<TodoItemDto>();
+        for(int i = 0; i < 8; i++)
+        {
+            var todoItem = new TodoItemDto
+            {
+                Id = "1" + i.ToString(),
+                Description = "new task",
+                IsDone = true,
+                IsFavorite = true,
+                DueDate = new DateTime(2024, 10, 10)
+            };
+            todoItems.Add(todoItemDto);
+        }
         mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
         DateTime RealDueDate = (DateTime)await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
