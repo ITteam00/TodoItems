@@ -5,7 +5,7 @@ namespace TodoItems.Core.Service
     {
         List<TodoItem> GetItemsByDueDate(DateTimeOffset dueDate);
         TodoItem AddItem(TodoItem item);
-        List<TodoItem> GetFiveDayItems();
+        List<TodoItem> GetFiveDayItems(DateTimeOffset? startDate = null);
         TodoItem GetItemById(string id);
         TodoItem UpdateItem(TodoItem item);
     }

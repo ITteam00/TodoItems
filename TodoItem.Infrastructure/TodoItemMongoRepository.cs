@@ -68,9 +68,25 @@ namespace TodoItems.Infrastructure
             return item;
         }
 
-        public List<TodoItem> GetFiveDayItems()
+        public List<TodoItem> GetFiveDayItems(DateTimeOffset? startDate = null)
         {
-            throw new NotImplementedException();
+            var today = startDate.HasValue ? startDate.Value.Date : DateTimeOffset.Now.Date;
+            var fiveDaysLater = today.AddDays(6);
+
+            var filter = Builders<TodoItemDto>.Filter.And(
+                Builders<TodoItemDto>.Filter.Ne(item => item.DueDate, null),
+                Builders<TodoItemDto>.Filter.Gte(item => item.DueDate, today),
+                Builders<TodoItemDto>.Filter.Lte(item => item.DueDate, fiveDaysLater)
+            );
+
+            var result = TodosCollection
+                .Find(filter)
+                .SortBy(item => item.DueDate)
+                .ToList()
+                .Select(x => x.MapToTodoItem())
+                .ToList();
+
+            return result;
         }
 
         public TodoItem GetItemById(string id)

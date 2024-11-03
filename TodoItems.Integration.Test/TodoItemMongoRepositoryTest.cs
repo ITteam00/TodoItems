@@ -239,5 +239,38 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         Assert.NotNull(result);
         Assert.Empty(result);
     }
+    
+    
+    [Fact]
+    public void GetFiveDayItems_ShouldReturnItemsWithinFiveDays()
+    {
+        // Arrange
+        var today = DateTimeOffset.Now.Date;
+        var fifthDay = today.AddDays(5);
+
+        var items = new List<TodoItem>
+        {
+            new TodoItem { Id = ObjectId.GenerateNewId().ToString(),  Description = "Item 1", DueDate = today.AddHours(1)},
+            new TodoItem { Id = ObjectId.GenerateNewId().ToString(),  Description = "Item 2", DueDate = fifthDay.AddHours(23) },
+            new TodoItem { Id = ObjectId.GenerateNewId().ToString(),  Description = "Item 3", DueDate = today.AddDays(1) }, 
+            new TodoItem { Id = ObjectId.GenerateNewId().ToString(),  Description = "Item 4", DueDate = today.AddDays(7) }, 
+            new TodoItem { Id = ObjectId.GenerateNewId().ToString(),  Description = "Item 5"}, 
+            new TodoItem { Id = ObjectId.GenerateNewId().ToString(),  Description = "Item 6", DueDate = fifthDay.AddHours(25) },
+        };
+        foreach (var i in items)
+        {
+            _mongoRepository.AddItem(i);
+        }
+        // Act
+        var result = _mongoRepository.GetFiveDayItems(DateTimeOffset.Now);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(3, result.Count);
+        Assert.Contains(result, item => item.Description == "Item 1");
+        Assert.Contains(result, item => item.Description == "Item 2");
+        Assert.Contains(result, item => item.Description == "Item 3");
+        Assert.Equal("Item 3", result.ToList()[1].Description);  // sort works
+    }
 
 }

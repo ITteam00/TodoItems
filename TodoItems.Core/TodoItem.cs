@@ -5,7 +5,7 @@ public class TodoItem
     public string Id { get; set; }
     public string Description { get; set; }
     public DateTimeOffset CreatedTime { get; set; } = DateTimeOffset.UtcNow;
-    public Modification ModificationRecord { get; set; }
+    public Modification ModificationRecord { get; set; } = new Modification();
     public DateTimeOffset? DueDate { get; set; }
     public string UserId { get; set; } = "FakeUserBob";
     public bool Done { get; set; } = false;
