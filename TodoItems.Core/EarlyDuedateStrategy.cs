@@ -8,9 +8,19 @@ namespace TodoItems.Core
 {
     public class EarlyDuedateStrategy : IDuedateStrategy
     {
-        public Task<DateTime?> SetDuedate(TodoItemDto todoItemDto)
+        public DateTime SetDuedate(Dictionary<DateTime, int> dueDateCounts)
         {
-            throw new NotImplementedException();
+            var earliestDueDate = dueDateCounts
+                .Where(kvp => kvp.Value < 8)
+                .Select(kvp => kvp.Key)
+                .OrderBy(date => date)
+                .FirstOrDefault();
+
+            if (earliestDueDate == default(DateTime))
+            {
+                throw new InvalidOperationException("No valid due date found, all dates have 8 or more items.");
+            }
+            return earliestDueDate;
         }
     }
 }

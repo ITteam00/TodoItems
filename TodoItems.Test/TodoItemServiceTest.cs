@@ -189,7 +189,7 @@ public class TodoItemServiceTest
         List<TodoItemDto> todoItems = new List<TodoItemDto>();
         mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
-        DateTime RealDueDate = (DateTime)await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
+        DateTime RealDueDate = (DateTime)await todoItemService.SetDuedate(todoItemDto, "Early Duedate");
         Assert.Equal(todoItemDto.CreatedDate, RealDueDate.Date);
     }
 
@@ -221,7 +221,7 @@ public class TodoItemServiceTest
         }
         mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
-        DateTime RealDueDate = (DateTime)await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
+        DateTime RealDueDate = (DateTime)await todoItemService.SetDuedate(todoItemDto, "Early Duedate");
         DateTime ExpectedDuedate = new DateTime(2024, 10, 11);
         Assert.Equal(ExpectedDuedate.Date, RealDueDate.Date);
     }
@@ -255,7 +255,7 @@ public class TodoItemServiceTest
         }
         mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
-        DateTime RealDueDate = (DateTime)await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
+        DateTime RealDueDate = (DateTime)await todoItemService.SetDuedate(todoItemDto, "Early Duedate");
         Assert.Equal(todoItemDto.DueDate?.Date, RealDueDate.Date);
     }
 
@@ -275,7 +275,7 @@ public class TodoItemServiceTest
         List<TodoItemDto> todoItems = new List<TodoItemDto>();
         mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
-        DateTime RealDueDate = (DateTime)await todoItemService.SetLeastCountDuedateInFiveDays(todoItemDto);
+        DateTime RealDueDate = (DateTime)await todoItemService.SetDuedate(todoItemDto, "Least Count");
         Assert.Equal(todoItemDto.CreatedDate, RealDueDate.Date);
     }
 
@@ -311,7 +311,7 @@ public class TodoItemServiceTest
 
         mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
-        DateTime RealDueDate = (DateTime)await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
+        DateTime RealDueDate = (DateTime)await todoItemService.SetDuedate(todoItemDto, "Least Count");
         DateTime ExpectedDuedate = new DateTime(2024, 10, 14);
         Assert.Equal(ExpectedDuedate.Date, RealDueDate.Date);
     }
@@ -345,7 +345,7 @@ public class TodoItemServiceTest
         }
         mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
-        DateTime RealDueDate = (DateTime)await todoItemService.SetLeastCountDuedateInFiveDays(todoItemDto);
+        DateTime RealDueDate = (DateTime)await todoItemService.SetDuedate(todoItemDto, "Least Count");
         Assert.Equal(todoItemDto.DueDate?.Date, RealDueDate.Date);
     }
 }

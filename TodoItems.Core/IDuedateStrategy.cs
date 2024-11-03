@@ -8,7 +8,7 @@ namespace TodoItems.Core;
 
 public interface IDuedateStrategy
 {
-    Task<DateTime?> SetDuedate(TodoItemDto todoItemDto);
+    DateTime SetDuedate(Dictionary<DateTime, int> dueDateCounts);
 
 }
 

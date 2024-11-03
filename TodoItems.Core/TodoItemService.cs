@@ -3,10 +3,14 @@
 public class TodoItemService
 {
     private readonly ITodoItemsRepository _todosRepository;
+    private Dictionary<string, IDuedateStrategy> DuedateSetters = new Dictionary<string, IDuedateStrategy>();
+    private IDuedateStrategy earlyDuedateStrategy = new EarlyDuedateStrategy();
 
     public TodoItemService(ITodoItemsRepository todosRepository)
     {
         _todosRepository = todosRepository;
+        DuedateSetters.Add("Early Duedate", new EarlyDuedateStrategy());
+        DuedateSetters.Add("Least Count", new LeastCountDuedateStrategy());
     }
 
     public string GetId()
@@ -52,7 +56,7 @@ public class TodoItemService
         return difference.TotalDays >= 1;
     }
 
-    public async Task<DateTime?> SetEarlyDuedateInFiveDays(TodoItemDto todoItemDto)
+    public async Task<DateTime?> SetDuedate(TodoItemDto todoItemDto,string DuedateStrategy)
     {
         var futureDates = Enumerable.Range(0, 5)
         .Select(offset => todoItemDto.CreatedDate.Date.AddDays(offset))
@@ -70,7 +74,6 @@ public class TodoItemService
         .ToList();
 
         var userDuedateCount = groupedDuedateItems.FirstOrDefault(group => group.DueDate == todoItemDto.DueDate)?.Count ?? 0;
-        if (todoItemDto.DueDate!=null && userDuedateCount < 8) return todoItemDto.DueDate?.Date;
 
         var dueDateCounts = futureDates.ToDictionary(date => date, date => 0);
 
@@ -81,64 +84,12 @@ public class TodoItemService
                 dueDateCounts[(DateTime)item.DueDate] = item.Count; 
             }            
         }
-
-        var earliestDueDate = dueDateCounts
-            .Where(kvp => kvp.Value < 8) 
-            .Select(kvp => kvp.Key)
-            .OrderBy(date => date)
-            .FirstOrDefault();
-
-        if (earliestDueDate == default(DateTime))
-        {
-            throw new InvalidOperationException("No valid due date found, all dates have 8 or more items.");
-        }
-
-        return earliestDueDate;
-
-    }
-
-    public async Task<DateTime?> SetLeastCountDuedateInFiveDays(TodoItemDto todoItemDto)
-    {
-
-        var futureDates = Enumerable.Range(0, 5)
-        .Select(offset => todoItemDto.CreatedDate.Date.AddDays(offset))
-        .ToList();
-
-        List<TodoItemDto> todoItems = await _todosRepository.GetAllTodoItemsInFiveDays(todoItemDto.CreatedDate);
-
-        var groupedDuedateItems = todoItems
-        .GroupBy(item => item.DueDate?.Date)
-        .Select(group => new
-        {
-            DueDate = group.Key,
-            Count = group.Count()
-        })
-        .ToList();
-
-        var userDuedateCount = groupedDuedateItems.FirstOrDefault(group => group.DueDate == todoItemDto.DueDate)?.Count ?? 0;
         if (todoItemDto.DueDate != null && userDuedateCount < 8) return todoItemDto.DueDate?.Date;
 
-        var dueDateCounts = futureDates.ToDictionary(date => date, date => 0);
+        var duedateSetters = DuedateSetters.GetValueOrDefault(DuedateStrategy, this.earlyDuedateStrategy);
+        var duedate = duedateSetters.SetDuedate(dueDateCounts);
 
-        foreach (var item in groupedDuedateItems)
-        {
-            if (dueDateCounts.ContainsKey((DateTime)item.DueDate))
-            {
-                dueDateCounts[(DateTime)item.DueDate] = item.Count;
-            }
-        }
+        return duedate;
 
-        var minCountDueDate = dueDateCounts
-            .Where(kvp => kvp.Value < 8) 
-            .OrderBy(kvp => kvp.Value) 
-            .ThenBy(kvp => kvp.Key) 
-            .FirstOrDefault();
-
-        if (minCountDueDate.Equals(default(KeyValuePair<DateTime, int>)))
-        {
-            throw new InvalidOperationException("No valid due date found, all dates have 8 or more items.");
-        }
-
-        return minCountDueDate.Key;
     }
 }
