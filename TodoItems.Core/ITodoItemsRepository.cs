@@ -2,8 +2,8 @@ namespace TodoItems.Core;
 
 public interface ITodoItemsRepository
 {
-    public Task<TodoItem> FindById(string id);
+    public Task<TodoItemDto> FindById(string id);
     public Task<int> GetAllTodoItemsCountInDueDate(DateTime DueDate);
-    public Task<List<TodoItem>> GetAllTodoItemsInFiveDays(DateTime CreatedDate);
-    void Save(TodoItem todoItem);
+    public Task<List<TodoItemDto>> GetAllTodoItemsInFiveDays(DateTime CreatedDate);
+    void Save(TodoItemDto todoItem);
 }

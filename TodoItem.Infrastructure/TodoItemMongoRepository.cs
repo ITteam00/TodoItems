@@ -16,13 +16,13 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         _todosCollection = mongoDatabase.GetCollection<TodoItemPo>(todoStoreDatabaseSettings.Value.TodoItemsCollectionName);
     }
 
-    public async Task<TodoItems.Core.TodoItem> FindById(string? id)
+    public async Task<TodoItems.Core.TodoItemDto> FindById(string? id)
     {
         FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.Eq(x => x.Id, id);
         TodoItemPo? todoItemPo = await _todosCollection.Find(filter).FirstOrDefaultAsync();
 
         // 将 TodoItemPo 转换为 TodoItem
-        TodoItems.Core.TodoItem todoItem = ConvertToTodoItem(todoItemPo);
+        TodoItems.Core.TodoItemDto todoItem = ConvertToTodoItem(todoItemPo);
         return todoItem;
     }
 
@@ -33,7 +33,7 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         return todoItemPos.Count;
     }
 
-    public async Task<List<TodoItems.Core.TodoItem>> GetAllTodoItemsInFiveDays(DateTime createdDate)
+    public async Task<List<TodoItems.Core.TodoItemDto>> GetAllTodoItemsInFiveDays(DateTime createdDate)
     {
         DateTime startDate = createdDate;
         DateTime endDate = createdDate.AddDays(5);
@@ -49,11 +49,11 @@ public class TodoItemMongoRepository : ITodoItemsRepository
     }
 
 
-    private TodoItems.Core.TodoItem ConvertToTodoItem(TodoItemPo? todoItemPo)
+    private TodoItems.Core.TodoItemDto ConvertToTodoItem(TodoItemPo? todoItemPo)
     {
         if (todoItemPo == null) return null;
 
-        return new TodoItems.Core.TodoItem
+        return new TodoItems.Core.TodoItemDto
         {
             Id = todoItemPo.Id,
             Description = todoItemPo.Description,
@@ -61,7 +61,7 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         };
     }
 
-    public void Save(TodoItems.Core.TodoItem todoItem)
+    public void Save(TodoItems.Core.TodoItemDto todoItem)
     {
         throw new NotImplementedException();
     }
