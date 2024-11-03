@@ -3,6 +3,8 @@ using Microsoft.VisualBasic;
 using Moq;
 using System.Runtime.ConstrainedExecution;
 using TodoItems.Core;
+using TodoItems.Core.Model;
+using TodoItems.Core.service;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TodoItems.Test;

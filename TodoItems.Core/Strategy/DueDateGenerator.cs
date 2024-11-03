@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TodoItems.Core
+namespace TodoItems.Core.Strategy
 {
     internal class DueDateGenerator
     {
@@ -13,8 +13,8 @@ namespace TodoItems.Core
             return type switch
             {
                 "closest" => new ClosestDueDateStrategy(),
-                "freest"=>new FreestDueDateStrategy(),
-                _=>throw new InvalidDueDateGenerateStrategyException("Invalid daueDate generate strategy")
+                "freest" => new FreestDueDateStrategy(),
+                _ => throw new InvalidDueDateGenerateStrategyException("Invalid daueDate generate strategy")
             };
         }
     }

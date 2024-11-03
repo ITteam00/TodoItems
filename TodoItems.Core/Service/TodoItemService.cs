@@ -1,8 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
-using TodoItems.Core;
+using TodoItems.Core.Model;
+using TodoItems.Core.Strategy;
 
 
-namespace TodoItems.Core;
+namespace TodoItems.Core.service;
 
 public class TodoItemService : ITodoItemService
 {

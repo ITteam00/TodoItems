@@ -1,4 +1,6 @@
-namespace TodoItems.Core;
+using TodoItems.Core.Model;
+
+namespace TodoItems.Core.service;
 
 public interface ITodoItemsRepository
 {
