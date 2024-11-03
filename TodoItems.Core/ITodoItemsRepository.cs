@@ -6,5 +6,5 @@ public interface ITodoItemsRepository
     public Task<int> GetAllTodoItemsCountInDueDate(DateTime? dueDate);
     public Task<List<TodoItemDto>> GetAllTodoItemsInFiveDays(DateTime CreatedDate);
     public Task Save(TodoItemDto todoItem);
-    public Task Update(string id, string description);
+    public Task<bool> Update(string id, string description);
 }

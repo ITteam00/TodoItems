@@ -120,8 +120,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         await _mongoCollection.InsertOneAsync(todoItemPo);
 
         string description = "new task";
-        await _mongoRepository.Update(todoItemPo.Id, description);
-        var result = await _mongoCollection.CountDocumentsAsync(FilterDefinition<TodoItemPo>.Empty);
-        Assert.Equal(1, result);
+        bool result = await _mongoRepository.Update(todoItemPo.Id, description);
+
+        Assert.Equal(true, result);
     }
 }

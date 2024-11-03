@@ -45,6 +45,7 @@ public class TodoItemService
         var TodoItem = await _todosRepository.FindById(id);
         if (TodoItem == null) return;
         TodoItemDto.Modify(TodoItem, description);
+        _todosRepository.Update(id, description);
     }
     public TodoItemDto ModifyItem(TodoItemDto curTodoItem)
     {

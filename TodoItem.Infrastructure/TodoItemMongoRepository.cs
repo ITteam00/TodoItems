@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.VisualBasic;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using TodoItems.Core;
 
@@ -78,8 +79,11 @@ public class TodoItemMongoRepository : ITodoItemsRepository
         await _todosCollection.InsertOneAsync(todoItemPo);
     }
 
-    public async Task Update(string id, string description)
+    public async Task<bool> Update(string id, string description)
     {
-        throw new NotImplementedException();
+        var update = Builders<TodoItemPo?>.Update.Set(item => item.Description, description);
+
+        var updateResult = await _todosCollection.UpdateOneAsync(Builders<TodoItemPo?>.Filter.Eq(item => item.Id, id), update);
+        return updateResult.ModifiedCount > 0;
     }
 }
