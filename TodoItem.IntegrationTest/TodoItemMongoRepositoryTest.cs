@@ -22,7 +22,6 @@ public class TodoItemMongoRepositoryTest: IAsyncLifetime
             TodoItemsCollectionName = "Todos"
         });
 
-        // 初始化 TodoService
         _mongoRepository = new TodoItemMongoRepository(mockSettings.Object);
         
         var mongoClient = new MongoClient("mongodb://localhost:27017/");

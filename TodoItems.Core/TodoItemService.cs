@@ -84,19 +84,18 @@ public class TodoItemService
 
         var futureDates = Enumerable.Range(0, 5)
         .Select(offset => todoItemDto.CreatedDate.Date.AddDays(offset))
-        .ToList();
-        var dueDateCounts = futureDates.ToDictionary(date => date, date => 0);
+        .ToDictionary(date => date, date => 0);
 
         foreach (var item in groupedDuedateItems)
         {
-            if (dueDateCounts.ContainsKey((DateTime)item.DueDate))
+            if (futureDates.ContainsKey((DateTime)item.DueDate))
             {
-                dueDateCounts[(DateTime)item.DueDate] = item.Count; 
+                futureDates[(DateTime)item.DueDate] = item.Count; 
             }            
         }
 
         var duedateSetters = DuedateSetters.GetValueOrDefault(DuedateStrategy, this.earlyDuedateStrategy);
-        var duedate = duedateSetters.SetDuedate(dueDateCounts);
+        var duedate = duedateSetters.SetDuedate(futureDates);
 
         return duedate;
 
