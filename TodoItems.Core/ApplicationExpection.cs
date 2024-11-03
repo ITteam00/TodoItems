@@ -30,4 +30,10 @@ namespace TodoItems.Core
         public NoSuitableDueDateException(string message) : base(message = "No suitable due date found")
         { }
     }
+
+    public class NoModifyTimeException : Exception
+    {
+        public NoModifyTimeException(string message) : base(message = "No modify time")
+        { }
+    }
 }
