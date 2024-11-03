@@ -11,14 +11,18 @@ public class TodoItemService : ITodoItemService
     public TodoItemService(ITodoItemsRepository todoRepository)
     {
         _todoRepository = todoRepository;
+
     }
 
     public async Task<TodoItem> CreateTodoItem(TodoItem item, string? type="")
     {
-        if (item.DueTime == null) { 
-
-            
-
+        if (item.DueTime == null) {
+            var dueDateGenerateStrategy = new DueDateGenerator().getStrategy(type);
+            List<TodoItem> nextFiveDaysItem = await _todoRepository.getNextFiveDaysItem(item.CreateTime.Date);
+            Dictionary<DateTime,List<TodoItem>> dueDateDic=countTodoItemByDueDate(nextFiveDaysItem);
+            DateTime dueDate= dueDateGenerateStrategy.generateDueDate(dueDateDic);
+            item.DueTime= dueDate;
+            await _todoRepository.SaveAsync(item);
         }
         else
         {
@@ -28,11 +32,29 @@ public class TodoItemService : ITodoItemService
                 throw new TooManyTodoItemInDueDateException("A maximum of eight todoitems can be completed per day");
             }
             else
+            if (item.DueTime.Date < DateTime.Now.Date)
             {
-                await _todoRepository.SaveAsync(item);
-                return item;
+                throw new DueDateEarlierThanCreateDateException("Due time should later than create time");
+            }
+            await _todoRepository.SaveAsync(item);
+        }
+        return item;
+    }
+
+    private Dictionary<DateTime, List<TodoItem>> countTodoItemByDueDate(List<TodoItem> items)
+    {
+        Dictionary<DateTime,List<TodoItem>> todoItemByDueDate= new Dictionary<DateTime, List<TodoItem>>();
+        foreach (TodoItem item in items) {
+            if (todoItemByDueDate.ContainsKey(item.DueTime.Date))
+            {
+                todoItemByDueDate[item.DueTime.Date].Add(item);
+            }
+            else
+            {
+                todoItemByDueDate.Add(item.DueTime.Date, [item]);
             }
         }
+        return todoItemByDueDate;
     }
 
 
