@@ -11,5 +11,9 @@
         public bool IsFavorite { get; set; }
 
         public List<DateTime>? TimeStamps { get; set; }
+        public static void Modify(TodoItemDto todoItem, string description)
+        {
+            todoItem.Description = description;
+        }
     }
 }
