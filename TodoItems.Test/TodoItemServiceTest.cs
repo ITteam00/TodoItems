@@ -226,4 +226,37 @@ public class TodoItemServiceTest
         DateTime ExpectedDuedate = new DateTime(2024, 10, 11);
         Assert.Equal(ExpectedDuedate.Date, RealDueDate.Date);
     }
+
+    [Fact]
+    public async void Should_return_default_Duedate_when_create_item_set_default_duedate()
+    {
+        var mockRepository = new Mock<ITodoItemsRepository>();
+        var todoItemService = new TodoItemService(mockRepository.Object);
+        var todoItemDto = new TodoItemDto
+        {
+            Id = "1",
+            Description = "new task",
+            IsDone = true,
+            IsFavorite = true,
+            CreatedDate = new DateTime(2024, 10, 10),
+            DueDate = new DateTime(2024, 11, 11)
+        };
+        List<TodoItemDto> todoItems = new List<TodoItemDto>();
+        for (int i = 0; i < 1; i++)
+        {
+            var todoItem = new TodoItemDto
+            {
+                Id = "1" + i.ToString(),
+                Description = "new task",
+                IsDone = true,
+                IsFavorite = true,
+                DueDate = new DateTime(2024, 10, 10)
+            };
+            todoItems.Add(todoItem);
+        }
+        mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
+
+        DateTime RealDueDate = (DateTime)await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
+        Assert.Equal(todoItemDto.DueDate.Date, RealDueDate.Date);
+    }
 }
