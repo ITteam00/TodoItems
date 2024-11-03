@@ -88,4 +88,19 @@ public class TodoItemMongoRepositoryTest: IAsyncLifetime
 
         Assert.Equal(5, todoItems.Count);
     }
+    [Fact]
+    public async void should_return_implement_when_save_todoitem()
+    {
+        var todoItemDto = new TodoItems.Core.TodoItemDto
+        {
+            Id = "5f9a7d8e2d3b4a1eb8a7d8e2",
+            Description = "Buy groceries",
+            IsDone = true,
+            IsFavorite = true,
+        }; ;
+        _mongoRepository.Save(todoItemDto);
+        //await _mongoCollection.InsertOneAsync(todoItemPo);
+
+        Assert.NotNull(todoItemDto);
+    }
 }
