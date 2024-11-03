@@ -1,4 +1,6 @@
-﻿namespace TodoItems.Core;
+﻿using TodoItems.Core.DuedateStartegy;
+
+namespace TodoItems.Core;
 
 public class TodoItemService
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TodoItems.Core
+namespace TodoItems.Core.DuedateStartegy
 {
     public class EarlyDuedateStrategy : IDuedateStrategy
     {
@@ -16,7 +16,7 @@ namespace TodoItems.Core
                 .OrderBy(date => date)
                 .FirstOrDefault();
 
-            if (earliestDueDate == default(DateTime))
+            if (earliestDueDate == default)
             {
                 throw new InvalidOperationException("No valid due date found, all dates have 8 or more items.");
             }

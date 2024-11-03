@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TodoItems.Core;
+namespace TodoItems.Core.DuedateStartegy;
 
 public interface IDuedateStrategy
 {
