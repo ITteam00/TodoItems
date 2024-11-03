@@ -12,20 +12,17 @@ namespace TodoItems.Integration.Test;
 public class TodoItemMongoRepositoryTest : IAsyncLifetime
 {
     private readonly TodoItemMongoRepository _mongoRepository;
-
-
+    private readonly string _collectionName = "TodoItems";
+    private readonly string _databaseName = "TodoItemsTest";
     public TodoItemMongoRepositoryTest()
     {
         var mockSettings = new Mock<IOptions<TodoStoreDatabaseSettings>>();
-
-        var CollectionName = "TodoItems";
         mockSettings.Setup(s => s.Value).Returns(new TodoStoreDatabaseSettings
         {
             ConnectionString = "mongodb://localhost:27017",
-            DatabaseName = "TodoItemsTest",
-            TodoItemsCollectionName = CollectionName
+            DatabaseName = _databaseName,
+            TodoItemsCollectionName = _collectionName
         });
-
         _mongoRepository = new TodoItemMongoRepository(mockSettings.Object);
     }
 
