@@ -72,7 +72,7 @@ public class TodoItemMongoRepository: ITodoItemsRepository
 
     public async Task<List<TodoItems.Core.Model.TodoItem>> GetNextFiveDaysItem(DateTime date)
     {
-        FilterDefinition<TodoItemPo?> filter = Builders<TodoItemPo>.Filter.And(
+        FilterDefinition<TodoItemPo> filter = Builders<TodoItemPo>.Filter.And(
             Builders<TodoItemPo>.Filter.Gte(item => item.DueDate, date),
             Builders<TodoItemPo>.Filter.Lt(item => item.DueDate, date.AddDays(5)));
         var nextFiveDaysItem = await _todosCollection.Find(filter).ToListAsync();

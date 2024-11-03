@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 using MongoDB.Driver;
 using Moq;
 using TodoItem.Infrastructure;
@@ -81,8 +82,8 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         await _mongoCollection.InsertOneAsync(todoItemOne);
         await _mongoCollection.InsertOneAsync(todoItemTwo);
         await _mongoCollection.InsertOneAsync(todoItemThree);
-        var result=await _mongoRepository.GetAllItemsInDueDate(dueDate);
-        Assert.Equal(2,result.Count());
+        var result = await _mongoRepository.GetAllItemsInDueDate(dueDate);
+        Assert.Equal(2, result.Count());
         Assert.All(result, item => Assert.Equal(dueDate, item.DueDate));
     }
 
@@ -106,11 +107,40 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
 
         await _mongoRepository.UpdateAsync(todoItem.Id, updateTodoItem);
 
-        var result=await _mongoRepository.FindById(todoItem.Id);
+        var result = await _mongoRepository.FindById(todoItem.Id);
         Assert.Equal("update description", result.Description);
+    }
 
+    [Fact]
+    public async void should_return_correctItem_when_get_all_item_in_dudate()
+    {
+        DateTime dueDate = new DateTime(2023, 10, 1);
+        for (int i = 0; i < 2; i++)
+        {
+            await _mongoCollection.InsertOneAsync(new TodoItemPo { DueDate = dueDate, });
 
+        }
+        List<TodoItems.Core.Model.TodoItem> result = await _mongoRepository.GetAllItemsInDueDate(dueDate);
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count);
+        Assert.All(result, item => Assert.Equal(dueDate, item.DueDate));
 
+    }
 
+    [Fact]
+    public async void should_returns_correctItems_when_get_nextdays_items()
+    {
+        DateTime startDate = new DateTime(2023, 10, 1);
+        DateTime endDate = startDate.AddDays(5);
+
+        for (int i = 0; i < 7; i++)
+        {
+            await _mongoCollection.InsertOneAsync(new TodoItemPo { DueDate = startDate.AddDays(i), });
+        }
+
+        List<TodoItems.Core.Model.TodoItem> result=await _mongoRepository.GetNextFiveDaysItem(startDate);
+        Assert.NotNull(result);
+        Assert.Equal(5, result.Count);
+        Assert.All(result, item => Assert.True(item.DueDate >= startDate && item.DueDate < endDate));
     }
 }
