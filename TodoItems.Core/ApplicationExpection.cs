@@ -8,7 +8,13 @@ namespace TodoItems.Core
 {
     public class TooManyTodoItemInDueDateException : Exception
     {
-        public TooManyTodoItemInDueDateException(string message):base(message)
+        public TooManyTodoItemInDueDateException(string message):base(message= "A maximum of eight todoitems can be completed per day")
         {}
+    }
+
+    public class DueDateEarlierThanCreateDateException : Exception
+    {
+        public DueDateEarlierThanCreateDateException(string message) : base(message="Due time should later than create time")
+        { }
     }
 }

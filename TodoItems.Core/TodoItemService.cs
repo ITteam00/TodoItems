@@ -1,33 +1,57 @@
 ﻿using System.Runtime.CompilerServices;
-using TodoItems.Core.services;
+using TodoItems.Core;
+
 
 namespace TodoItems.Core;
 
 public class TodoItemService : ITodoItemService
 {
-    private readonly ITodoRepository _todoRepository;
+    private readonly ITodoItemsRepository _todoRepository;
 
-    public TodoItemService(ITodoRepository todoRepository)
+    public TodoItemService(ITodoItemsRepository todoRepository)
     {
         _todoRepository = todoRepository;
     }
 
-    public TodoItemDto CreateTodoItem(TodoItemDto item)
+    public async Task<TodoItem> CreateTodoItem(TodoItem item, string? type="")
     {
-        item.Id = Guid.NewGuid().ToString();
-        if (item.DueTime < item.CreateTime)
-        {
-            throw new Exception("Due time should later than create time");
+        if (item.DueTime == null) { 
+
+            
+
         }
-        var todayAllItem = _todoRepository.getAllItemsCountInToday(item.DueTime);
-        if (todayAllItem.Count > 8)
+        else
         {
-            throw new Exception("A maximum of eight todoitems can be completed per day");
+            List<TodoItem> todoItems = await _todoRepository.getAllItemsCountInToday(item.DueTime.Date);
+            if (todoItems.Count > 8)
+            {
+                throw new TooManyTodoItemInDueDateException("A maximum of eight todoitems can be completed per day");
+            }
+            else
+            {
+                await _todoRepository.SaveAsync(item);
+                return item;
+            }
         }
-        return item;
     }
 
-    public TodoItemDto ModifyTodoItem(TodoItemDto oldItem, TodoItemDto newItem)
+
+    //public TodoItem CreateTodoItem(TodoItem item)
+    //{
+    //    item.Id = Guid.NewGuid().ToString();
+    //    if (item.DueTime < item.CreateTime)
+    //    {
+    //        throw new Exception("Due time should later than create time");
+    //    }
+    //    var todayAllItem = _todoRepository.getAllItemsCountInToday(item.DueTime);
+    //    if (todayAllItem.Count > 8)
+    //    {
+    //        throw new Exception("A maximum of eight todoitems can be completed per day");
+    //    }
+    //    return item;
+    //}
+
+    public TodoItem ModifyTodoItem(TodoItem oldItem, TodoItem newItem)
     {
         if (oldItem.ModifyTime[oldItem.ModifyTime.Length - 1].Date != DateTime.Now.Date)
         {
@@ -47,7 +71,7 @@ public class TodoItemService : ITodoItemService
         }
         return oldItem;
     }
-    private static void ModifyItemDescription(TodoItemDto oldItem, TodoItemDto newItem)
+    private static void ModifyItemDescription(TodoItem oldItem, TodoItem newItem)
     {
         oldItem.Description = newItem.Description;
     }

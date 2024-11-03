@@ -47,7 +47,7 @@ public class TodoItemMongoRepository: ITodoItemsRepository
         };
     }
 
-    public async Task<TodoItems.Core.TodoItem> Save(TodoItems.Core.TodoItem todoItem)
+    public async Task<TodoItems.Core.TodoItem> SaveAsync(TodoItems.Core.TodoItem todoItem)
     {
         await _todosCollection.InsertOneAsync(ConvertToTodoItemPo(todoItem));
         return todoItem;

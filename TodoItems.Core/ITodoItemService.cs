@@ -2,7 +2,7 @@
 {
     public interface ITodoItemService
     {
-        TodoItemDto CreateTodoItem(TodoItemDto item);
-        TodoItemDto ModifyTodoItem(TodoItemDto oldItem, TodoItemDto newItem);
+        Task<TodoItem> CreateTodoItem(TodoItem item, string? type);
+        TodoItem ModifyTodoItem(TodoItem oldItem, TodoItem newItem);
     }
 }

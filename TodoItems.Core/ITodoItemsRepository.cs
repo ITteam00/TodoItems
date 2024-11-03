@@ -3,6 +3,6 @@ namespace TodoItems.Core;
 public interface ITodoItemsRepository
 {
     public Task<TodoItem> FindById(string id);
-    void Save(TodoItem todoItem);
+    Task<TodoItem> SaveAsync(TodoItem todoItem);
     public Task<List<TodoItem>> getAllItemsCountInToday(DateTime today);
 }
