@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Moq;
+using System;
 using TodoItems.Core;
 namespace TodoItems.Test;
 
@@ -115,7 +116,7 @@ public class TodoItemServiceTest
     }
 
     [Fact]
-    public async void Should_return_true_when_create_item_duedate_count_less_than_8()
+    public async void Should_return_todoItem_when_create_item_duedate_count_less_than_8()
     {
         var mockRepository = new Mock<ITodoItemsRepository>();
         var todoItemService = new TodoItemService(mockRepository.Object);
@@ -129,12 +130,12 @@ public class TodoItemServiceTest
             CreatedDate = new DateTime(2024, 10, 30)
         };
         mockRepository.Setup(repo => repo.GetAllTodoItemsCountInDueDate(It.IsAny<DateTime>())).ReturnsAsync(6);
-        bool RealResult = await todoItemService.CreateItem(todoItemDto);
-        Assert.Equal(true, RealResult);
+        var todoItem = await todoItemService.CreateItem(todoItemDto);
+        Assert.Equal(todoItemDto, todoItem);
     }
 
     [Fact]
-    public async void Should_return_false_when_create_item_duedate_count_over_8()
+    public async Task Should_return_false_when_create_item_duedate_count_over_8()
     {
         var mockRepository = new Mock<ITodoItemsRepository>();
         var todoItemService = new TodoItemService(mockRepository.Object);
@@ -149,8 +150,8 @@ public class TodoItemServiceTest
         };
         mockRepository.Setup(repo => repo.GetAllTodoItemsCountInDueDate(It.IsAny<DateTime>())).ReturnsAsync(10);
 
-        bool RealResult = await todoItemService.CreateItem(todoItemDto);
-        Assert.Equal(false, RealResult);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => todoItemService.CreateItem(todoItemDto));
+        Assert.Equal("all dates have 8 or more items.", exception.Message);
     }
 
     [Fact]
@@ -169,8 +170,8 @@ public class TodoItemServiceTest
         };
         mockRepository.Setup(repo => repo.GetAllTodoItemsCountInDueDate(It.IsAny<DateTime>())).ReturnsAsync(6);
 
-        bool RealResult = await todoItemService.CreateItem(todoItemDto);
-        Assert.Equal(false, RealResult);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => todoItemService.CreateItem(todoItemDto));
+        Assert.Equal("created date is later than due date.", exception.Message);
     }
 
     [Fact]
@@ -255,8 +256,8 @@ public class TodoItemServiceTest
         }
         mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
-        DateTime RealDueDate = (DateTime)await todoItemService.SetDuedate(todoItemDto, "Early Duedate");
-        Assert.Equal(todoItemDto.DueDate?.Date, RealDueDate.Date);
+        var RealTodoItem = await todoItemService.CreateItem(todoItemDto, "Early Duedate");
+        Assert.Equal(todoItemDto.DueDate?.Date, RealTodoItem.DueDate?.Date);
     }
 
     [Fact]
@@ -345,7 +346,7 @@ public class TodoItemServiceTest
         }
         mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
 
-        DateTime RealDueDate = (DateTime)await todoItemService.SetDuedate(todoItemDto, "Least Count");
-        Assert.Equal(todoItemDto.DueDate?.Date, RealDueDate.Date);
+        var RealTodoItem = await todoItemService.CreateItem(todoItemDto, "Least Count");
+        Assert.Equal(todoItemDto.DueDate?.Date, RealTodoItem.DueDate?.Date);
     }
 }
