@@ -16,7 +16,7 @@ public class TodoItemService : ITodoItemService
 
     public async Task<TodoItem> CreateTodoItem(TodoItem item, string? type="")
     {
-        if (item.DueTime == null) {
+        if (item.DueTime==DateTime.MinValue) {
             var dueDateGenerateStrategy = new DueDateGenerator().getStrategy(type);
             List<TodoItem> nextFiveDaysItem = await _todoRepository.getNextFiveDaysItem(item.CreateTime.Date);
             Dictionary<DateTime,List<TodoItem>> dueDateDic=countTodoItemByDueDate(nextFiveDaysItem);
