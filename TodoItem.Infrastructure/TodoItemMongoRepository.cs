@@ -43,6 +43,7 @@ namespace TodoItems.Infrastructure
                 Description = todoItemPo.Description
             };
         }
+        
         public List<TodoItem> GetItemsByDueDate(DateTimeOffset dueDate)
         {
             var filter = Builders<TodoItemDto>.Filter.And(
@@ -72,32 +73,44 @@ namespace TodoItems.Infrastructure
         {
             var today = startDate.HasValue ? startDate.Value.Date : DateTimeOffset.Now.Date;
             var fiveDaysLater = today.AddDays(6);
-
             var filter = Builders<TodoItemDto>.Filter.And(
                 Builders<TodoItemDto>.Filter.Ne(item => item.DueDate, null),
                 Builders<TodoItemDto>.Filter.Gte(item => item.DueDate, today),
                 Builders<TodoItemDto>.Filter.Lte(item => item.DueDate, fiveDaysLater)
             );
-
             var result = TodosCollection
                 .Find(filter)
                 .SortBy(item => item.DueDate)
                 .ToList()
                 .Select(x => x.MapToTodoItem())
                 .ToList();
-
             return result;
         }
 
         public TodoItem GetItemById(string id)
         {
             var item = TodosCollection.Find(item => item.Id == id).FirstOrDefault();
+            if (item == null)
+            {
+                throw new KeyNotFoundException($"Item with Id {id} not found.");
+            }
             return item.MapToTodoItem();
         }
 
         public TodoItem UpdateItem(TodoItem item)
         {
-            throw new NotImplementedException();
+            var re = GetItemById(item.Id);
+            if(re == null) 
+                throw new KeyNotFoundException($"Item with Id {item.Id} not found.");
+            var updateResult = TodosCollection.ReplaceOne(x => x.Id == re.Id, TodoItemDto.MapToTodoItemDto(item));
+            if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
+            {
+                return item;
+            }
+            else
+            {
+                throw new Exception("Update failed.");
+            }
         }
     }
 }

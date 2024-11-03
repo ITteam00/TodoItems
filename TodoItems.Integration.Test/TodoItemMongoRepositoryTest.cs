@@ -273,4 +273,49 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         Assert.Equal("Item 3", result.ToList()[1].Description);  // sort works
     }
 
+    [Fact]
+    public void UpdateItem_ShouldUpdateExistingItem()
+    {
+        var id = ObjectId.GenerateNewId().ToString();
+        var originalItem = new TodoItem
+        {
+            Id = id,
+            Description = "Original Description",
+            Done = false,
+        };
+        _mongoRepository.AddItem(originalItem);
+
+        var updatedItem = new TodoItem
+        {
+            Id = id,
+            Description = "Updated Description",
+            Done = true,
+            DueDate = DateTimeOffset.Now.AddDays(2),
+        };
+        var result = _mongoRepository.UpdateItem(updatedItem);
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(updatedItem.Description, result.Description);
+        Assert.Equal(updatedItem.Done, result.Done);
+        Assert.Equal(updatedItem.DueDate, result.DueDate);
+    }
+    [Fact]
+    public void UpdateItem_ShouldThrowException_WhenItemNotFound()
+    {
+        // Arrange
+        var id = ObjectId.GenerateNewId().ToString();
+        var nonExistentItem = new TodoItem
+        {
+            Id = id,
+            Description = "Non-existent Item",
+            Done = false,
+            DueDate = DateTimeOffset.Now.AddDays(2)
+        };
+
+        // Act & Assert
+        var exception = Assert.Throws<KeyNotFoundException>(() => _mongoRepository.UpdateItem(nonExistentItem));
+        Assert.Equal($"Item with Id {id} not found.", exception.Message);
+    }
+
+
 }
