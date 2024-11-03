@@ -18,7 +18,7 @@ public class TodoItemTest
     }
 
     [Fact]
-    public void should_update_when_time_less_than_three()
+    public async void should_update_when_time_less_than_three()
     {
         var oldItem = new TodoItem()
         {
@@ -27,7 +27,7 @@ public class TodoItemTest
             CreateTime = DateTime.Now,
             IsComplete = false,
             IsFavorite = false,
-            ModifyTime= [],
+            ModifyTime = [new DateTime(2024, 11, 1, 00, 00, 01)],
         };
         var updateItem = new TodoItem()
         {
@@ -38,16 +38,13 @@ public class TodoItemTest
             IsFavorite = false,
             ModifyTime = [],
         };
-        try
-        {
-            var updatedItem = _service.ModifyTodoItem(oldItem, updateItem);
-        }
-        catch (Exception ex) { }
+        _todoRepository.Setup(repo => repo.FindById(It.IsAny<string>())).ReturnsAsync(oldItem);
+        var updatedItem = await _service.ModifyTodoItem("1", updateItem);
         Assert.Equal("should update description",updateItem.Description);
     }
 
     [Fact]
-    public void should_failed_throw_exception_when_time_more_than_three()
+    public async void should_failed_throw_exception_when_time_more_than_three()
     {
         var oldItem = new TodoItem()
         {
@@ -56,7 +53,7 @@ public class TodoItemTest
             CreateTime = DateTime.Now,
             IsComplete = false,
             IsFavorite = false,
-            ModifyTime = [new DateTime(2024, 11, 1, 00, 00, 01), new DateTime(2024, 11, 1, 00, 01, 01), new DateTime(2024, 11, 1, 01, 00, 01)],
+            ModifyTime = [DateTime.Now, DateTime.Now, DateTime.Now],
         };
         var updateItem = new TodoItem()
         {
@@ -66,17 +63,13 @@ public class TodoItemTest
             IsComplete = false,
             IsFavorite = false,
         };
-        try
-        {
-            _service.ModifyTodoItem(oldItem, updateItem);
-        }
-        catch (Exception ex) {
-            Assert.Equal(ex.Message, "No modify time");
-        }
+        _todoRepository.Setup(repo => repo.FindById(It.IsAny<string>())).ReturnsAsync(oldItem);
+        var exception = await Assert.ThrowsAsync<NoModifyTimeException>(() => _service.ModifyTodoItem("1",updateItem));
+        _todoRepository.Verify(repo => repo.SaveAsync(oldItem), Times.Never);
     }
 
     [Fact]
-    public void should_update_todoItem_when_across_day()
+    public async void should_update_todoItem_when_across_day()
     {
         var oldItem = new TodoItem()
         {
@@ -85,7 +78,7 @@ public class TodoItemTest
             CreateTime = DateTime.Now,
             IsComplete = false,
             IsFavorite = false,
-            ModifyTime = [new DateTime(2024, 10, 30, 00, 00, 01), new DateTime(2024, 10, 30, 00, 01, 01), new DateTime(2024, 10, 30, 01, 00, 01)],
+            ModifyTime = [DateTime.Now.AddDays(-1), DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-3)],
         };
         var updateItem = new TodoItem()
         {
@@ -95,7 +88,8 @@ public class TodoItemTest
             IsComplete = false,
             IsFavorite = false,
         };
-        var updatedItem = _service.ModifyTodoItem(oldItem, updateItem);
+        _todoRepository.Setup(repo => repo.FindById(It.IsAny<string>())).ReturnsAsync(oldItem);
+        var updatedItem = await _service.ModifyTodoItem("1", updateItem);
 
         Assert.Equal("should update description", updatedItem.Description);
         Assert.Equal(1, updatedItem.ModifyTime.Length);
@@ -239,6 +233,8 @@ public class TodoItemTest
         _todoRepository.Setup(repo => repo.getNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
         var exception = await Assert.ThrowsAsync<InvalidDueDateGenerateStrategyException>(() => _service.CreateTodoItem(todoItem,strategytype));
         Assert.Equal(exception.Message, "Invalid daueDate generate strategy");
+        _todoRepository.Verify(repo => repo.SaveAsync(todoItem), Times.Never);
+
     }
 
     [Fact]
@@ -270,6 +266,7 @@ public class TodoItemTest
         _todoRepository.Setup(repo => repo.getNextFiveDaysItem(It.IsAny<DateTime>())).ReturnsAsync(nextFiveDaysItems);
         var exception = await Assert.ThrowsAsync<NoSuitableDueDateException>(() => _service.CreateTodoItem(todoItem,strategytype));
         Assert.Equal(exception.Message, "No suitable due date found");
+        _todoRepository.Verify(repo => repo.SaveAsync(todoItem),Times.Never);
     }
 
 

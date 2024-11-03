@@ -14,14 +14,15 @@ public class TodoItemService : ITodoItemService
 
     }
 
-    public async Task<TodoItem> CreateTodoItem(TodoItem item, string? type="")
+    public async Task<TodoItem> CreateTodoItem(TodoItem item, string? type = "")
     {
-        if (item.DueTime==DateTime.MinValue) {
+        if (item.DueTime == DateTime.MinValue)
+        {
             var dueDateGenerateStrategy = new DueDateGenerator().getStrategy(type);
             List<TodoItem> nextFiveDaysItem = await _todoRepository.getNextFiveDaysItem(item.CreateTime.Date);
-            Dictionary<DateTime,List<TodoItem>> dueDateDic=countTodoItemByDueDate(nextFiveDaysItem);
-            DateTime dueDate= dueDateGenerateStrategy.generateDueDate(dueDateDic);
-            item.DueTime= dueDate;
+            Dictionary<DateTime, List<TodoItem>> dueDateDic = countTodoItemByDueDate(nextFiveDaysItem);
+            DateTime dueDate = dueDateGenerateStrategy.generateDueDate(dueDateDic);
+            item.DueTime = dueDate;
             await _todoRepository.SaveAsync(item);
         }
         else
@@ -43,8 +44,9 @@ public class TodoItemService : ITodoItemService
 
     private Dictionary<DateTime, List<TodoItem>> countTodoItemByDueDate(List<TodoItem> items)
     {
-        Dictionary<DateTime,List<TodoItem>> todoItemByDueDate= new Dictionary<DateTime, List<TodoItem>>();
-        foreach (TodoItem item in items) {
+        Dictionary<DateTime, List<TodoItem>> todoItemByDueDate = new Dictionary<DateTime, List<TodoItem>>();
+        foreach (TodoItem item in items)
+        {
             if (todoItemByDueDate.ContainsKey(item.DueTime.Date))
             {
                 todoItemByDueDate[item.DueTime.Date].Add(item);
@@ -58,43 +60,11 @@ public class TodoItemService : ITodoItemService
     }
 
 
-    //public TodoItem CreateTodoItem(TodoItem item)
-    //{
-    //    item.Id = Guid.NewGuid().ToString();
-    //    if (item.DueTime < item.CreateTime)
-    //    {
-    //        throw new Exception("Due time should later than create time");
-    //    }
-    //    var todayAllItem = _todoRepository.getAllItemsCountInToday(item.DueTime);
-    //    if (todayAllItem.Count > 8)
-    //    {
-    //        throw new Exception("A maximum of eight todoitems can be completed per day");
-    //    }
-    //    return item;
-    //}
-
-    public TodoItem ModifyTodoItem(TodoItem oldItem, TodoItem newItem)
+    public async Task<TodoItem> ModifyTodoItem(string id, TodoItem newTodoItem)
     {
-        if (oldItem.ModifyTime[oldItem.ModifyTime.Length - 1].Date != DateTime.Now.Date)
-        {
-            oldItem.ModifyTime = [DateTime.Now];
-            ModifyItemDescription(oldItem, newItem);
-        }
-        else
-        {
-            if (oldItem.ModifyTime.Length >= 3)
-            {
-                throw new Exception("No modify time");
-            }
-            else
-            {
-                ModifyItemDescription(oldItem, newItem);
-            }
-        }
-        return oldItem;
-    }
-    private static void ModifyItemDescription(TodoItem oldItem, TodoItem newItem)
-    {
-        oldItem.Description = newItem.Description;
+        TodoItem item = await _todoRepository.FindById(id);
+        item.Modify(newTodoItem);
+        await _todoRepository.SaveAsync(item);
+        return item;
     }
 }
