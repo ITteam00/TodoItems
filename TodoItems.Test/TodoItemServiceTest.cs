@@ -259,4 +259,23 @@ public class TodoItemServiceTest
         DateTime RealDueDate = (DateTime)await todoItemService.SetEarlyDuedateInFiveDays(todoItemDto);
         Assert.Equal(todoItemDto.DueDate?.Date, RealDueDate.Date);
     }
-}
+
+    [Fact]
+    public async void Should_return_least_count_Duedate_when_create_item_auto_set_in_five_days_query_less_than_8()
+    {
+        var mockRepository = new Mock<ITodoItemsRepository>();
+        var todoItemService = new TodoItemService(mockRepository.Object);
+        var todoItemDto = new TodoItemDto
+        {
+            Id = "1",
+            Description = "new task",
+            IsDone = true,
+            IsFavorite = true,
+            CreatedDate = new DateTime(2024, 10, 30)
+        };
+        List<TodoItemDto> todoItems = new List<TodoItemDto>();
+        mockRepository.Setup(repo => repo.GetAllTodoItemsInFiveDays(It.IsAny<DateTime>())).ReturnsAsync(todoItems);
+
+        DateTime RealDueDate = (DateTime)await todoItemService.SetLeastCountDuedateInFiveDays(todoItemDto);
+        Assert.Equal(todoItemDto.CreatedDate, RealDueDate.Date);
+    }
