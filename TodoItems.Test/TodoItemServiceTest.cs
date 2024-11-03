@@ -29,7 +29,7 @@ public class TodoItemServiceTest
             CreateTime = DateTime.Now,
             IsComplete = false,
             IsFavorite = false,
-            ModifyTime = [new DateTime(2024, 11, 1, 00, 00, 01)],
+            ModifyTime = [DateTime.Now],
         };
         var updateItem = new TodoItem()
         {
@@ -38,11 +38,11 @@ public class TodoItemServiceTest
             CreateTime = DateTime.Now,
             IsComplete = false,
             IsFavorite = false,
-            ModifyTime = [],
         };
         _todoRepository.Setup(repo => repo.FindById(It.IsAny<string>())).ReturnsAsync(oldItem);
         var updatedItem = await _service.ModifyTodoItem("1", updateItem);
         Assert.Equal("should update description",updateItem.Description);
+        Assert.Equal(2,updatedItem.ModifyTime.Count());
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class TodoItemServiceTest
         var updatedItem = await _service.ModifyTodoItem("1", updateItem);
 
         Assert.Equal("should update description", updatedItem.Description);
-        Assert.Equal(1, updatedItem.ModifyTime.Length);
+        Assert.Equal(1, updatedItem.ModifyTime.Count());
     }
 
     [Fact]
@@ -213,7 +213,7 @@ public class TodoItemServiceTest
     }
 
     [Fact]
-    public async void should_throw_Invalid_daueDate_generate_strategy_exception()
+    public async void should_throw_invalid_dueDate_generate_strategy_exception()
     {
         var todoItem = new TodoItem()
         {
