@@ -17,14 +17,14 @@ public class TodoItemService
     {
         return "1";
     }
-    public async Task<bool> CreateItem(TodoItemDto NewTodoItem, string DuedateStrategy = "Early Duedate")
+    public async Task<TodoItemDto> CreateItem(TodoItemDto NewTodoItem, string DuedateStrategy = "Early Duedate")
     {
         DateTime duedate = new DateTime();
         if (NewTodoItem.DueDate != null)
         {
-            if (NewTodoItem.CreatedDate > NewTodoItem.DueDate) return false;
+            if (NewTodoItem.CreatedDate > NewTodoItem.DueDate) throw new InvalidOperationException("created date is later than due date.");
             int TodoItemCount = await _todosRepository.GetAllTodoItemsCountInDueDate(NewTodoItem.DueDate);
-            if (TodoItemCount > 8) return false;
+            if (TodoItemCount > 8) throw new InvalidOperationException("all dates have 8 or more items.");
             duedate = (DateTime)NewTodoItem.DueDate?.Date;
         }
         else
@@ -32,7 +32,9 @@ public class TodoItemService
             duedate = (DateTime)await SetDuedate(NewTodoItem, DuedateStrategy);
         }
 
-        return true;
+        NewTodoItem.DueDate = duedate;
+
+        return NewTodoItem;
     }
     public async void UpdateItem(string id, string description)
     {
@@ -68,9 +70,6 @@ public class TodoItemService
 
     public async Task<DateTime?> SetDuedate(TodoItemDto todoItemDto,string DuedateStrategy)
     {
-        var futureDates = Enumerable.Range(0, 5)
-        .Select(offset => todoItemDto.CreatedDate.Date.AddDays(offset))
-        .ToList();
 
         List<TodoItemDto> todoItems = await _todosRepository.GetAllTodoItemsInFiveDays(todoItemDto.CreatedDate);
 
@@ -83,6 +82,9 @@ public class TodoItemService
         })
         .ToList();
 
+        var futureDates = Enumerable.Range(0, 5)
+        .Select(offset => todoItemDto.CreatedDate.Date.AddDays(offset))
+        .ToList();
         var dueDateCounts = futureDates.ToDictionary(date => date, date => 0);
 
         foreach (var item in groupedDuedateItems)
