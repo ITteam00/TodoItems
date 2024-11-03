@@ -113,4 +113,41 @@ public class TodoItemMongoRepositoryTest : IAsyncLifetime
         Assert.True(item.ModificationRecord.ModifiedTimes.SequenceEqual(findResult.ModificationRecord.ModifiedTimes));
         Assert.Equal(item.ModificationRecord.ModifiedTimes, findResult.ModificationRecord.ModifiedTimes);
     }
+    
+    [Fact]
+    public void GetItemById_ShouldReturnItemWithId()
+    {
+        var id = ObjectId.GenerateNewId().ToString();
+        var item = new TodoItem
+        {
+            Id = id,
+            Description = "Test with modifications",
+            ModificationRecord = new Modification(),
+            Done = false
+        };
+        var items = new List<TodoItem>
+        {
+            new TodoItem() { Id = ObjectId.GenerateNewId().ToString(), Description = "aaa", ModificationRecord = new()},
+            new TodoItem() { Id = ObjectId.GenerateNewId().ToString(), Description = "bbb", ModificationRecord = new()},
+            item
+        };
+        foreach (var i in items)
+        {
+            _mongoRepository.AddItem(i);
+        }
+        var findResult = _mongoRepository.GetItemById(id);
+        Assert.NotNull(findResult);
+        Assert.Equal(item.Id, findResult.Id);
+        Assert.Equal(item.Description, findResult.Description);
+    }
+    
+    [Fact]
+    public void InsertOneItem_Should()
+    {
+        var dto = new TodoItemDto(){Description = "jjjjjjjjjjj"};
+        _mongoRepository.TodosCollection.InsertOne(dto);
+        var findResult = _mongoRepository.TodosCollection.Find(x => x.Description == dto.Description);
+        Assert.Equal(dto.Description, findResult.FirstOrDefault().Description);
+    }
+    
 }

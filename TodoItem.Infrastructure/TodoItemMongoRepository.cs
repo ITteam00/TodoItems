@@ -62,7 +62,8 @@ namespace TodoItems.Infrastructure
 
         public TodoItem GetItemById(string id)
         {
-            throw new NotImplementedException();
+            var item = TodosCollection.Find(item => item.Id == id).FirstOrDefault();
+            return item.MapToTodoItem();
         }
 
         public TodoItem UpdateItem(TodoItem item)

@@ -18,6 +18,7 @@ namespace TodoItems.Infrastructure
         public ModificationDto ModificationRecord { get; set; }
         public DateTimeOffset? DueDate { get; set; }
         public bool Done { get; set; } = false;
+        public DateTimeOffset CreatedTime { get; set; }
         
         public static TodoItemDto MapToTodoItemDto(TodoItem todoItem)
         {
@@ -31,15 +32,29 @@ namespace TodoItems.Infrastructure
                 },
                 DueDate = todoItem.DueDate,
                 Done = todoItem.Done,
+                CreatedTime = todoItem.CreatedTime,
             };
             return dto;
 
         }
-        
-        
-        
-        
 
 
+        public TodoItem MapToTodoItem()
+        {
+            var item = new TodoItem
+            {
+                Id = this.Id,
+                Description = this.Description,
+                ModificationRecord = new Modification()
+                {
+                    ModifiedTimes = new List<DateTimeOffset>(this.ModificationRecord.ModifiedTimes),
+                },
+                DueDate = this.DueDate,
+                Done = this.Done,
+                CreatedTime = this.CreatedTime,
+            };
+            
+            return item;
+        }
     }
 }
