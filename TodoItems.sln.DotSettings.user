@@ -1,9 +1,101 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4296394a_002D087a_002D48bc_002Dba1f_002D47a70cc3a4b1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;TodoItems.Test&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;Project Location="/Users/zifeiyu/repos/slb-2024-training/practice/TodoItems/TodoItems.Test" Presentation="&amp;lt;TodoItems.Test&amp;gt;" /&gt;
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AContainsException_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F13a7d8e2b72aab40e571b64647a442722495987540e56d24b2e560ab8312c50_003FContainsException_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ADateTimeOffset_002ENonAndroid_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F8b69348fef917fb51d8911f8292a45b33b8f97191c210d5fbafdda34247fbce_003FDateTimeOffset_002ENonAndroid_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AExceptionAggregator_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F38284ca4f4afe378f96fccac3e179f4bceda7a74eb151623b66d2dc3634d9b_003FExceptionAggregator_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AExecutionContext_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F9eda537f15ea23cdfae523c19e87eb303a3ded88937ae7e55919387a43f70_003FExecutionContext_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AExecutionTimer_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F3b92f859131bde25d0f7a63de08963e995d1e1426e584dfd4b8e833d2d3dba_003FExecutionTimer_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ANullAsserts_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003Feb564be7d6d6c825eb605b015bc18ac55ca77e1ef3ea8abbd1b416abbda2f3f_003FNullAsserts_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AObjectId_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F479bd261227b3b28565cd040596f302c89ba304327eeb8a38284b414aa1fa7_003FObjectId_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ARecord_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F2ea354601080cd9165da8954e71b15647a63c14ecaf2192dbe2fbefce85e022_003FRecord_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AServer_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003Ffe3b1716bf2f8f83ac793e7e3faa60f88a7868347653f77591f74b86d0d97675_003FServer_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATask_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F2e49d132ea68ff47071c64476ae29138fa965dc555ef7c3f4991586431de241_003FTask_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATestInvoker_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fc3ec25c53b94f51fa21da479c513e551efee2b5ae49a79934686d2bb714d46_003FTestInvoker_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AXunitTestInvoker_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FUsers_003FZWang102_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fa53b6656d53296976cb3cae7c3f3c3797af4d1063d91228a4f1dabbd5398890_003FXunitTestInvoker_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=100c760d_002D6e56_002D42be_002Da052_002D99ea6a46356f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="should_return_item_by_id_1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.should_return_item_by_id_1&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.InsertOneItem_ShouldReturnItem_WithEmptyModificationRecord&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.InsertOneItem_ShouldReturnItem_WithModificationRecord&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fcacfdb5_002D6448_002D4a5c_002D88a4_002D6f6242f16dde/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="should_return_2_when_add_1_1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;xUnit::812ACC5D-E44F-4BF4-918A-D7853B472150::net8.0::TodoItems.Test.UnitTest1.should_return_2_when_add_1_1&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=169882cd_002Dca5f_002D4d21_002Da490_002D100f81ad2a36/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetItemById_ShouldReturnItemWithId" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetItemById_ShouldReturnItemWithId&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=191a00ca_002D3d5a_002D4f67_002Dacf9_002D947b851f3430/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="InsertOneItem_ShouldReturnItem_WithEmptyModificationRecord" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.InsertOneItem_ShouldReturnItem_WithEmptyModificationRecord&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.InsertOneItem_ShouldReturnItem_WithModificationRecord&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3f6797b2_002Dd616_002D4c72_002Db14f_002D494d525fddc2/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetFiveDayItems_ShouldReturnItemsWithinFiveDays #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetFiveDayItems_ShouldReturnItemsWithinFiveDays&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4296394a_002D087a_002D48bc_002Dba1f_002D47a70cc3a4b1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;TodoItems.Test&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::812ACC5D-E44F-4BF4-918A-D7853B472150::net8.0::TodoItems.Tests.TodoItemServiceTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.should_return_item_by_id_1&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.InsertOneItem_ShouldReturnItem_WithModificationRecord&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.InsertOneItem_ShouldReturnItem_WithEmptyModificationRecord&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4d3f0ff7_002Dc4f1_002D4550_002Da6bd_002Dd74f9969d056/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetItemById_ShouldReturnNull_WithIdNotFound" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetItemById_ShouldReturnNull_WithIdNotFound&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetItemById_ShouldReturnItemWithId&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.InsertOneItem_Should&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetItemsByDueDate_ShouldReturnItems_WithDueDate&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetItemsByDueDate_ShouldReturnNull&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetFiveDayItems_ShouldReturnItemsWithinFiveDays&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=5543b62e_002D4522_002D4d2e_002D9c79_002D6748d2550481/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetFiveDayItems_ShouldReturnItemsWithinFiveDays #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetFiveDayItems_ShouldReturnItemsWithinFiveDays&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=7cbfbd63_002D8a25_002D4dd6_002D9686_002Da0db203da932/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="InsertOneItem_ShouldReturnItem_WithModificationRecord" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.InsertOneItem_ShouldReturnItem_WithModificationRecord&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.InsertOneItem_ShouldReturnItem_WithEmptyModificationRecord&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8b6535c3_002Da492_002D4f1e_002D9604_002D088ba441cb38/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetItemById_ShouldReturnItemWithId #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetItemById_ShouldReturnItemWithId&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetItemById_ShouldReturnNull_WithIdNotFound&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8ceb0201_002D486c_002D4b46_002Db6b4_002D255ce811c6f8/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetFiveDayItems_ShouldReturnItemsWithinFiveDays #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetFiveDayItems_ShouldReturnItemsWithinFiveDays&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.UpdateItem_ShouldUpdateExistingItem&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.UpdateItem_ShouldThrowException_WhenItemNotFound&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a34c156f_002Dd8de_002D4c5f_002D88a9_002D48f37c901eee/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="UpdateItem_ShouldThrowException_WhenItemNotFound" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.UpdateItem_ShouldThrowException_WhenItemNotFound&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ad9f0fd9_002D8423_002D4fec_002D9946_002D98acf138f9d8/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetFiveDayItems_ShouldReturnItemsWithinFiveDays" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetFiveDayItems_ShouldReturnItemsWithinFiveDays&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bf987d4e_002D8e71_002D4118_002Da05c_002D1c349ad1955f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="should_return_item_by_id_1 #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.should_return_item_by_id_1&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.InsertOneItem_ShouldReturnItem_WithModificationRecord&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest.GetItemById_ShouldReturnItemWithId&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fcacfdb5_002D6448_002D4a5c_002D88a4_002D6f6242f16dde/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="should_return_2_when_add_1_1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::BEE9615C-CB4A-421E-BA15-9F8438004376::net8.0::TodoItems.Integration.Test.TodoItemMongoRepositoryTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::812ACC5D-E44F-4BF4-918A-D7853B472150::net8.0::TodoItems.Tests.TodoItemServiceTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
