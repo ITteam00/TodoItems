@@ -136,7 +136,7 @@ public class TodoItemTest
     }
 
     [Fact]
-    public async void Should_return_true_when_create_item_duedate_count_over_8()
+    public async void Should_return_false_when_create_item_duedate_count_over_8()
     {
         var mockRepository = new Mock<ITodoItemsRepository>();
         var todoItem = new TodoItemService(mockRepository.Object);
